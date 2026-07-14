@@ -13,6 +13,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+        <x-pending-invitation-popup />
+
         <div class="min-h-screen bg-novix-cream dark:bg-novix-ink">
             @include('layouts.navigation')
 

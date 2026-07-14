@@ -9,13 +9,16 @@
     'dynamicErrors' => false,
     'inputmode' => null,
     'maxlength' => null,
+    'id' => null, // override when the same field `name` appears more than once on a page (e.g. two alternate forms)
 ])
+
+@php($fieldId = $id ?? $name)
 
 <div x-data="{ val: @js((string) $value) }" class="relative">
     <input
         type="{{ $type }}"
         name="{{ $name }}"
-        id="{{ $name }}"
+        id="{{ $fieldId }}"
         value="{{ $value }}"
         @if($required) required @endif
         @if($autocomplete) autocomplete="{{ $autocomplete }}" @endif
@@ -28,7 +31,7 @@
         @endif
         {{ $attributes->merge(['class' => 'peer w-full rounded-xl border bg-novix-cream/40 px-4 pt-5 pb-2 pr-10 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30' . ($dynamicErrors ? '' : ' border-gray-200 focus:border-novix-green')]) }}
     >
-    <label for="{{ $name }}"
+    <label for="{{ $fieldId }}"
         class="pointer-events-none absolute left-4 top-3.5 text-sm text-novix-muted transition-all duration-150 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-novix-green peer-[&:not(:placeholder-shown)]:top-1.5 peer-[&:not(:placeholder-shown)]:text-[11px]">
         {{ $label }}{{ $required ? ' *' : '' }}
     </label>

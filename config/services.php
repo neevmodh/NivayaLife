@@ -41,4 +41,12 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
+        // Free tier daily cap for this model — kept here, not hardcoded in a
+        // job, so it's one place to update if the tier/model ever changes.
+        'daily_limit' => (int) env('GEMINI_DAILY_LIMIT', 1500),
+    ],
+
 ];

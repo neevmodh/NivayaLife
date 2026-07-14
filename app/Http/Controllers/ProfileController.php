@@ -19,20 +19,32 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function edit(Request $request): View
+    /**
+     * Shared by two routes: /profile (own profile, no route param) and
+     * /family/{familyMember}/edit (a dependent's profile, primary account
+     * only). Same view, same tab partials — reuse.
+     */
+    public function edit(Request $request, ?FamilyMember $familyMember = null): View
     {
         $user = $request->user();
-        $member = $user->ensureLinkedFamilyMember();
+        $member = $this->ownedMember($request, $familyMember);
+
+        $archivedMembers = $familyMember ? collect() : FamilyMember::onlyTrashed()
+            ->where('primary_account_id', $user->id)
+            ->orderByDesc('deleted_at')
+            ->get();
 
         return view('profile.edit', [
             'user' => $user,
             'member' => $member,
+            'archivedMembers' => $archivedMembers,
+            'isDependentEdit' => $familyMember !== null,
         ]);
     }
 
-    public function updateBasicInfo(Request $request): JsonResponse
+    public function updateBasicInfo(Request $request, ?FamilyMember $familyMember = null): JsonResponse
     {
-        $member = $this->ownedMember($request);
+        $member = $this->ownedMember($request, $familyMember);
 
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'min:2', 'max:255'],
@@ -42,14 +54,17 @@ class ProfileController extends Controller
         ]);
 
         $member->update($validated);
-        $request->user()->update(['name' => $validated['full_name']]);
+
+        if (! $familyMember) {
+            $request->user()->update(['name' => $validated['full_name']]);
+        }
 
         return response()->json(['success' => true]);
     }
 
-    public function updatePhoto(Request $request): JsonResponse
+    public function updatePhoto(Request $request, ?FamilyMember $familyMember = null): JsonResponse
     {
-        $member = $this->ownedMember($request);
+        $member = $this->ownedMember($request, $familyMember);
 
         $request->validate(['photo' => ['required', 'image', 'max:5120']]);
 
@@ -58,7 +73,10 @@ class ProfileController extends Controller
 
         $oldPath = $member->photo_path;
         $member->update(['photo_path' => $path]);
-        $request->user()->update(['avatar_path' => $path]);
+
+        if (! $familyMember) {
+            $request->user()->update(['avatar_path' => $path]);
+        }
 
         if ($oldPath && $oldPath !== $path) {
             Storage::disk('public')->delete($oldPath);
@@ -67,9 +85,9 @@ class ProfileController extends Controller
         return response()->json(['success' => true, 'photo_url' => Storage::url($path)]);
     }
 
-    public function updateAddress(Request $request): JsonResponse
+    public function updateAddress(Request $request, ?FamilyMember $familyMember = null): JsonResponse
     {
-        $member = $this->ownedMember($request);
+        $member = $this->ownedMember($request, $familyMember);
 
         $pincodeRule = $request->input('country') === 'India' ? ['required', 'digits:6'] : ['required', 'string', 'max:12'];
 
@@ -92,9 +110,9 @@ class ProfileController extends Controller
      * than overwriting the family member's last one, so the trend history
      * shown on the dashboard stays intact.
      */
-    public function updateHealth(Request $request): JsonResponse
+    public function updateHealth(Request $request, ?FamilyMember $familyMember = null): JsonResponse
     {
-        $member = $this->ownedMember($request);
+        $member = $this->ownedMember($request, $familyMember);
 
         $validated = $request->validate([
             'height_cm' => ['required', 'numeric', 'min:30', 'max:280'],
@@ -124,9 +142,9 @@ class ProfileController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function updateEmergencyContact(Request $request): JsonResponse
+    public function updateEmergencyContact(Request $request, ?FamilyMember $familyMember = null): JsonResponse
     {
-        $member = $this->ownedMember($request);
+        $member = $this->ownedMember($request, $familyMember);
 
         $validated = $request->validate([
             'emergency_contact_name' => ['required', 'string', 'max:255'],
@@ -203,8 +221,14 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    private function ownedMember(Request $request): FamilyMember
+    private function ownedMember(Request $request, ?FamilyMember $familyMember = null): FamilyMember
     {
+        if ($familyMember) {
+            abort_unless($familyMember->canBeEditedBy($request->user()), 403);
+
+            return $familyMember;
+        }
+
         return $request->user()->ensureLinkedFamilyMember();
     }
 

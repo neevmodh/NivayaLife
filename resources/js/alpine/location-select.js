@@ -25,22 +25,39 @@ export default function locationSelect({ initialCountry = 'India', initialState 
             this._csc = { Country, State, City };
             this.countries = Country.getAllCountries();
 
-            const country = this.countries.find((c) => c.name === this.countryName)
-                ?? this.countries.find((c) => c.isoCode === 'IN');
-
-            if (country) {
-                this.countryIso = country.isoCode;
-                this.countryName = country.name;
-                this.states = State.getStatesOfCountry(country.isoCode);
-
-                const state = this.states.find((s) => s.name === this.stateName);
-                if (state) {
-                    this.stateIso = state.isoCode;
-                    this.cities = City.getCitiesOfState(country.isoCode, state.isoCode);
-                }
-            }
+            this.applyPreset(this.countryName, this.stateName, this.cityName);
 
             this.loaded = true;
+        },
+
+        /** Re-populate the whole selector from a (country name, state name, city name)
+         * triple — used both at init and by "same as my address"-style toggles that
+         * need to reset the selector after the component has already mounted. */
+        applyPreset(countryName, stateName, cityName) {
+            if (!this._csc) return;
+            const { State, City } = this._csc;
+
+            const country = this.countries.find((c) => c.name === countryName)
+                ?? this.countries.find((c) => c.isoCode === 'IN');
+
+            if (!country) return;
+
+            this.countryIso = country.isoCode;
+            this.countryName = country.name;
+            this.states = State.getStatesOfCountry(country.isoCode);
+
+            const state = this.states.find((s) => s.name === stateName);
+            if (state) {
+                this.stateIso = state.isoCode;
+                this.stateName = state.name;
+                this.cities = City.getCitiesOfState(country.isoCode, state.isoCode);
+                this.cityName = this.cities.find((c) => c.name === cityName)?.name ?? '';
+            } else {
+                this.stateIso = '';
+                this.stateName = '';
+                this.cities = [];
+                this.cityName = '';
+            }
         },
 
         onCountryChange() {

@@ -163,6 +163,11 @@ class FamilyMember extends Model
         return $this->hasMany(InsurancePolicy::class);
     }
 
+    public function age(): ?int
+    {
+        return $this->date_of_birth?->age;
+    }
+
     public function isLinked(): bool
     {
         return $this->access_type === 'linked' && $this->linked_user_id !== null;
@@ -194,6 +199,30 @@ class FamilyMember extends Model
 
         return $this->sharingPermissions()
             ->where('granted_to_user_id', $user->id)
+            ->whereNull('revoked_at')
+            ->exists();
+    }
+
+    /**
+     * Whether the given user may edit this member's profile and health
+     * records. Dependents can only be edited by the primary account that
+     * owns them. Linked members manage their own record — another account
+     * only gains edit rights via an explicit "full" scope sharing_permissions
+     * grant; "reports_only"/"summary_only" grants remain view-only.
+     */
+    public function canBeEditedBy(User $user): bool
+    {
+        if ($this->isDependent()) {
+            return $this->primary_account_id === $user->id;
+        }
+
+        if ($this->linked_user_id === $user->id) {
+            return true;
+        }
+
+        return $this->sharingPermissions()
+            ->where('granted_to_user_id', $user->id)
+            ->where('scope', 'full')
             ->whereNull('revoked_at')
             ->exists();
     }

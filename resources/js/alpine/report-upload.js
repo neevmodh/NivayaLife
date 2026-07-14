@@ -1,0 +1,171 @@
+/**
+ * Batch report upload: each selected file gets its own metadata form, own
+ * thumbnail, and own XHR (for real upload-progress events, which fetch()
+ * doesn't expose) — so one slow/failed file never blocks the others.
+ */
+// Filenames commonly use "_"/"-" as word separators, which \b treats as
+// word characters (no boundary) — so short tokens use an explicit
+// non-letter lookaround instead of \b to still match "lab_report.pdf".
+const NOT_LETTER = '(?:^|[^a-z])';
+const NOT_LETTER_END = '(?:$|[^a-z])';
+const TYPE_RULES = [
+    [/rx|prescription|script/i, 'prescription'],
+    [/x-?ray/i, 'xray'],
+    [new RegExp(`${NOT_LETTER}mri${NOT_LETTER_END}|${NOT_LETTER}ct${NOT_LETTER_END}|scan`, 'i'), 'mri_ct'],
+    [/ecg|ekg|cardio/i, 'ecg'],
+    [/insurance|policy|mediclaim/i, 'insurance'],
+    [/bill|invoice|receipt|payment/i, 'bill'],
+    [new RegExp(`blood|cbc|${NOT_LETTER}lab${NOT_LETTER_END}|lft|kft|lipid|sugar|glucose|hba1c`, 'i'), 'blood_test'],
+];
+
+function guessType(filename) {
+    const match = TYPE_RULES.find(([pattern]) => pattern.test(filename));
+    return match ? match[1] : 'other';
+}
+
+function compressImage(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const maxDim = 1800;
+                let { width, height } = img;
+                if (width > maxDim || height > maxDim) {
+                    const scale = maxDim / Math.max(width, height);
+                    width = Math.round(width * scale);
+                    height = Math.round(height * scale);
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', 0.82);
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+}
+
+export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, reportsIndexUrl }) {
+    return {
+        files: [],
+        dragging: false,
+        submitting: false,
+        typeOptions: [
+            { value: 'blood_test', label: 'Blood Test', icon: '\u{1FA78}' },
+            { value: 'prescription', label: 'Prescription', icon: '\u{1F48A}' },
+            { value: 'xray', label: 'X-Ray', icon: '\u{1F9B4}' },
+            { value: 'mri_ct', label: 'MRI/CT', icon: '\u{1F9E0}' },
+            { value: 'insurance', label: 'Insurance', icon: '\u{1F4C4}' },
+            { value: 'bill', label: 'Bill', icon: '\u{1F9FE}' },
+            { value: 'ecg', label: 'ECG', icon: '\u{1F493}' },
+            { value: 'other', label: 'Other', icon: '\u{1F4CB}' },
+        ],
+
+        onFilesSelected(fileList) {
+            const today = new Date().toISOString().slice(0, 10);
+
+            for (const file of Array.from(fileList)) {
+                const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+                const isImage = /^image\//.test(file.type) || /\.(jpe?g|png)$/i.test(file.name);
+                if (!isPdf && !isImage) continue;
+                if (file.size > 10 * 1024 * 1024) continue;
+
+                this.files.push({
+                    id: crypto.randomUUID(),
+                    file,
+                    isPdf,
+                    name: file.name,
+                    previewUrl: isPdf ? null : URL.createObjectURL(file),
+                    type: guessType(file.name),
+                    reportDate: today,
+                    hospital: '',
+                    doctor: '',
+                    progress: 0,
+                    status: 'draft', // draft | uploading | done | error
+                    error: null,
+                    redirectUrl: null,
+                });
+            }
+        },
+
+        onDrop(event) {
+            this.dragging = false;
+            this.onFilesSelected(event.dataTransfer.files);
+        },
+
+        removeFile(id) {
+            const entry = this.files.find((f) => f.id === id);
+            if (entry?.previewUrl) URL.revokeObjectURL(entry.previewUrl);
+            this.files = this.files.filter((f) => f.id !== id);
+        },
+
+        async uploadOne(entry) {
+            entry.status = 'uploading';
+            entry.error = null;
+
+            const uploadBlob = entry.isPdf ? entry.file : await compressImage(entry.file);
+
+            return new Promise((resolve) => {
+                const form = new FormData();
+                form.append('family_member_id', familyMemberId);
+                form.append('file', uploadBlob, entry.name);
+                form.append('type', entry.type);
+                form.append('report_date', entry.reportDate);
+                form.append('hospital_or_clinic_name', entry.hospital);
+                form.append('doctor_name', entry.doctor);
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', uploadUrl);
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                xhr.setRequestHeader('Accept', 'application/json');
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) entry.progress = Math.round((e.loaded / e.total) * 100);
+                };
+                xhr.onload = () => {
+                    let json = {};
+                    try { json = JSON.parse(xhr.responseText); } catch (e) { /* fall through to generic error */ }
+
+                    if (xhr.status >= 200 && xhr.status < 300 && json.success) {
+                        entry.status = 'done';
+                        entry.progress = 100;
+                        entry.redirectUrl = json.redirect;
+                    } else {
+                        entry.status = 'error';
+                        entry.error = json.message || Object.values(json.errors || {})[0]?.[0] || 'Upload failed — please try again.';
+                    }
+                    resolve();
+                };
+                xhr.onerror = () => {
+                    entry.status = 'error';
+                    entry.error = 'Network error — please try again.';
+                    resolve();
+                };
+                xhr.send(form);
+            });
+        },
+
+        get canSubmit() {
+            return this.files.length > 0 && !this.submitting && this.files.every((f) => f.type && f.reportDate);
+        },
+
+        async submitAll() {
+            if (!this.canSubmit) return;
+            this.submitting = true;
+
+            const pending = this.files.filter((f) => f.status === 'draft' || f.status === 'error');
+            await Promise.all(pending.map((f) => this.uploadOne(f)));
+
+            this.submitting = false;
+
+            const allDone = this.files.length > 0 && this.files.every((f) => f.status === 'done');
+            if (!allDone) return;
+
+            window.location = this.files.length === 1 ? this.files[0].redirectUrl : reportsIndexUrl;
+        },
+    };
+}

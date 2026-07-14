@@ -31,6 +31,31 @@
         </form>
     </div>
 
+    @if($archivedMembers->isNotEmpty())
+        <div class="border-t border-gray-100 pt-8 dark:border-white/10">
+            <h3 class="text-lg font-bold text-novix-ink dark:text-white">Archived family members</h3>
+            <p class="mt-1 text-sm text-novix-muted">Their medical history was kept, not deleted. Restore anytime.</p>
+
+            <div class="mt-4 space-y-2">
+                @foreach($archivedMembers as $archived)
+                    <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 dark:border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-500 dark:bg-white/10">{{ strtoupper(substr($archived->full_name, 0, 1)) }}</span>
+                            <div>
+                                <p class="text-sm font-medium text-novix-ink dark:text-white">{{ $archived->full_name }}</p>
+                                <p class="text-xs text-novix-muted">Archived {{ $archived->deleted_at->diffForHumans() }}</p>
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ route('family.restore', $archived->id) }}">
+                            @csrf
+                            <button type="submit" class="rounded-lg border border-novix-green/30 px-3 py-1.5 text-xs font-semibold text-novix-green hover:bg-novix-mint/40">Restore</button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <div class="border-t border-gray-100 pt-8 dark:border-white/10">
         <h3 class="text-lg font-bold text-novix-ink dark:text-white">Linked accounts</h3>
         <div class="mt-4 flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 dark:border-white/10">

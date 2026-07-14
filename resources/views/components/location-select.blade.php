@@ -3,9 +3,14 @@
     'state' => '',
     'city' => '',
     'dynamicErrors' => false,
+    'elementId' => null,
 ])
 
-<div x-data="locationSelect({ initialCountry: @js($country), initialState: @js($state), initialCity: @js($city) })" class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+<div
+    @if($elementId) id="{{ $elementId }}" @endif
+    x-data="locationSelect({ initialCountry: @js($country), initialState: @js($state), initialCity: @js($city) })"
+    class="grid grid-cols-1 gap-4 sm:grid-cols-3"
+>
     {{-- The selects drive cascading lookups via ISO codes; the actual form
          fields are the human-readable names the schema stores, kept in sync
          via hidden inputs so a plain FormData(form) capture is correct. --}}

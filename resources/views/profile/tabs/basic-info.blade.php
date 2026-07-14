@@ -1,4 +1,4 @@
-<div x-data="ajaxForm({ url: @js(route('profile.basic-info')), csrfToken: @js(csrf_token()) })">
+<div x-data="ajaxForm({ url: @js($isDependentEdit ? route('profile.basic-info.member', $member) : route('profile.basic-info')), csrfToken: @js(csrf_token()) })">
     <h3 class="text-lg font-bold text-novix-ink dark:text-white">Basic information</h3>
     <p class="mt-1 text-sm text-novix-muted">Your name, date of birth, and the details that appear on your emergency card.</p>
 
@@ -16,7 +16,9 @@
             <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Relation</label>
             <input type="text" value="{{ Str::headline($member->relation) }}" disabled
                 class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm text-gray-500">
-            <p class="mt-1 text-xs text-novix-muted">Set when your account was linked — not editable here.</p>
+            <p class="mt-1 text-xs text-novix-muted">
+                {{ $isDependentEdit ? 'Set when they were added — remove and re-add to change this.' : 'Set when your account was linked — not editable here.' }}
+            </p>
         </div>
 
         <x-blood-group-select :value="$member->blood_group" dynamic-errors />

@@ -48,9 +48,14 @@ export default {
                     '20%, 60%': { transform: 'translateX(-6px)' },
                     '40%, 80%': { transform: 'translateX(6px)' },
                 },
+                'novix-fade-up': {
+                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
             },
             animation: {
                 'novix-shake': 'novix-shake 0.4s ease-in-out',
+                'novix-fade-up': 'novix-fade-up 0.5s ease-out both',
             },
         },
     },

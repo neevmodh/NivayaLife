@@ -12,6 +12,17 @@ class Report extends Model
 {
     use HasValidation, SoftDeletes;
 
+    public const TYPE_LABELS = [
+        'blood_test' => 'Blood test',
+        'prescription' => 'Prescription',
+        'xray' => 'X-ray',
+        'mri_ct' => 'MRI/CT scan',
+        'insurance' => 'Insurance document',
+        'bill' => 'Medical bill',
+        'ecg' => 'ECG',
+        'other' => 'Medical document',
+    ];
+
     protected $fillable = [
         'family_member_id',
         'uploaded_by_user_id',
@@ -94,13 +105,26 @@ class Report extends Model
         return $this->hasMany(InsurancePolicy::class);
     }
 
-    /**
-     * Records a new AI-generated answer in the permanent history, and refreshes
-     * the fast-access "current" summary cache on the report itself when the
-     * response is the primary summary type.
-     */
-    public function recordAiResponse(string $responseType, string $content, string $language = 'en', ?AiJob $aiJob = null): AiResponse
+    public function typeLabel(): string
     {
+        return self::TYPE_LABELS[$this->type] ?? 'Medical document';
+    }
+
+    /**
+     * Records a new AI-generated answer in the permanent history. Only the
+     * automatic short summary refreshes the fast-access ai_summary cache —
+     * the on-demand "detailed explanation" also uses response_type 'summary'
+     * (there's no separate enum value for it) but must NOT overwrite the
+     * short teaser shown on dashboard cards, so callers doing a detailed
+     * explanation pass $updateSummaryCache: false.
+     */
+    public function recordAiResponse(
+        string $responseType,
+        string $content,
+        string $language = 'en',
+        ?AiJob $aiJob = null,
+        bool $updateSummaryCache = true,
+    ): AiResponse {
         $response = $this->aiResponses()->create([
             'ai_job_id' => $aiJob?->id,
             'response_type' => $responseType,
@@ -108,7 +132,7 @@ class Report extends Model
             'language' => $language,
         ]);
 
-        if ($responseType === 'summary') {
+        if ($responseType === 'summary' && $updateSummaryCache) {
             $this->update([
                 'ai_summary' => $content,
                 'ai_summary_language' => $language,

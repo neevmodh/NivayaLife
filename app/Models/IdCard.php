@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasValidation;
+use App\Services\Qr\QrCodeService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class IdCard extends Model
 {
@@ -56,29 +55,30 @@ class IdCard extends Model
     }
 
     /**
-     * Issues a fresh id_cards row for a family member, snapshotting their
-     * current photo and generating a QR code that encodes the unique_health_id
-     * plus a verification URL. Any previously active card is deactivated
-     * rather than overwritten, so the full issuance history is preserved.
+     * Issues a fresh id_cards row for a family member — used both for the
+     * very first card and for "Reissue card" (same operation: any
+     * previously active card is deactivated rather than overwritten, so the
+     * full issuance history is preserved; a brand new card_number and QR
+     * mean a lost card/printout can never be reused to look active again).
+     * The QR encodes the actual public emergency-card URL directly (not
+     * JSON) so any generic phone camera opens it straight away.
      */
     public static function generateCard(FamilyMember $familyMember): self
     {
-        $verificationUrl = url('/verify/'.$familyMember->unique_health_id);
-        $qrPayload = json_encode([
-            'unique_health_id' => $familyMember->unique_health_id,
-            'verify_url' => $verificationUrl,
-        ]);
-
-        $qrPath = 'id-cards/qr-'.Str::lower(Str::random(16)).'.svg';
-        Storage::disk('local')->put($qrPath, QrCode::format('svg')->size(300)->generate($qrPayload));
-
         static::where('family_member_id', $familyMember->id)
             ->where('is_active', true)
             ->update(['is_active' => false]);
 
+        $cardNumber = static::generateCardNumber();
+
+        $qrPath = app(QrCodeService::class)->store(
+            url('/emergency/'.$cardNumber),
+            'id-cards',
+        );
+
         return static::create([
             'family_member_id' => $familyMember->id,
-            'card_number' => static::generateCardNumber(),
+            'card_number' => $cardNumber,
             'photo_path' => $familyMember->photo_path,
             'qr_code_path' => $qrPath,
             'issued_at' => now(),

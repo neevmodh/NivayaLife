@@ -15,6 +15,8 @@
 
                 <div class="hidden gap-6 text-sm font-medium sm:flex">
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Dashboard</a>
+                    <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Reports</a>
+                    <a href="{{ route('family.index') }}" class="{{ request()->routeIs('family.*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Family</a>
                     <a href="{{ route('id-card.show') }}" class="{{ request()->routeIs('id-card.show') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Emergency Card</a>
                 </div>
             </div>
@@ -87,6 +89,8 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="space-y-1 pb-3 pt-2">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">Reports</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('family.index')" :active="request()->routeIs('family.*')">Family</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('id-card.show')" :active="request()->routeIs('id-card.show')">Emergency Card</x-responsive-nav-link>
         </div>
         <div class="border-t border-gray-200 pb-1 pt-4 dark:border-white/10">

@@ -7,15 +7,18 @@
     'error' => null,
     'dynamicErrors' => false,
     'placeholder' => 'Select...',
+    'id' => null, // override when the same field `name` appears more than once on a page (e.g. two alternate forms)
 ])
 
+@php($fieldId = $id ?? $name)
+
 <div class="relative">
-    <label for="{{ $name }}" class="mb-1.5 block text-xs font-semibold text-novix-muted">
+    <label for="{{ $fieldId }}" class="mb-1.5 block text-xs font-semibold text-novix-muted">
         {{ $label }}{{ $required ? ' *' : '' }}
     </label>
     <select
         name="{{ $name }}"
-        id="{{ $name }}"
+        id="{{ $fieldId }}"
         @if($required) required @endif
         @if($dynamicErrors)
         :class="errorFor('{{ $name }}') ? 'border-novix-pink-dark ring-2 ring-novix-pink-dark/20' : 'border-gray-200 focus:border-novix-green'"
