@@ -45,6 +45,7 @@ RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs storage/app/p
 
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/zz-app.conf
+COPY docker/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
