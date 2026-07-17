@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
@@ -48,10 +49,21 @@ class ProcessReportOcrJob implements ShouldQueue
         ]);
 
         try {
-            $absolutePath = Storage::disk('local')->path($report->file_path);
-            $text = $ocrExtractor->extract($absolutePath, $report->mime_type ?? '');
+            // The upload-time /reports/detect call already ran OCR against
+            // this exact file (by hash) to pre-fill the form — reuse it
+            // instead of paying for Tesseract twice.
+            $cached = $report->file_hash ? Cache::get(OcrExtractor::cacheKey($report->file_hash)) : null;
 
-            if (! $ocrExtractor->looksUsable($text)) {
+            if ($cached) {
+                $text = $cached['text'];
+                $usable = $cached['looks_usable'];
+            } else {
+                $absolutePath = Storage::disk('local')->path($report->file_path);
+                $text = $ocrExtractor->extract($absolutePath, $report->mime_type ?? '');
+                $usable = $ocrExtractor->looksUsable($text);
+            }
+
+            if (! $usable) {
                 $report->update(['ocr_status' => 'failed']);
                 $aiJob->update([
                     'status' => 'failed',

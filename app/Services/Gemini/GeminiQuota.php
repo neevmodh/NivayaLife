@@ -3,11 +3,12 @@
 namespace App\Services\Gemini;
 
 use App\Models\AiJob;
+use App\Models\ChatMessage;
 
 /**
- * Tracks usage against Gemini's free-tier daily request cap. Only ai_jobs
- * rows that actually call Gemini count toward it — OCR runs locally through
- * Tesseract and never touches the API, so 'ocr' rows are excluded.
+ * Tracks usage against Gemini's free-tier daily request cap. Only calls that
+ * actually hit Gemini count toward it — ai_jobs rows of type 'ocr' run
+ * locally through Tesseract and never touch the API, so they're excluded.
  */
 class GeminiQuota
 {
@@ -16,9 +17,23 @@ class GeminiQuota
 
     public function usedToday(): int
     {
-        return AiJob::where('job_type', '!=', 'ocr')
+        $reportCalls = AiJob::where('job_type', '!=', 'ocr')
             ->whereDate('created_at', now()->toDateString())
             ->count();
+
+        // output_tokens is only ever set after a real Gemini response — the
+        // "I'm near today's limit" bounce message and the on-error fallback
+        // text are both saved as assistant messages too (so the thread makes
+        // sense on reload) but never called Gemini, and must NOT count here.
+        // Counting them would be self-reinforcing: once near the limit,
+        // every bounced request would inflate the count further and the
+        // quota could never recover before the daily reset.
+        $chatCalls = ChatMessage::where('role', 'assistant')
+            ->whereNotNull('output_tokens')
+            ->whereDate('created_at', now()->toDateString())
+            ->count();
+
+        return $reportCalls + $chatCalls;
     }
 
     public function dailyLimit(): int

@@ -54,7 +54,7 @@ function compressImage(file) {
     });
 }
 
-export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, reportsIndexUrl }) {
+export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csrfToken, reportsIndexUrl }) {
     return {
         files: [],
         dragging: false,
@@ -79,7 +79,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
                 if (!isPdf && !isImage) continue;
                 if (file.size > 10 * 1024 * 1024) continue;
 
-                this.files.push({
+                const entry = {
                     id: crypto.randomUUID(),
                     file,
                     isPdf,
@@ -89,12 +89,26 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
                     reportDate: today,
                     hospital: '',
                     doctor: '',
+                    touched: { type: false, reportDate: false, hospital: false, doctor: false },
+                    detecting: true,
+                    blobPromise: null,
                     progress: 0,
                     status: 'draft', // draft | uploading | done | error | duplicate
                     error: null,
                     redirectUrl: null,
                     existingReportUrl: null,
-                });
+                };
+
+                this.files.push(entry);
+
+                // Detection must mutate the reactive element Alpine tracks
+                // in the `files` array, not the plain object we just built
+                // — pushing doesn't retroactively make `entry` itself
+                // reactive, so writes through this local reference would
+                // silently update the data (DB/state reads through it look
+                // fine) without ever notifying the x-for effect, leaving
+                // the DOM stuck on stale values.
+                this.detectFields(this.files.at(-1));
             }
         },
 
@@ -109,11 +123,47 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
             this.files = this.files.filter((f) => f.id !== id);
         },
 
+        /** Compressed exactly once per file and reused for both detection and the real upload, so their server-side content hashes match and OCR only runs once. */
+        getUploadBlob(entry) {
+            if (!entry.blobPromise) {
+                entry.blobPromise = entry.isPdf ? Promise.resolve(entry.file) : compressImage(entry.file);
+            }
+
+            return entry.blobPromise;
+        },
+
+        /** Best-effort — a failed or slow detection just leaves the form's normal defaults in place. */
+        async detectFields(entry) {
+            try {
+                const blob = await this.getUploadBlob(entry);
+                const form = new FormData();
+                form.append('family_member_id', familyMemberId);
+                form.append('file', blob, entry.name);
+
+                const response = await fetch(detectUrl, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, Accept: 'application/json' },
+                    body: form,
+                });
+                const json = await response.json();
+                const detected = json.detected || {};
+
+                if (detected.type && !entry.touched.type) entry.type = detected.type;
+                if (detected.report_date && !entry.touched.reportDate) entry.reportDate = detected.report_date;
+                if (detected.hospital_or_clinic_name && !entry.touched.hospital) entry.hospital = detected.hospital_or_clinic_name;
+                if (detected.doctor_name && !entry.touched.doctor) entry.doctor = detected.doctor_name;
+            } catch (e) {
+                // Detection is a nice-to-have; the form is still fully usable manually.
+            } finally {
+                entry.detecting = false;
+            }
+        },
+
         async uploadOne(entry, force = false) {
             entry.status = 'uploading';
             entry.error = null;
 
-            const uploadBlob = entry.isPdf ? entry.file : await compressImage(entry.file);
+            const uploadBlob = await this.getUploadBlob(entry);
 
             return new Promise((resolve) => {
                 const form = new FormData();

@@ -8,6 +8,7 @@
         x-data="reportUpload({
             familyMemberId: {{ $active->id }},
             uploadUrl: @js(route('reports.store')),
+            detectUrl: @js(route('reports.detect')),
             csrfToken: @js(csrf_token()),
             reportsIndexUrl: @js(route('reports.index')),
         })"
@@ -82,31 +83,37 @@
                                 </div>
                             </div>
 
-                            <div class="mt-3 grid grid-cols-2 gap-2" x-show="f.status !== 'uploading' && f.status !== 'done' && f.status !== 'duplicate'">
-                                <div class="col-span-2">
-                                    <p class="mb-1.5 text-xs font-semibold text-novix-muted">Report type</p>
-                                    <div class="grid grid-cols-4 gap-1.5">
-                                        <template x-for="opt in typeOptions" :key="opt.value">
-                                            <button type="button" @click="f.type = opt.value"
-                                                :class="f.type === opt.value ? 'border-novix-green bg-novix-mint/50 text-novix-green dark:bg-novix-green/20 dark:text-novix-mint' : 'border-gray-200 text-novix-muted hover:border-novix-green/40 dark:border-white/10'"
-                                                class="flex flex-col items-center gap-1 rounded-lg border-2 px-1 py-2 text-[10px] font-semibold transition">
-                                                <span class="text-base" x-text="opt.icon"></span>
-                                                <span x-text="opt.label"></span>
-                                            </button>
-                                        </template>
+                            <div class="mt-3" x-show="f.status !== 'uploading' && f.status !== 'done' && f.status !== 'duplicate'">
+                                <p x-show="f.detecting" class="mb-2 flex items-center gap-1.5 text-xs font-medium text-novix-muted">
+                                    <svg class="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
+                                    Detecting report details&hellip;
+                                </p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="col-span-2">
+                                        <p class="mb-1.5 text-xs font-semibold text-novix-muted">Report type</p>
+                                        <div class="grid grid-cols-4 gap-1.5">
+                                            <template x-for="opt in typeOptions" :key="opt.value">
+                                                <button type="button" @click="f.type = opt.value; f.touched.type = true"
+                                                    :class="f.type === opt.value ? 'border-novix-green bg-novix-mint/50 text-novix-green dark:bg-novix-green/20 dark:text-novix-mint' : 'border-gray-200 text-novix-muted hover:border-novix-green/40 dark:border-white/10'"
+                                                    class="flex flex-col items-center gap-1 rounded-lg border-2 px-1 py-2 text-[10px] font-semibold transition">
+                                                    <span class="text-base" x-text="opt.icon"></span>
+                                                    <span x-text="opt.label"></span>
+                                                </button>
+                                            </template>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <label class="mb-1 block text-xs font-semibold text-novix-muted">Report date</label>
-                                    <input type="date" x-model="f.reportDate" max="{{ now()->toDateString() }}" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
-                                </div>
-                                <div>
-                                    <label class="mb-1 block text-xs font-semibold text-novix-muted">Hospital/Clinic</label>
-                                    <input type="text" x-model="f.hospital" placeholder="Optional" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
-                                </div>
-                                <div class="col-span-2">
-                                    <label class="mb-1 block text-xs font-semibold text-novix-muted">Doctor name</label>
-                                    <input type="text" x-model="f.doctor" list="doctor-suggestions" placeholder="Optional &mdash; start typing" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
+                                    <div>
+                                        <label class="mb-1 block text-xs font-semibold text-novix-muted">Report date</label>
+                                        <input type="date" x-model="f.reportDate" @input.once="f.touched.reportDate = true" max="{{ now()->toDateString() }}" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label class="mb-1 block text-xs font-semibold text-novix-muted">Hospital/Clinic</label>
+                                        <input type="text" x-model="f.hospital" @input.once="f.touched.hospital = true" placeholder="Optional" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="mb-1 block text-xs font-semibold text-novix-muted">Doctor name</label>
+                                        <input type="text" x-model="f.doctor" @input.once="f.touched.doctor = true" list="doctor-suggestions" placeholder="Optional &mdash; start typing" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
+                                    </div>
                                 </div>
                             </div>
                         </div>

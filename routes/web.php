@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyCardController;
 use App\Http\Controllers\FamilyAddController;
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Static sub-paths registered before the dynamic /reports/{report} routes
     // below, for the same route-model-binding-collision reason as /family/add.
     Route::get('/reports/upload', [ReportUploadController::class, 'create'])->name('reports.upload');
+    Route::post('/reports/detect', [ReportUploadController::class, 'detect'])->name('reports.detect');
     Route::post('/reports', [ReportUploadController::class, 'store'])->name('reports.store');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -45,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/timeline', [TimelineController::class, 'index'])->name('timeline');
     Route::get('/timeline/export', [TimelineController::class, 'exportPdf'])->name('timeline.export');
+
+    Route::get('/assistant', [AiChatController::class, 'index'])->name('assistant');
+    Route::post('/assistant/send', [AiChatController::class, 'send'])->name('assistant.send');
 
     // Static sub-paths before the dynamic /shares/{share} route below.
     Route::get('/shares/create', [ShareController::class, 'create'])->name('shares.create');

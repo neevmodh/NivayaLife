@@ -20,6 +20,18 @@ class OcrExtractor
     /** Concurrent Tesseract processes are capped so a long document can't spawn dozens at once and blow past the host's CPU/memory. */
     private const MAX_CONCURRENT_PAGES = 4;
 
+    /**
+     * Shared with the upload-time /reports/detect endpoint: detection runs
+     * OCR against the file before a Report even exists so it can pre-fill
+     * the form, and caches the result under this key so the real upload
+     * moments later (ProcessReportOcrJob) can reuse it instead of paying
+     * for the same Tesseract work twice.
+     */
+    public static function cacheKey(string $fileHash): string
+    {
+        return "report_ocr:{$fileHash}";
+    }
+
     /** @return string Extracted text, empty string if nothing readable was found. */
     public function extract(string $absolutePath, string $mimeType): string
     {

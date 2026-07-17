@@ -19,6 +19,7 @@ import reportUpload from './alpine/report-upload';
 import reportProcessing from './alpine/report-processing';
 import metricCompare from './alpine/metric-compare';
 import shareActions from './alpine/share-actions';
+import assistantChat from './alpine/assistant-chat';
 
 window.Alpine = Alpine;
 
@@ -39,5 +40,6 @@ Alpine.data('reportUpload', reportUpload);
 Alpine.data('reportProcessing', reportProcessing);
 Alpine.data('metricCompare', metricCompare);
 Alpine.data('shareActions', shareActions);
+Alpine.data('assistantChat', assistantChat);
 
 Alpine.start();
