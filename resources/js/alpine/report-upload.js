@@ -29,7 +29,11 @@ function compressImage(file) {
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-                const maxDim = 1800;
+                // 2200px keeps small lab-report table text legible to
+                // Tesseract after the server-side cleanup pass, while still
+                // cutting a typical 12MP phone photo down to a fraction of
+                // its upload size.
+                const maxDim = 2200;
                 let { width, height } = img;
                 if (width > maxDim || height > maxDim) {
                     const scale = maxDim / Math.max(width, height);
@@ -40,7 +44,7 @@ function compressImage(file) {
                 canvas.width = width;
                 canvas.height = height;
                 canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-                canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', 0.82);
+                canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', 0.87);
             };
             img.onerror = () => resolve(file);
             img.src = e.target.result;
@@ -86,9 +90,10 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
                     hospital: '',
                     doctor: '',
                     progress: 0,
-                    status: 'draft', // draft | uploading | done | error
+                    status: 'draft', // draft | uploading | done | error | duplicate
                     error: null,
                     redirectUrl: null,
+                    existingReportUrl: null,
                 });
             }
         },
@@ -104,7 +109,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
             this.files = this.files.filter((f) => f.id !== id);
         },
 
-        async uploadOne(entry) {
+        async uploadOne(entry, force = false) {
             entry.status = 'uploading';
             entry.error = null;
 
@@ -118,6 +123,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
                 form.append('report_date', entry.reportDate);
                 form.append('hospital_or_clinic_name', entry.hospital);
                 form.append('doctor_name', entry.doctor);
+                if (force) form.append('force', '1');
 
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', uploadUrl);
@@ -134,6 +140,10 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
                         entry.status = 'done';
                         entry.progress = 100;
                         entry.redirectUrl = json.redirect;
+                    } else if (json.duplicate) {
+                        entry.status = 'duplicate';
+                        entry.error = json.message;
+                        entry.existingReportUrl = json.existing_report_url;
                     } else {
                         entry.status = 'error';
                         entry.error = json.message || Object.values(json.errors || {})[0]?.[0] || 'Upload failed — please try again.';
@@ -149,8 +159,20 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
             });
         },
 
+        async uploadAnyway(entry) {
+            await this.uploadOne(entry, true);
+            this.redirectIfAllDone();
+        },
+
         get canSubmit() {
             return this.files.length > 0 && !this.submitting && this.files.every((f) => f.type && f.reportDate);
+        },
+
+        redirectIfAllDone() {
+            const allDone = this.files.length > 0 && this.files.every((f) => f.status === 'done');
+            if (!allDone) return;
+
+            window.location = this.files.length === 1 ? this.files[0].redirectUrl : reportsIndexUrl;
         },
 
         async submitAll() {
@@ -161,11 +183,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, csrfToken, rep
             await Promise.all(pending.map((f) => this.uploadOne(f)));
 
             this.submitting = false;
-
-            const allDone = this.files.length > 0 && this.files.every((f) => f.status === 'done');
-            if (!allDone) return;
-
-            window.location = this.files.length === 1 ? this.files[0].redirectUrl : reportsIndexUrl;
+            this.redirectIfAllDone();
         },
     };
 }

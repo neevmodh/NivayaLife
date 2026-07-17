@@ -7,6 +7,7 @@ use App\Models\Report;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -19,14 +20,49 @@ class ReportController extends Controller
         $user = $request->user();
         $active = $this->resolveActiveFamilyMember($request, $user);
 
-        $reports = Report::where('family_member_id', $active->id)
-            ->where('is_archived', false)
-            ->orderByDesc('uploaded_at')
-            ->get();
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'type' => ['nullable', Rule::in(array_keys(Report::TYPE_LABELS))],
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date'],
+        ]);
+
+        $query = Report::where('family_member_id', $active->id)->where('is_archived', false);
+
+        if (! empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+        if (! empty($filters['from'])) {
+            $query->whereDate('report_date', '>=', $filters['from']);
+        }
+        if (! empty($filters['to'])) {
+            $query->whereDate('report_date', '<=', $filters['to']);
+        }
+
+        $search = trim($filters['q'] ?? '');
+        if ($search !== '') {
+            // Fulltext covers the OCR'd body text; short document-identity
+            // fields (filename, hospital, doctor) are matched with LIKE
+            // since fulltext's minimum token length would otherwise miss
+            // short names.
+            $query->where(function ($q) use ($search) {
+                $q->whereFullText(['ocr_text', 'ai_summary'], $search)
+                    ->orWhere('original_filename', 'like', "%{$search}%")
+                    ->orWhere('hospital_or_clinic_name', 'like', "%{$search}%")
+                    ->orWhere('doctor_name', 'like', "%{$search}%");
+            });
+        }
+
+        $reports = $query->orderByDesc('uploaded_at')->get();
 
         return view('reports.index', [
             'active' => $active,
             'reports' => $reports,
+            'search' => $search,
+            'type' => $filters['type'] ?? '',
+            'from' => $filters['from'] ?? '',
+            'to' => $filters['to'] ?? '',
+            'hasFilters' => $search !== '' || ! empty($filters['type']) || ! empty($filters['from']) || ! empty($filters['to']),
         ]);
     }
 

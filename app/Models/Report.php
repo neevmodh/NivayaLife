@@ -31,6 +31,7 @@ class Report extends Model
         'original_filename',
         'file_size',
         'mime_type',
+        'file_hash',
         'report_date',
         'hospital_or_clinic_name',
         'doctor_name',

@@ -41,12 +41,30 @@ class ReportUploadController extends Controller
             'report_date' => ['required', 'date', 'before_or_equal:today'],
             'hospital_or_clinic_name' => ['nullable', 'string', 'max:255'],
             'doctor_name' => ['nullable', 'string', 'max:255'],
+            'force' => ['nullable', 'boolean'],
         ]);
 
         $familyMember = FamilyMember::findOrFail($validated['family_member_id']);
         abort_unless($familyMember->canBeEditedBy($request->user()), 403);
 
         $file = $request->file('file');
+        $hash = hash_file('sha256', $file->getRealPath());
+
+        if (! ($validated['force'] ?? false)) {
+            $duplicate = Report::where('family_member_id', $familyMember->id)
+                ->where('file_hash', $hash)
+                ->first();
+
+            if ($duplicate) {
+                return response()->json([
+                    'success' => false,
+                    'duplicate' => true,
+                    'message' => 'This exact file is already uploaded for '.$familyMember->full_name.'.',
+                    'existing_report_url' => route('reports.show', $duplicate),
+                ], 409);
+            }
+        }
+
         $path = $file->store("reports/{$familyMember->id}", 'local');
 
         $report = Report::create([
@@ -57,6 +75,7 @@ class ReportUploadController extends Controller
             'original_filename' => $file->getClientOriginalName(),
             'file_size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
+            'file_hash' => $hash,
             'report_date' => $validated['report_date'],
             'hospital_or_clinic_name' => $validated['hospital_or_clinic_name'] ?? null,
             'doctor_name' => $validated['doctor_name'] ?? null,

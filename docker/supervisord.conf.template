@@ -28,7 +28,14 @@ stderr_logfile_maxbytes=0
 ; etc. in the background. Runs in the same container as the web process so
 ; it shares the exact same local disk (uploaded report files, generated
 ; QR/PDFs) with no cross-service storage complexity.
+;
+; numprocs is driven by $QUEUE_WORKERS (defaults to 1, safe for a 512MB
+; instance) so multiple reports uploaded together get their OCR/AI jobs
+; processed concurrently instead of strictly one-at-a-time on hosts with
+; the memory/CPU headroom to spare — bump it via an env var on a bigger box.
 [program:queue-worker]
+process_name=%(program_name)s_%(process_num)02d
+numprocs=${QUEUE_WORKERS}
 command=php artisan queue:work --sleep=2 --tries=3 --max-time=3600 --timeout=120 --memory=96
 autostart=true
 autorestart=true

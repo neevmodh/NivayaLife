@@ -74,7 +74,15 @@
                             </p>
                             <p x-show="f.status === 'error'" class="mt-1 text-xs font-semibold text-novix-pink-dark" x-text="f.error"></p>
 
-                            <div class="mt-3 grid grid-cols-2 gap-2" x-show="f.status !== 'uploading' && f.status !== 'done'">
+                            <div x-show="f.status === 'duplicate'" class="mt-1">
+                                <p class="text-xs font-semibold text-novix-yellow" x-text="f.error"></p>
+                                <div class="mt-1.5 flex gap-3">
+                                    <a :href="f.existingReportUrl" class="text-xs font-semibold text-novix-green hover:underline">View existing report</a>
+                                    <button type="button" @click="uploadAnyway(f)" class="text-xs font-semibold text-novix-muted hover:underline">Upload anyway</button>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 grid grid-cols-2 gap-2" x-show="f.status !== 'uploading' && f.status !== 'done' && f.status !== 'duplicate'">
                                 <div class="col-span-2">
                                     <p class="mb-1.5 text-xs font-semibold text-novix-muted">Report type</p>
                                     <div class="grid grid-cols-4 gap-1.5">

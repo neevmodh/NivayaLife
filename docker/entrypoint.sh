@@ -4,6 +4,9 @@ set -e
 export PORT="${PORT:-8080}"
 envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/sites-enabled/default
 
+export QUEUE_WORKERS="${QUEUE_WORKERS:-1}"
+envsubst '${QUEUE_WORKERS}' < /etc/supervisor/conf.d/supervisord.conf.template > /etc/supervisor/conf.d/supervisord.conf
+
 mkdir -p /run/php
 
 cd /var/www/html
