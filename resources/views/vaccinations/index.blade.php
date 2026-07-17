@@ -1,0 +1,76 @@
+@php
+    $today = now()->toDateString();
+@endphp
+
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Vaccinations</h2>
+                <p class="mt-1 text-sm text-novix-muted">For {{ $active->full_name }}</p>
+            </div>
+            @if($canEdit)
+                <a href="{{ route('vaccinations.create') }}?member={{ $active->id }}" class="flex items-center gap-2 rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    Add Vaccination
+                </a>
+            @endif
+        </div>
+    </x-slot>
+
+    <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+        @if(session('status'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-transition
+                class="mb-4 rounded-xl bg-novix-mint px-4 py-3 text-sm font-semibold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        @if($vaccinations->isEmpty())
+            <div class="rounded-novix bg-white p-10 text-center shadow-novix-sm dark:bg-white/5">
+                <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-novix-cream text-novix-muted dark:bg-white/10" aria-hidden="true">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="M19 8 8 19l-5-5M14 3l7 7-3 3-7-7 3-3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <p class="mt-3 text-sm text-novix-muted">No vaccinations recorded yet.</p>
+                @if($canEdit)
+                    <a href="{{ route('vaccinations.create') }}?member={{ $active->id }}" class="mt-2 inline-block text-xs font-semibold text-novix-green hover:underline">Add the first one</a>
+                @endif
+            </div>
+        @else
+            <div class="space-y-3">
+                @foreach($vaccinations as $vaccination)
+                    @php
+                        $overdue = $vaccination->next_due_date && $vaccination->next_due_date->toDateString() < $today;
+                        $dueSoon = $vaccination->next_due_date && ! $overdue && $vaccination->next_due_date->toDateString() <= now()->addDays(7)->toDateString();
+                    @endphp
+                    <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <p class="text-sm font-bold text-novix-ink dark:text-white">{{ $vaccination->vaccine_name }} &middot; Dose {{ $vaccination->dose_number }}</p>
+                                <p class="mt-1 text-xs text-novix-muted">
+                                    Given {{ $vaccination->date_administered->format('M j, Y') }}
+                                    @if($vaccination->location) &middot; {{ $vaccination->location }} @endif
+                                </p>
+                                @if($vaccination->next_due_date)
+                                    <p class="mt-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold {{ $overdue ? 'bg-novix-pink/30 text-novix-pink-dark' : ($dueSoon ? 'bg-novix-yellow/30 text-novix-yellow' : 'bg-novix-cream text-novix-muted dark:bg-white/10') }}">
+                                        {{ $overdue ? 'Overdue since' : 'Next dose due' }} {{ $vaccination->next_due_date->format('M j, Y') }}
+                                    </p>
+                                @endif
+                            </div>
+                            @if($canEdit)
+                                <div class="flex flex-shrink-0 gap-3">
+                                    <a href="{{ route('vaccinations.edit', $vaccination) }}" class="text-xs font-semibold text-novix-green hover:underline">Edit</a>
+                                    <form method="POST" action="{{ route('vaccinations.destroy', $vaccination) }}" onsubmit="return confirm('Remove this vaccination record?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs font-semibold text-novix-pink-dark hover:underline">Remove</button>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</x-app-layout>

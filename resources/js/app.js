@@ -20,6 +20,7 @@ import reportProcessing from './alpine/report-processing';
 import metricCompare from './alpine/metric-compare';
 import shareActions from './alpine/share-actions';
 import assistantChat from './alpine/assistant-chat';
+import doseTracker from './alpine/dose-tracker';
 
 window.Alpine = Alpine;
 
@@ -41,5 +42,6 @@ Alpine.data('reportProcessing', reportProcessing);
 Alpine.data('metricCompare', metricCompare);
 Alpine.data('shareActions', shareActions);
 Alpine.data('assistantChat', assistantChat);
+Alpine.data('doseTracker', doseTracker);
 
 Alpine.start();

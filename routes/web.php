@@ -9,6 +9,7 @@ use App\Http\Controllers\FamilyDependentController;
 use App\Http\Controllers\FamilyInviteController;
 use App\Http\Controllers\IdCardController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\MedicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicShareController;
 use App\Http\Controllers\ReportAiController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportUploadController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TimelineController;
+use App\Http\Controllers\VaccinationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +27,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/switch/{familyMember}', [DashboardController::class, 'switch'])->name('dashboard.switch');
+    Route::post('/dashboard/dismiss-onboarding', [DashboardController::class, 'dismissOnboarding'])->name('dashboard.dismiss-onboarding');
 
     Route::get('/id-card', [IdCardController::class, 'show'])->name('id-card.show');
     Route::post('/id-card/reissue', [IdCardController::class, 'reissue'])->name('id-card.reissue');
@@ -50,6 +53,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/assistant', [AiChatController::class, 'index'])->name('assistant');
     Route::post('/assistant/send', [AiChatController::class, 'send'])->name('assistant.send');
+
+    // Static sub-paths before the dynamic /medications/{medication} routes below.
+    Route::get('/medications/create', [MedicationController::class, 'create'])->name('medications.create');
+    Route::post('/medications', [MedicationController::class, 'store'])->name('medications.store');
+    Route::get('/medications', [MedicationController::class, 'index'])->name('medications.index');
+    Route::get('/medications/{medication}/edit', [MedicationController::class, 'edit'])->name('medications.edit');
+    Route::patch('/medications/{medication}', [MedicationController::class, 'update'])->name('medications.update');
+    Route::delete('/medications/{medication}', [MedicationController::class, 'destroy'])->name('medications.destroy');
+    Route::post('/medications/{medication}/toggle-dose', [MedicationController::class, 'toggleDose'])->name('medications.toggle-dose');
+
+    Route::get('/vaccinations/create', [VaccinationController::class, 'create'])->name('vaccinations.create');
+    Route::post('/vaccinations', [VaccinationController::class, 'store'])->name('vaccinations.store');
+    Route::get('/vaccinations', [VaccinationController::class, 'index'])->name('vaccinations.index');
+    Route::get('/vaccinations/{vaccination}/edit', [VaccinationController::class, 'edit'])->name('vaccinations.edit');
+    Route::patch('/vaccinations/{vaccination}', [VaccinationController::class, 'update'])->name('vaccinations.update');
+    Route::delete('/vaccinations/{vaccination}', [VaccinationController::class, 'destroy'])->name('vaccinations.destroy');
 
     // Static sub-paths before the dynamic /shares/{share} route below.
     Route::get('/shares/create', [ShareController::class, 'create'])->name('shares.create');

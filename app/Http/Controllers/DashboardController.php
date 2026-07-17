@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatMessage;
 use App\Models\FamilyMember;
 use App\Models\Medication;
+use App\Models\Report;
+use App\Models\Vaccination;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -48,6 +52,33 @@ class DashboardController extends Controller
             ->with(['medicationLogs' => fn ($q) => $q->whereDate('scheduled_at', today())])
             ->get();
 
+        $doseStatuses = [];
+        foreach ($activeMedications as $medication) {
+            foreach ($medication->schedule_times ?? [] as $time) {
+                $log = $medication->medicationLogs->first(fn ($l) => $l->scheduled_at->format('H:i') === $time);
+                $doseStatuses["{$medication->id}:{$time}"] = $log?->status ?? 'pending';
+            }
+        }
+
+        $upcomingVaccinations = $active->vaccinations()
+            ->whereNotNull('next_due_date')
+            ->orderBy('next_due_date')
+            ->take(5)
+            ->get();
+
+        $onboarding = null;
+        if (! $user->onboarding_dismissed_at) {
+            $steps = [
+                'family' => $familyMembers->count() > 1,
+                'report' => Report::whereIn('family_member_id', $familyMembers->pluck('id'))->exists(),
+                'assistant' => ChatMessage::where('asked_by_user_id', $user->id)->exists(),
+            ];
+
+            if (in_array(false, $steps, true)) {
+                $onboarding = $steps;
+            }
+        }
+
         return view('dashboard', [
             'active' => $active,
             'familyMembers' => $familyMembers,
@@ -55,7 +86,17 @@ class DashboardController extends Controller
             'trend' => $trend,
             'recentReports' => $recentReports,
             'activeMedications' => $activeMedications,
+            'doseStatuses' => $doseStatuses,
+            'upcomingVaccinations' => $upcomingVaccinations,
+            'onboarding' => $onboarding,
         ]);
+    }
+
+    public function dismissOnboarding(Request $request): JsonResponse
+    {
+        $request->user()->update(['onboarding_dismissed_at' => now()]);
+
+        return response()->json(['success' => true]);
     }
 
     public function switch(Request $request, FamilyMember $familyMember): RedirectResponse

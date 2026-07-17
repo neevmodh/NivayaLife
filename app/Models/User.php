@@ -28,6 +28,7 @@ class User extends Authenticatable
         'phone',
         'avatar_path',
         'theme_preference',
+        'onboarding_dismissed_at',
     ];
 
     /**
@@ -55,6 +56,7 @@ class User extends Authenticatable
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
             'two_factor_confirmed_at' => 'datetime',
+            'onboarding_dismissed_at' => 'datetime',
         ];
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class FamilyMember extends Model
@@ -86,6 +87,15 @@ class FamilyMember extends Model
     public function linkedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'linked_user_id');
+    }
+
+    /** Who should actually receive reminder emails for this member — the account that manages them, plus whoever's linked to their own login if that's a different person. */
+    public function notifiableUsers(): Collection
+    {
+        return collect([$this->primaryAccount, $this->linkedUser])
+            ->filter()
+            ->unique('id')
+            ->values();
     }
 
     public function invitations(): HasMany

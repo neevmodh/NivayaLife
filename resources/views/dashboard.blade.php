@@ -34,6 +34,43 @@
 
     <div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
 
+        {{-- First-run checklist --}}
+        @if($onboarding)
+            <div x-data="{ show: true }" x-show="show" x-transition
+                class="animate-novix-fade-up rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-bold text-novix-ink dark:text-white">Get the most out of Novix</p>
+                        <p class="mt-0.5 text-xs text-novix-muted">A few quick things to try:</p>
+                    </div>
+                    <button type="button"
+                        @click="show = false; fetch('{{ route('dashboard.dismiss-onboarding') }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': @js(csrf_token()), Accept: 'application/json' } })"
+                        class="flex-shrink-0 text-novix-muted hover:text-novix-ink dark:hover:text-white" aria-label="Dismiss">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
+                <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    @php
+                        $checklistItems = [
+                            'family' => ['label' => 'Add a family member', 'url' => route('family.add')],
+                            'report' => ['label' => 'Upload a report', 'url' => route('reports.upload')],
+                            'assistant' => ['label' => 'Try the AI assistant', 'url' => route('assistant')],
+                        ];
+                    @endphp
+                    @foreach($checklistItems as $key => $item)
+                        <a href="{{ $item['url'] }}" class="flex items-center gap-2 rounded-xl border {{ $onboarding[$key] ? 'border-novix-green/30 bg-novix-mint/30' : 'border-gray-200 dark:border-white/10' }} px-3 py-2.5 text-sm font-medium transition hover:border-novix-green/40">
+                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full {{ $onboarding[$key] ? 'bg-novix-green text-white' : 'border-2 border-gray-300 dark:border-white/20' }}">
+                                @if($onboarding[$key])
+                                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                @endif
+                            </span>
+                            <span class="{{ $onboarding[$key] ? 'text-novix-green line-through dark:text-novix-mint' : 'text-novix-ink dark:text-white' }}">{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         {{-- Hero card --}}
         <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix" style="animation-delay:0ms">
             <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/5"></div>
@@ -190,7 +227,9 @@
                 @else
                     <ul class="mt-3 divide-y divide-gray-100 dark:divide-white/10">
                         @foreach($recentReports as $report)
-                            @php($badge = $ocrBadge[$report->ocr_status] ?? $ocrBadge['pending'])
+                            @php
+                                $badge = $ocrBadge[$report->ocr_status] ?? $ocrBadge['pending'];
+                            @endphp
                             <li>
                                 <a href="{{ route('reports.show', $report) }}" class="flex items-center gap-3 rounded-lg px-2 py-3 transition hover:bg-novix-cream/60 dark:hover:bg-white/5">
                                     <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-lg dark:bg-white/10">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
@@ -210,11 +249,15 @@
             </div>
 
             {{-- Upcoming medications --}}
-            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:340ms">
-                <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
-                    <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 1 1 7-7l1 1 1-1a4.95 4.95 0 0 1 7 7l-7 7-1.5-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Today's medications
-                </h3>
+            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:340ms"
+                x-data="doseTracker({ csrfToken: @js(csrf_token()), initialStatuses: @js($doseStatuses) })">
+                <div class="flex items-center justify-between">
+                    <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
+                        <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 1 1 7-7l1 1 1-1a4.95 4.95 0 0 1 7 7l-7 7-1.5-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Today's medications
+                    </h3>
+                    <a href="{{ route('medications.index') }}?member={{ $active->id }}" class="text-xs font-semibold text-novix-green hover:underline">Manage</a>
+                </div>
 
                 @if($activeMedications->isEmpty())
                     <div class="mt-4 flex flex-col items-center gap-2 rounded-xl bg-novix-cream/60 py-8 text-center dark:bg-white/5">
@@ -233,12 +276,59 @@
                                 </div>
                                 <div class="mt-1.5 flex flex-wrap gap-1.5">
                                     @forelse($medication->schedule_times ?? [] as $time)
-                                        @php($log = $medication->medicationLogs->first(fn($l) => str($l->scheduled_at->format('H:i'))->exactly($time)))
-                                        <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold {{ $log?->status === 'taken' ? 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint' : ($log?->status === 'missed' ? 'bg-novix-pink/30 text-novix-pink-dark' : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60') }}">{{ $time }}</span>
+                                        <button type="button" @click="toggle({{ $medication->id }}, '{{ $time }}')"
+                                            class="rounded-full px-2 py-0.5 text-[11px] font-semibold transition"
+                                            :class="{
+                                                'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint': statusFor({{ $medication->id }}, '{{ $time }}') === 'taken',
+                                                'bg-novix-pink/30 text-novix-pink-dark': statusFor({{ $medication->id }}, '{{ $time }}') === 'missed',
+                                                'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60': !['taken', 'missed'].includes(statusFor({{ $medication->id }}, '{{ $time }}')),
+                                            }">{{ $time }}</button>
                                     @empty
                                         <span class="text-xs text-novix-muted">{{ $medication->frequency ?? 'As needed' }}</span>
                                     @endforelse
                                 </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <p class="mt-3 text-[11px] text-novix-muted">Tap a time to mark that dose taken.</p>
+                @endif
+            </div>
+
+            {{-- Vaccinations --}}
+            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:380ms">
+                <div class="flex items-center justify-between">
+                    <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
+                        <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 8 8 19l-5-5M14 3l7 7-3 3-7-7 3-3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Vaccinations
+                    </h3>
+                    <a href="{{ route('vaccinations.index') }}?member={{ $active->id }}" class="text-xs font-semibold text-novix-green hover:underline">Manage</a>
+                </div>
+
+                @if($upcomingVaccinations->isEmpty())
+                    <div class="mt-4 flex flex-col items-center gap-2 rounded-xl bg-novix-cream/60 py-8 text-center dark:bg-white/5">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-novix-muted shadow-sm dark:bg-white/10" aria-hidden="true">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <p class="text-sm text-novix-muted">No upcoming doses tracked.</p>
+                        <a href="{{ route('vaccinations.create') }}?member={{ $active->id }}" class="text-xs font-semibold text-novix-green hover:underline">Add a vaccination</a>
+                    </div>
+                @else
+                    <ul class="mt-3 divide-y divide-gray-100 dark:divide-white/10">
+                        @foreach($upcomingVaccinations as $vaccination)
+                            @php
+                                $overdue = $vaccination->next_due_date->toDateString() < now()->toDateString();
+                                $dueSoon = ! $overdue && $vaccination->next_due_date->toDateString() <= now()->addDays(7)->toDateString();
+                            @endphp
+                            <li class="flex items-center justify-between rounded-lg px-2 py-3">
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-medium text-novix-ink dark:text-white">{{ $vaccination->vaccine_name }} &middot; Dose {{ $vaccination->dose_number + 1 }}</p>
+                                    <p class="text-xs text-novix-muted">Due {{ $vaccination->next_due_date->format('M j, Y') }}</p>
+                                </div>
+                                @if($overdue || $dueSoon)
+                                    <span class="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $overdue ? 'bg-novix-pink/30 text-novix-pink-dark' : 'bg-novix-yellow/30 text-novix-yellow' }}">
+                                        {{ $overdue ? 'Overdue' : 'Due soon' }}
+                                    </span>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

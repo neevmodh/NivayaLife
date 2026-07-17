@@ -14,6 +14,7 @@ class MedicationLog extends Model
         'medication_id',
         'scheduled_at',
         'taken_at',
+        'reminded_at',
         'status',
     ];
 
@@ -22,6 +23,7 @@ class MedicationLog extends Model
         return [
             'scheduled_at' => 'datetime',
             'taken_at' => 'datetime',
+            'reminded_at' => 'datetime',
         ];
     }
 
@@ -30,7 +32,7 @@ class MedicationLog extends Model
         return [
             'medication_id' => ['required', 'integer', 'exists:medications,id'],
             'scheduled_at' => ['required', 'date'],
-            'status' => ['required', 'in:taken,missed,skipped'],
+            'status' => ['required', 'in:pending,taken,missed,skipped'],
         ];
     }
 

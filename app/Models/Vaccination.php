@@ -16,6 +16,7 @@ class Vaccination extends Model
         'dose_number',
         'date_administered',
         'next_due_date',
+        'last_reminded_at',
         'location',
     ];
 
@@ -24,6 +25,7 @@ class Vaccination extends Model
         return [
             'date_administered' => 'date',
             'next_due_date' => 'date',
+            'last_reminded_at' => 'datetime',
         ];
     }
 
