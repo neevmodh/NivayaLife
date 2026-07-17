@@ -58,12 +58,12 @@
                                 @endif
                             </div>
                             @if($canEdit)
-                                <div class="flex flex-shrink-0 gap-3">
-                                    <a href="{{ route('vaccinations.edit', $vaccination) }}" class="text-xs font-semibold text-novix-green hover:underline">Edit</a>
+                                <div class="flex flex-shrink-0 items-start gap-1">
+                                    <a href="{{ route('vaccinations.edit', $vaccination) }}" class="rounded-lg px-3 py-2 text-xs font-semibold text-novix-green hover:bg-novix-mint/40 dark:hover:bg-white/10">Edit</a>
                                     <form method="POST" action="{{ route('vaccinations.destroy', $vaccination) }}" onsubmit="return confirm('Remove this vaccination record?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-xs font-semibold text-novix-pink-dark hover:underline">Remove</button>
+                                        <button type="submit" class="rounded-lg px-3 py-2 text-xs font-semibold text-novix-pink-dark hover:bg-novix-pink/10">Remove</button>
                                     </form>
                                 </div>
                             @endif

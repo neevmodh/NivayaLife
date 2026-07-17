@@ -37,20 +37,20 @@
                 </span>
             </div>
 
-            <div class="flex items-center gap-5 p-6">
+            <div class="flex flex-col items-center gap-4 p-6 text-center sm:flex-row sm:items-center sm:gap-5 sm:text-left">
                 @if($active->photo_path)
-                    <img src="{{ Storage::url($card->photo_path ?? $active->photo_path) }}" class="h-24 w-24 rounded-2xl border-2 border-white/30 object-cover" alt="{{ $active->full_name }}">
+                    <img src="{{ Storage::url($card->photo_path ?? $active->photo_path) }}" class="h-20 w-20 flex-shrink-0 rounded-2xl border-2 border-white/30 object-cover sm:h-24 sm:w-24" alt="{{ $active->full_name }}">
                 @else
-                    <span class="flex h-24 w-24 items-center justify-center rounded-2xl border-2 border-white/30 bg-white/10 text-3xl font-bold text-white">{{ strtoupper(substr($active->full_name, 0, 1)) }}</span>
+                    <span class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-white/30 bg-white/10 text-3xl font-bold text-white sm:h-24 sm:w-24">{{ strtoupper(substr($active->full_name, 0, 1)) }}</span>
                 @endif
 
-                <div class="flex-1 text-white">
-                    <h1 class="text-xl font-bold">{{ $active->full_name }}</h1>
+                <div class="min-w-0 flex-1 text-white">
+                    <h1 class="truncate text-xl font-bold">{{ $active->full_name }}</h1>
                     <p class="text-xs text-white/70">{{ $active->unique_health_id }}</p>
-                    <div class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                    <div class="mx-auto mt-3 grid max-w-xs grid-cols-2 gap-x-4 gap-y-1.5 text-xs sm:mx-0 sm:max-w-none">
                         <span class="text-white/60">Blood group</span><span class="font-semibold">{{ $active->blood_group ?? '—' }}</span>
                         <span class="text-white/60">Age</span><span class="font-semibold">{{ $active->age() ?? '—' }}</span>
-                        <span class="text-white/60">Emergency contact</span><span class="font-semibold">{{ $active->emergency_contact_name ?? '—' }}</span>
+                        <span class="text-white/60">Emergency contact</span><span class="truncate font-semibold">{{ $active->emergency_contact_name ?? '—' }}</span>
                         <span class="text-white/60">Phone</span><span class="font-semibold">{{ $active->emergency_contact_phone ?? '—' }}</span>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
 
             <form method="POST" action="{{ route('id-card.reissue') }}" onsubmit="return confirm('Issue a brand new card? The current card number and QR code will stop working immediately.');">
                 @csrf
-                <button type="submit" class="rounded-xl bg-novix-green px-4 py-2.5 text-sm font-semibold text-white hover:bg-novix-green-dark">
+                <button type="submit" class="rounded-xl border border-novix-yellow/50 px-4 py-2.5 text-sm font-semibold text-novix-ink hover:bg-novix-yellow/10 dark:text-white">
                     Reissue card
                 </button>
             </form>

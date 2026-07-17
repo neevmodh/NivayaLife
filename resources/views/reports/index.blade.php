@@ -1,7 +1,7 @@
 @php
     $reportTypeIcons = [
-        'blood_test' => '&#129530;', 'prescription' => '&#128138;', 'xray' => '&#129504;',
-        'mri_ct' => '&#129504;', 'insurance' => '&#128196;', 'bill' => '&#129530;',
+        'blood_test' => '&#129656;', 'prescription' => '&#128138;', 'xray' => '&#129460;',
+        'mri_ct' => '&#129504;', 'insurance' => '&#128737;', 'bill' => '&#129534;',
         'ecg' => '&#128147;', 'other' => '&#128196;',
     ];
     $ocrBadge = [

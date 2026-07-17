@@ -16,6 +16,21 @@
                 <div class="hidden gap-6 text-sm font-medium sm:flex">
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Dashboard</a>
                     <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Reports</a>
+
+                    <div class="relative" x-data="{ healthOpen: false }">
+                        <button @click="healthOpen = !healthOpen" @click.outside="healthOpen = false"
+                            class="flex items-center gap-1 {{ request()->routeIs(['timeline*', 'medications.*', 'vaccinations.*']) ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">
+                            Health
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <div x-show="healthOpen" x-cloak x-transition
+                            class="absolute left-0 z-20 mt-2 w-48 rounded-xl border border-gray-100 bg-white p-1.5 shadow-novix dark:border-white/10 dark:bg-novix-ink">
+                            <a href="{{ route('timeline') }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs('timeline*') ? 'bg-novix-mint/60 text-novix-green dark:bg-white/10 dark:text-novix-mint' : 'text-novix-ink hover:bg-novix-cream dark:text-white dark:hover:bg-white/10' }}">Timeline</a>
+                            <a href="{{ route('medications.index') }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs('medications.*') ? 'bg-novix-mint/60 text-novix-green dark:bg-white/10 dark:text-novix-mint' : 'text-novix-ink hover:bg-novix-cream dark:text-white dark:hover:bg-white/10' }}">Medications</a>
+                            <a href="{{ route('vaccinations.index') }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs('vaccinations.*') ? 'bg-novix-mint/60 text-novix-green dark:bg-white/10 dark:text-novix-mint' : 'text-novix-ink hover:bg-novix-cream dark:text-white dark:hover:bg-white/10' }}">Vaccinations</a>
+                        </div>
+                    </div>
+
                     <a href="{{ route('family.index') }}" class="{{ request()->routeIs('family.*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Family</a>
                     <a href="{{ route('id-card.show') }}" class="{{ request()->routeIs('id-card.show') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Emergency Card</a>
                     <a href="{{ route('assistant') }}" class="{{ request()->routeIs('assistant*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Assistant</a>
@@ -77,8 +92,8 @@
             </div>
 
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center rounded-md p-2 text-novix-muted hover:bg-novix-cream hover:text-novix-ink">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                <button @click="open = ! open" :aria-expanded="open" aria-label="Toggle navigation menu" class="inline-flex items-center justify-center rounded-md p-2 text-novix-muted hover:bg-novix-cream hover:text-novix-ink">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -91,6 +106,9 @@
         <div class="space-y-1 pb-3 pt-2">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">Reports</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('timeline')" :active="request()->routeIs('timeline*')">Timeline</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('medications.index')" :active="request()->routeIs('medications.*')">Medications</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('vaccinations.index')" :active="request()->routeIs('vaccinations.*')">Vaccinations</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('family.index')" :active="request()->routeIs('family.*')">Family</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('id-card.show')" :active="request()->routeIs('id-card.show')">Emergency Card</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('assistant')" :active="request()->routeIs('assistant*')">Assistant</x-responsive-nav-link>

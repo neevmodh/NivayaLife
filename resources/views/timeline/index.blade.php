@@ -75,7 +75,7 @@
         {{-- Export PDF --}}
         <form method="GET" action="{{ route('timeline.export') }}" class="mt-3 flex flex-wrap items-center gap-2 rounded-novix bg-novix-mint/40 p-3 text-sm dark:bg-novix-green/10">
             <span class="font-semibold text-novix-ink dark:text-white">Export doctor-ready PDF for:</span>
-            <select name="range" class="rounded-lg border border-gray-200 px-2 py-1.5 text-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
+            <select name="range" class="flex-shrink-0 rounded-lg border border-gray-200 py-1.5 pl-3 pr-8 text-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
                 <option value="30d">Last 30 days</option>
                 <option value="6m" selected>Last 6 months</option>
                 <option value="1y">Last year</option>

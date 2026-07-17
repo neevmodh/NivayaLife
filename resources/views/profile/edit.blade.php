@@ -33,14 +33,19 @@
             </a>
         @endif
 
-        <div class="flex gap-1 overflow-x-auto rounded-full bg-novix-mint/50 p-1 text-sm font-medium dark:bg-white/10">
-            @foreach($tabs as $key => $label)
-                <button type="button" @click="tab = '{{ $key }}'"
-                    :class="tab === '{{ $key }}' ? 'bg-novix-green text-white shadow-novix-sm' : 'text-novix-green/70 hover:text-novix-green dark:text-white/60'"
-                    class="whitespace-nowrap rounded-full px-4 py-2 transition">
-                    {{ $label }}
-                </button>
-            @endforeach
+        <div class="relative" x-data="{ tabsOverflow: false }" x-init="$nextTick(() => tabsOverflow = $refs.tabScroll.scrollWidth > $refs.tabScroll.clientWidth + 4)">
+            <div x-ref="tabScroll" @scroll="tabsOverflow = ($el.scrollWidth - $el.scrollLeft - $el.clientWidth) > 4"
+                class="flex gap-1 overflow-x-auto rounded-full bg-novix-mint/50 p-1 text-sm font-medium dark:bg-white/10">
+                @foreach($tabs as $key => $label)
+                    <button type="button" @click="tab = '{{ $key }}'"
+                        :class="tab === '{{ $key }}' ? 'bg-novix-green text-white shadow-novix-sm' : 'text-novix-green/70 hover:text-novix-green dark:text-white/60'"
+                        class="whitespace-nowrap rounded-full px-4 py-2 transition">
+                        {{ $label }}
+                    </button>
+                @endforeach
+            </div>
+            {{-- Fades in only while there are more tabs off-screen to the right, and disappears once scrolled to the end — hints the tab bar scrolls without relying on a scrollbar alone. --}}
+            <div x-show="tabsOverflow" x-cloak class="pointer-events-none absolute inset-y-0 right-0 w-10 rounded-r-full bg-gradient-to-l from-novix-mint to-transparent dark:from-white/10"></div>
         </div>
 
         <div class="mt-6 rounded-novix bg-white p-6 shadow-novix-sm sm:p-8 dark:bg-white/5">

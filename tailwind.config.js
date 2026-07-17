@@ -32,7 +32,11 @@ export default {
                     yellow: '#F5C879',
                     blue: '#8FB8E0',
                     ink: '#1F2A24',
-                    muted: '#6B7A72',
+                    // Darkened from #6B7A72 (4.19:1 on cream, below WCAG AA's
+                    // 4.5:1 for normal text) — this color is used everywhere
+                    // for secondary text, so the fix belongs here once rather
+                    // than at each call site.
+                    muted: '#5A6960',
                 },
             },
             boxShadow: {
