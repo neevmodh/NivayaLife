@@ -43,10 +43,17 @@ return [
 
     'gemini' => [
         'key' => env('GEMINI_API_KEY'),
+        // Backup keys tried in order if the primary hits its free-tier
+        // daily limit (or is otherwise failing) — see App\Services\Ai\AiClient.
+        'key_2' => env('GEMINI_API_KEY_2'),
+        'key_3' => env('GEMINI_API_KEY_3'),
         'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
-        // Free tier daily cap for this model — kept here, not hardcoded in a
-        // job, so it's one place to update if the tier/model ever changes.
-        'daily_limit' => (int) env('GEMINI_DAILY_LIMIT', 1500),
+    ],
+
+    // Last resort in the AiClient fallback chain, after every Gemini key.
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+        'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
     ],
 
 ];

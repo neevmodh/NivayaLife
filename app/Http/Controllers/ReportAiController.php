@@ -5,18 +5,17 @@ namespace App\Http\Controllers;
 use App\Jobs\GenerateShortSummaryJob;
 use App\Models\AiJob;
 use App\Models\Report;
-use App\Services\Gemini\GeminiClient;
-use App\Services\Gemini\GeminiQuota;
+use App\Services\Ai\AiClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * Every action here is user-initiated and calls Gemini synchronously — no
- * queueing, since the user is actively waiting on a button click. Both
- * actions spend the family's shared daily Gemini quota, so both are gated
- * the same way as editing (canBeEditedBy), not just viewing.
+ * Every action here is user-initiated and calls the AI provider chain
+ * synchronously — no queueing, since the user is actively waiting on a
+ * button click. Both actions are gated the same way as editing
+ * (canBeEditedBy), not just viewing.
  */
 class ReportAiController extends Controller
 {
@@ -24,7 +23,7 @@ class ReportAiController extends Controller
 
     private const MAX_OCR_CHARS = 8000;
 
-    public function detailedExplanation(Request $request, Report $report, GeminiClient $gemini, GeminiQuota $quota): JsonResponse
+    public function detailedExplanation(Request $request, Report $report, AiClient $ai): JsonResponse
     {
         $user = $request->user();
         abort_unless($report->familyMember->canBeEditedBy($user), 403);
@@ -33,8 +32,8 @@ class ReportAiController extends Controller
             return response()->json(['success' => false, 'message' => 'This report has no readable text to explain yet.'], 422);
         }
 
-        if ($quota->isNearLimit()) {
-            return response()->json(['success' => false, 'message' => "We're close to today's AI usage limit — please try again in a little while."], 429);
+        if (! $ai->hasAvailableCredential()) {
+            return response()->json(['success' => false, 'message' => 'AI features are not available right now — please try again later.'], 429);
         }
 
         $aiJob = AiJob::create([
@@ -46,7 +45,7 @@ class ReportAiController extends Controller
         ]);
 
         try {
-            $result = $gemini->generate($this->buildDetailedPrompt($report));
+            $result = $ai->generate($this->buildDetailedPrompt($report));
             $content = $result['text']."\n\n".GenerateShortSummaryJob::DISCLAIMER;
 
             $response = $report->recordAiResponse('summary', $content, 'en', $aiJob, updateSummaryCache: false);
@@ -54,6 +53,7 @@ class ReportAiController extends Controller
             $aiJob->update([
                 'status' => 'completed',
                 'completed_at' => now(),
+                'provider' => $result['provider'],
                 'input_tokens' => $result['input_tokens'],
                 'output_tokens' => $result['output_tokens'],
             ]);
@@ -70,12 +70,13 @@ class ReportAiController extends Controller
 
     /**
      * The automatic short summary only ever runs once (dispatched right
-     * after OCR completes) — if that single attempt hits a transient Gemini
-     * failure (the free-tier API does occasionally 503/timeout), there was
-     * previously no way back short of an owner manually re-dispatching the
-     * job. This lets the user themselves trigger exactly the same job again.
+     * after OCR completes) — if that single attempt hits a transient AI
+     * provider failure (the free-tier Gemini API does occasionally
+     * 503/timeout), there was previously no way back short of an owner
+     * manually re-dispatching the job. This lets the user themselves
+     * trigger exactly the same job again.
      */
-    public function retrySummary(Request $request, Report $report, GeminiQuota $quota): JsonResponse
+    public function retrySummary(Request $request, Report $report, AiClient $ai): JsonResponse
     {
         $user = $request->user();
         abort_unless($report->familyMember->canBeEditedBy($user), 403);
@@ -88,8 +89,8 @@ class ReportAiController extends Controller
             return response()->json(['success' => false, 'message' => 'This report already has a summary.'], 422);
         }
 
-        if ($quota->isNearLimit()) {
-            return response()->json(['success' => false, 'message' => "We're close to today's AI usage limit — please try again in a little while."], 429);
+        if (! $ai->hasAvailableCredential()) {
+            return response()->json(['success' => false, 'message' => 'AI features are not available right now — please try again later.'], 429);
         }
 
         GenerateShortSummaryJob::dispatch($report);
@@ -97,7 +98,7 @@ class ReportAiController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function translate(Request $request, Report $report, GeminiClient $gemini, GeminiQuota $quota): JsonResponse
+    public function translate(Request $request, Report $report, AiClient $ai): JsonResponse
     {
         $user = $request->user();
         abort_unless($report->familyMember->canBeEditedBy($user), 403);
@@ -120,8 +121,8 @@ class ReportAiController extends Controller
             return response()->json(['success' => true, 'content' => $cached->content, 'cached' => true]);
         }
 
-        if ($quota->isNearLimit()) {
-            return response()->json(['success' => false, 'message' => "We're close to today's AI usage limit — please try again in a little while."], 429);
+        if (! $ai->hasAvailableCredential()) {
+            return response()->json(['success' => false, 'message' => 'AI features are not available right now — please try again later.'], 429);
         }
 
         $aiJob = AiJob::create([
@@ -136,13 +137,14 @@ class ReportAiController extends Controller
             $languageName = self::LANGUAGE_NAMES[$language];
             $prompt = "Translate the following medical report summary into {$languageName}. Preserve all names, numbers, and medical terms accurately. Keep it natural, plain, and concise. Reply with only the translation, no extra commentary.\n\nTEXT:\n{$report->ai_summary}";
 
-            $result = $gemini->generate($prompt);
+            $result = $ai->generate($prompt);
 
             $response = $report->recordAiResponse('translation', $result['text'], $language, $aiJob);
 
             $aiJob->update([
                 'status' => 'completed',
                 'completed_at' => now(),
+                'provider' => $result['provider'],
                 'input_tokens' => $result['input_tokens'],
                 'output_tokens' => $result['output_tokens'],
             ]);

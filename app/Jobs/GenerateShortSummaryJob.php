@@ -4,8 +4,7 @@ namespace App\Jobs;
 
 use App\Models\AiJob;
 use App\Models\Report;
-use App\Services\Gemini\GeminiClient;
-use App\Services\Gemini\GeminiQuota;
+use App\Services\Ai\AiClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,10 +14,9 @@ use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * The one automatic Gemini call in the whole pipeline — deliberately cheap
- * (2-3 sentences) since it runs unattended for every uploaded report. Every
- * other AI action (detailed explanation, translation) is user-initiated, to
- * protect the free-tier daily quota.
+ * The one automatic AI call in the whole pipeline — deliberately cheap (2-3
+ * sentences) since it runs unattended for every uploaded report. Every
+ * other AI action (detailed explanation, translation) is user-initiated.
  */
 class GenerateShortSummaryJob implements ShouldQueue
 {
@@ -32,7 +30,7 @@ class GenerateShortSummaryJob implements ShouldQueue
 
     public function __construct(public Report $report) {}
 
-    public function handle(GeminiClient $gemini, GeminiQuota $quota): void
+    public function handle(AiClient $ai): void
     {
         $report = $this->report->fresh();
 
@@ -40,11 +38,9 @@ class GenerateShortSummaryJob implements ShouldQueue
             return;
         }
 
-        if ($quota->isNearLimit()) {
-            // Don't fail or spend the little quota that's left — try again
-            // once the daily counter has had a chance to move (or reset).
-            $this->release(min($quota->secondsUntilReset(), 1800));
-
+        if (! $ai->hasAvailableCredential()) {
+            // No AI provider configured at all — retrying won't help until
+            // that changes, so don't keep re-queueing.
             return;
         }
 
@@ -57,7 +53,7 @@ class GenerateShortSummaryJob implements ShouldQueue
         ]);
 
         try {
-            $result = $gemini->generate($this->buildPrompt($report));
+            $result = $ai->generate($this->buildPrompt($report));
             $content = $result['text']."\n\n".self::DISCLAIMER;
 
             $report->recordAiResponse('summary', $content, 'en', $aiJob);
@@ -65,6 +61,7 @@ class GenerateShortSummaryJob implements ShouldQueue
             $aiJob->update([
                 'status' => 'completed',
                 'completed_at' => now(),
+                'provider' => $result['provider'],
                 'input_tokens' => $result['input_tokens'],
                 'output_tokens' => $result['output_tokens'],
             ]);

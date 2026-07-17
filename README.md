@@ -494,7 +494,7 @@ novix/
 - Node.js + npm
 - **Tesseract OCR** and **Ghostscript** (`brew install tesseract ghostscript` on macOS) — required for the report OCR pipeline
 - The PHP **Imagick** extension — required for PDF rasterization and PNG QR generation
-- A [Google Gemini API key](https://ai.google.dev) — required for AI summaries/explanations/translations
+- A [Google Gemini API key](https://ai.google.dev) — required for AI summaries/explanations/translations/assistant chat. Up to 2 backup Gemini keys and a [Groq API key](https://console.groq.com) are optional — if set, AI features automatically fall back through them in order when one hits its free-tier limit or fails (see `App\Services\Ai\AiClient`)
 - A [Google OAuth client ID/secret](https://console.cloud.google.com) (optional, for Google sign-in)
 
 ### Installation
@@ -527,7 +527,11 @@ GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
 GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
 
 GEMINI_API_KEY=your-gemini-api-key
+GEMINI_API_KEY_2=optional-backup-gemini-key
+GEMINI_API_KEY_3=optional-backup-gemini-key
 GEMINI_MODEL=gemini-flash-latest
+GROQ_API_KEY=optional-groq-key-as-final-fallback
+GROQ_MODEL=llama-3.3-70b-versatile
 
 QUEUE_CONNECTION=database
 ```

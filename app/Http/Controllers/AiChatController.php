@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\ResolvesActiveFamilyMember;
 use App\Models\ChatMessage;
 use App\Models\FamilyMember;
+use App\Services\Ai\AiClient;
 use App\Services\Assistant\AssistantContextBuilder;
-use App\Services\Gemini\GeminiClient;
-use App\Services\Gemini\GeminiQuota;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,7 +16,7 @@ class AiChatController extends Controller
 {
     use ResolvesActiveFamilyMember;
 
-    /** Folded into the prompt text as prior turns — GeminiClient only sends a single text prompt, so real multi-turn "contents" isn't wired up yet. */
+    /** Folded into the prompt text as prior turns — the underlying clients only send a single text prompt, so real multi-turn "contents" isn't wired up yet. */
     private const HISTORY_MESSAGES = 10;
 
     public function index(Request $request): View
@@ -36,7 +35,7 @@ class AiChatController extends Controller
         ]);
     }
 
-    public function send(Request $request, GeminiClient $gemini, GeminiQuota $quota, AssistantContextBuilder $contextBuilder): JsonResponse
+    public function send(Request $request, AiClient $ai, AssistantContextBuilder $contextBuilder): JsonResponse
     {
         $user = $request->user();
 
@@ -62,12 +61,12 @@ class AiChatController extends Controller
             'content' => $validated['message'],
         ]);
 
-        if ($quota->isNearLimit()) {
+        if (! $ai->hasAvailableCredential()) {
             $reply = ChatMessage::create([
                 'family_member_id' => $active->id,
                 'asked_by_user_id' => $user->id,
                 'role' => 'assistant',
-                'content' => "I'm close to today's usage limit and need to rest for a bit — please try again shortly.",
+                'content' => "AI features aren't available right now — please try again later.",
             ]);
 
             return response()->json(['success' => true, 'reply' => $reply->content, 'created_at' => $reply->created_at->toIso8601String()]);
@@ -78,7 +77,7 @@ class AiChatController extends Controller
 
         try {
             $prompt = $contextBuilder->build($active, $recentMessages, $validated['message']);
-            $result = $gemini->generate($prompt);
+            $result = $ai->generate($prompt);
             $content = $result['text'];
             $inputTokens = $result['input_tokens'];
             $outputTokens = $result['output_tokens'];
