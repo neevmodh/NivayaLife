@@ -23,11 +23,22 @@ COPY . .
 RUN composer dump-autoload --optimize --no-dev
 
 # ---- Stage 3: runtime image ----
-FROM php:8.3-fpm-bookworm
+# Must match (or exceed) whatever composer.lock's dependencies actually
+# require — a mismatch here doesn't fail the build, it fails at container
+# boot instead ("Composer detected issues in your platform: requires PHP
+# >= 8.4.1"), which is a much worse place to find out.
+FROM php:8.4-fpm-bookworm
 
 # System packages: Tesseract OCR + Ghostscript (PDF rasterization for the
 # OCR pipeline and QR/PDF services), nginx + supervisor to run the whole
 # stack in one container, plus the usual PHP extension build deps.
+#
+# The `-dev` packages are deliberately NOT purged after building the
+# extensions: apt's autoremove doesn't reliably distinguish "only needed
+# for headers" from "the extension's actual runtime .so lives here too" —
+# purging them previously took libzip's and ImageMagick's runtime shared
+# libraries with them, so zip/imagick loaded at build time but silently
+# failed to load at container boot instead.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx supervisor gettext-base \
         tesseract-ocr ghostscript \
@@ -36,7 +47,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" pdo_mysql mbstring exif pcntl bcmath gd zip \
     && pecl install imagick && docker-php-ext-enable imagick \
-    && apt-get purge -y --auto-remove libpng-dev libjpeg62-turbo-dev libfreetype6-dev libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
