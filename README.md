@@ -12,11 +12,12 @@
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE)
 
-[![Gemini](https://img.shields.io/badge/Gemini_AI-report_summaries-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)](#reports-ocr--ai-pipeline)
-[![Tesseract](https://img.shields.io/badge/Tesseract_OCR-5.5-43853D?style=flat-square)](#reports-ocr--ai-pipeline)
+[![Gemini](https://img.shields.io/badge/Gemini_%2B_Groq-AI_fallback_chain-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)](#ai-provider-fallback-chain)
+[![Tesseract](https://img.shields.io/badge/Tesseract_OCR-parallel_pages-43853D?style=flat-square)](#reports-ocr--ai-pipeline)
+[![Resend](https://img.shields.io/badge/Resend-real_email-000000?style=flat-square)](#-getting-started)
 [![dompdf](https://img.shields.io/badge/dompdf-real_PDFs-D32F2F?style=flat-square)](#emergency-card--report-sharing-pipeline)
-[![Tables](https://img.shields.io/badge/database%20tables-28-1E5A45?style=flat-square)](#-database-schema)
-[![Routes](https://img.shields.io/badge/routes-70%2B-2E7A5D?style=flat-square)](#-application-routes)
+[![Tables](https://img.shields.io/badge/database%20tables-29-1E5A45?style=flat-square)](#-database-schema)
+[![Routes](https://img.shields.io/badge/routes-100%2B-2E7A5D?style=flat-square)](#-application-routes)
 [![Status](https://img.shields.io/badge/status-active%20development-yellow?style=flat-square)](#-roadmap)
 
 </div>
@@ -71,18 +72,33 @@ Every family member is represented as their own record with two possible modes: 
 | 👤 | **Tabbed Profile Editor** | Independently-saving tabs — Basic Info, Photo, Address, Health, Emergency Contact, Account Security — each with inline AJAX feedback, no full-page reloads. Reused for editing dependents and for full-access linked members. |
 | 📈 | **BMI History, Not Overwrites** | Editing height/weight always inserts a new `bmi_logs` row, preserving trend history instead of destroying it. |
 | 🌗 | **Dark Mode** | Toggle persisted server-side per user, not just in browser storage — follows you across devices. |
+| ✅ | **First-Run Checklist** | A dismissible dashboard card guiding a brand-new account through its first three real actions — add a family member, upload a report, try the assistant — computed from actual data, not a hardcoded flag. |
+
+### Medications & Vaccinations
+
+| | Feature | Description |
+|---|---|---|
+| 💊 | **Medication Management** | Full CRUD for dosage, frequency, multiple reminder times per day, a start/end date range, and a per-medication reminder toggle. |
+| ✔️ | **Tap-to-Mark Dose Tracking** | Each scheduled dose shows as a pill on the dashboard — pending, taken, or missed — that toggles with a single tap, no page reload. A daily job generates the day's pending dose slots; a 15-minute sweep ages any slot nobody acted on into "missed" after a grace period. |
+| 📧 | **Real Email Reminders** | An actual email goes out around each scheduled dose time (if reminders are on for that medication), and once a day for any vaccination due within a week or already overdue — not just a UI badge nobody sees. |
+| 💉 | **Vaccination Tracking** | Dose number, date administered, next-due date, and location, with overdue/due-soon badges surfaced on both the dedicated page and the dashboard. |
 
 ### Reports, OCR & AI
 
 | | Feature | Description |
 |---|---|---|
-| 📤 | **Batch Report Upload** | Drag-and-drop, camera capture, or file picker for PDF/JPG/PNG — multiple files at once, each with its own thumbnail, upload-progress bar, and metadata form (type auto-suggested from the filename, editable before submit). |
-| 🔍 | **Real OCR Pipeline** | A queued job runs every upload through **Tesseract** — PDFs are rasterized page-by-page via Imagick/Ghostscript first, photos get grayscale/contrast/deskew/despeckle preprocessing, since a real phone photo of a prescription is rarely flat and well-lit. |
+| 📤 | **Batch Report Upload** | Drag-and-drop, camera capture, or file picker for PDF/JPG/PNG — multiple files at once, each with its own thumbnail, upload-progress bar, and metadata form. |
+| 🪄 | **Auto-Detect on Upload** | The instant a file is selected, it's OCR'd in the background and the report type, date, hospital, and doctor fields are pre-filled from local heuristics (keyword-scored type classification, date-format parsing, matching against the family's own upload history) — no AI cost. Manually-edited fields are never overwritten. The extracted text is cached by file hash so the real upload moments later reuses it instead of running OCR twice. |
+| 🔁 | **Duplicate Detection** | Re-uploading the exact same file (matched by content hash, not filename) warns you with a link to the existing report and an explicit "upload anyway" override, instead of silently creating a copy. |
+| 🔍 | **Fast, Parallel OCR Pipeline** | A queued job runs every upload through **Tesseract** — pages of a multi-page PDF are OCR'd concurrently (capped batches) instead of one at a time, cutting multi-page processing time by roughly half to two-thirds. PDFs are rasterized via Imagick/Ghostscript; photos get grayscale/contrast/deskew/despeckle preprocessing, since a real phone photo of a prescription is rarely flat and well-lit. A page that reads as garbled automatically retries at 90°/180°/270° rotation — a common fix for sideways phone photos — before giving up. |
 | ✍️ | **Editable Extracted Text** | The OCR result is shown in a collapsible panel the user can correct by hand — a human correction always overwrites the machine's guess. |
-| 🤖 | **Automatic Short AI Summary** | The moment OCR succeeds, a 2–3 sentence Gemini summary is generated automatically — deliberately brief, always disclaimer-stamped, and quota-aware (defers itself rather than failing if the free-tier daily cap is close). |
-| 📚 | **On-Demand Detailed Explanation** | A "Get detailed explanation" button calls Gemini again for a fuller, plain-language breakdown with doctor-discussion questions — never auto-run, so it never burns quota without the user asking. Every explanation is kept in a permanent history, not just the latest. |
+| 🔎 | **Search & Filter Reports** | Full-text search across every report's OCR text, AI summary, filename, hospital, and doctor, plus type and date-range filters on the Reports list. |
+| 🤖 | **Automatic Short AI Summary** | The moment OCR succeeds, a 2–3 sentence AI summary is generated automatically — deliberately brief and always disclaimer-stamped. |
+| 📚 | **On-Demand Detailed Explanation** | A "Get detailed explanation" button calls the AI again for a fuller, plain-language breakdown with doctor-discussion questions — never auto-run, so it never spends AI usage without the user asking. Every explanation is kept in a permanent history, not just the latest. A "Try summary again" retry path exists for the rare automatic summary that fails outright. |
 | 🌐 | **Cached Translation** | Switch the summary between English/Hindi/Gujarati — each language is translated once and cached in `ai_responses`; flipping back and forth never re-calls the API. |
 | 📐 | **Pattern-Matched Vitals** | Blood pressure, blood sugar, HbA1c, cholesterol, and hemoglobin are parsed straight out of the OCR text into `health_metrics` — no AI call needed, feeds the timeline's trend view for free. |
+| 🧠 | **AI Assistant Chat** | A per-family-member chat that answers questions using that person's actual records (reports, medications, vaccinations, vitals) or explains how to use Novix itself — whichever the question calls for — via a single context-aware prompt. Conversation history persists and folds into later turns. |
+| 🔀 | **Multi-Provider AI Fallback** | Every AI feature routes through up to three Gemini API keys and then Groq as a last resort, tried in order — a key hitting its free-tier limit, or a transient provider outage, no longer takes AI features down. A credential that just failed is skipped for a cooldown window rather than retried on every call. |
 
 ### Emergency Access & Sharing
 
@@ -121,9 +137,10 @@ Every family member is represented as their own record with two possible modes: 
 | **Queue** | Laravel Queues, `database` driver | — |
 | **Auth Scaffolding** | Laravel Breeze (Blade stack) | 2.4 |
 | **OAuth** | Laravel Socialite (Google) | 5.28 |
-| **OCR Engine** | Tesseract (via Homebrew, shelled out through `Illuminate\Support\Facades\Process`) | 5.5 |
+| **OCR Engine** | Tesseract, run as concurrent OS processes per page (via `Illuminate\Support\Facades\Process`) | 5.5 |
 | **PDF Rasterization** | Imagick (PHP ext) + Ghostscript | 10.07 |
-| **AI Summarization** | Google Gemini REST API (`gemini-flash-latest`) via a thin `GeminiClient` — no heavyweight SDK | — |
+| **AI Providers** | Google Gemini REST API (`gemini-flash-latest`, up to 3 keys) + Groq (OpenAI-compatible chat completions, `llama-3.3-70b-versatile`) as a fallback — thin custom clients, no heavyweight SDKs | — |
+| **Outbound Email** | Resend (native Laravel mail transport) | — |
 | **PDF Generation** | barryvdh/laravel-dompdf | 3.1 |
 | **QR Codes** | simplesoftwareio/simple-qrcode (SVG on-screen, PNG embedded in PDFs) | 4.2 |
 | **Templating** | Blade components | — |
@@ -136,7 +153,7 @@ Every family member is represented as their own record with two possible modes: 
 
 </div>
 
-**Why this stack:** Laravel's model-level validation (a custom `HasValidation` trait run on every `saving` event) means invalid data can never reach the database even if a caller bypasses form-request validation. Every PDF and QR code in the app is produced by two shared, reusable services — `PdfExportService` and `QrCodeService` — rather than each feature rolling its own, so a wallet card, a full emergency PDF, and a shared-report PDF all go through the exact same, verified rendering path. AI calls are cost-gated by design: only a short, automatic summary is ever generated without the user asking, everything else (detailed explanations, translations) is on-demand and cached so re-viewing something already generated never spends quota twice.
+**Why this stack:** Laravel's model-level validation (a custom `HasValidation` trait run on every `saving` event) means invalid data can never reach the database even if a caller bypasses form-request validation. Every PDF and QR code in the app is produced by two shared, reusable services — `PdfExportService` and `QrCodeService` — rather than each feature rolling its own, so a wallet card, a full emergency PDF, and a shared-report PDF all go through the exact same, verified rendering path. AI calls are cost-gated by design: only a short, automatic summary is ever generated without the user asking, everything else (detailed explanations, translations, the assistant) is on-demand and cached where it makes sense so re-viewing something already generated never spends usage twice. A single `AiClient` service fronts every AI call and transparently retries across every configured credential — Gemini keys first, Groq last — so no individual feature has to know or care which provider actually served a given request.
 
 ---
 
@@ -196,32 +213,95 @@ flowchart TD
 
 ### Reports, OCR & AI pipeline
 
-Upload responds **immediately** — OCR and every AI call happen in queued background jobs, never blocking the request. Only the short summary runs automatically; the detailed explanation and translations are strictly user-initiated to protect the Gemini free-tier daily quota.
+Upload responds **immediately** — OCR and every AI call happen in queued background jobs, never blocking the request. Only the short summary runs automatically; the detailed explanation, translations, and assistant chat are strictly user-initiated. Detection (the moment a file is picked) and the real upload (moments later) share one cached OCR result instead of paying for Tesseract twice.
 
 ```mermaid
 flowchart TD
-    U["Upload\n(drag-drop / camera / picker)"] --> R["reports row created\nocr_status=pending"]
+    Select["File selected"] -.->|"detect — before the form is even filled in"| Detect["OCR runs immediately;\npre-fills type/date/hospital/doctor;\ncaches OCR text by file hash"]
+
+    Select --> Submit["Upload submitted"]
+    Submit --> Dup{"Same file hash\nalready uploaded?"}
+    Dup -->|Yes| Warn["Warn + link to existing report\n('upload anyway' override)"]
+    Dup -->|No| R["reports row created\nocr_status=pending"]
     R -->|dispatch| OCR["ProcessReportOcrJob"]
-    OCR --> Type{"PDF or image?"}
+    OCR --> CacheHit{"Cached OCR text\nfrom detection?"}
+    CacheHit -->|Yes| Done
+    CacheHit -->|No| Type{"PDF or image?"}
     Type -->|PDF| Raster["Imagick + Ghostscript\nrasterize each page"]
     Type -->|Image| Prep["Grayscale, contrast,\ndeskew, despeckle"]
-    Raster --> Tess["Tesseract OCR"]
+    Raster --> Tess["Tesseract — pages OCR'd\nconcurrently, capped batches"]
     Prep --> Tess
     Tess --> Usable{"Usable text\nextracted?"}
-    Usable -->|No| Failed["ocr_status=failed\n'We couldn't read this' + manual notes"]
+    Usable -->|No| Retry["Retry at 90°/180°/270°\nrotation"]
+    Retry --> Usable2{"Usable now?"}
+    Usable2 -->|No| Failed["ocr_status=failed"]
+    Usable2 -->|Yes| Done
     Usable -->|Yes| Done["ocr_status=completed\nocr_text saved"]
     Done --> Metrics["ExtractHealthMetricsJob\n(regex, no AI cost)"]
-    Done --> Quota{"Near Gemini\ndaily quota?"}
-    Quota -->|Yes| Delay["Job releases itself,\nretries later"]
-    Quota -->|No| Summary["GenerateShortSummaryJob\n2-3 sentences + disclaimer"]
-    Summary --> Cache["reports.ai_summary\n+ ai_responses row"]
+    Done --> Summary["GenerateShortSummaryJob\n2-3 sentences + disclaimer"]
+    Summary -.->|via AiClient fallback chain| Cache["reports.ai_summary\n+ ai_responses row"]
 
-    Cache -.->|user clicks| Detail["On-demand detailed\nexplanation (Gemini)"]
-    Cache -.->|user picks language| Translate["On-demand translation\n(cached per language)"]
+    Cache -.->|user clicks| Detail["On-demand detailed explanation"]
+    Cache -.->|user picks language| Translate["On-demand translation (cached)"]
+    Cache -.->|user asks| Chat["Assistant chat\n(this report is part of its context)"]
 
     style Summary fill:#1E5A45,color:#fff
     style Failed fill:#B23B32,color:#fff
-    style Delay fill:#F5C879,color:#1F2A24
+    style Warn fill:#F5C879,color:#1F2A24
+```
+
+### AI provider fallback chain
+
+Every AI feature — report summaries, detailed explanations, translations, the assistant — calls through one `AiClient` service rather than a specific provider directly, so no feature needs to know which credential actually served it.
+
+```mermaid
+flowchart LR
+    Call["Any AI feature calls\nAiClient::generate()"] --> K1{"Gemini key 1"}
+    K1 -->|success| Done(["Response returned"])
+    K1 -->|fails| K2{"Gemini key 2"}
+    K2 -->|success| Done
+    K2 -->|fails| K3{"Gemini key 3"}
+    K3 -->|success| Done
+    K3 -->|fails| G{"Groq\n(last resort)"}
+    G -->|success| Done
+    G -->|fails, all in cooldown| Retry["One more pass,\nignoring cooldowns"]
+    Retry --> Done
+    Retry -.->|still nothing| Err["Exception —\ncaller shows a friendly failure"]
+
+    K1 -.->|on failure| CD["15-minute cooldown\nfor that credential"]
+    K2 -.->|on failure| CD
+    K3 -.->|on failure| CD
+    G -.->|on failure| CD
+
+    style Done fill:#1E5A45,color:#fff
+    style Err fill:#B23B32,color:#fff
+```
+
+### Medication & vaccination reminder pipeline
+
+Two scheduled commands do the actual reminding; a third keeps the dashboard's dose pills backed by real data instead of nothing.
+
+```mermaid
+flowchart TD
+    Daily["Daily, 00:05 —\napp:generate-medication-logs"] --> Logs["Creates today's pending\nmedication_logs rows\nfor every active, scheduled medication"]
+
+    Every15["Every 15 minutes —\napp:process-medication-reminders"] --> Due{"Pending dose\ndue in the last 20 min,\nreminders on?"}
+    Due -->|Yes| Send1["Email MedicationDoseReminderMail\nto the account + linked user"]
+    Send1 --> Mark1["reminded_at set\n(no repeat email)"]
+    Every15 --> Stale{"Pending dose\n>2 hours overdue?"}
+    Stale -->|Yes| Missed["status = missed"]
+
+    DailyVax["Daily, 08:00 —\napp:send-vaccination-reminders"] --> DueVax{"Due within 7 days,\nor overdue,\nnot reminded today?"}
+    DueVax -->|Yes| Send2["Email VaccinationDueReminderMail"]
+    Send2 --> Mark2["last_reminded_at set"]
+
+    Logs -.-> Dashboard["Dashboard dose pills\n(tap to mark taken)"]
+    Mark1 -.-> Dashboard
+    Missed -.-> Dashboard
+
+    style Send1 fill:#1E5A45,color:#fff
+    style Send2 fill:#1E5A45,color:#fff
+    style Missed fill:#B23B32,color:#fff
 ```
 
 ### Emergency Card & Report Sharing pipeline
@@ -258,7 +338,7 @@ sequenceDiagram
 
 ## 🗄️ Database Schema
 
-**28 tables total** — 20 domain tables + 8 Laravel framework tables (`users` base columns, `cache`, `jobs`, `sessions`, `password_reset_tokens`, `failed_jobs`, `job_batches`, `migrations`). All domain tables use `utf8mb4_unicode_ci` + InnoDB, with foreign keys carrying deliberate, medically-safe `CASCADE` / `RESTRICT` / `SET NULL` rules — for example, `bmi_logs`, `allergies`, and `medications` all `RESTRICT` deletion of their `family_members` row, so routine record edits can never silently destroy medical history (a full account deletion explicitly cascades through these in the correct order instead).
+**29 tables total** — 21 domain tables + 8 Laravel framework tables (`users` base columns, `cache`, `jobs`, `sessions`, `password_reset_tokens`, `failed_jobs`, `job_batches`, `migrations`). All domain tables use `utf8mb4_unicode_ci` + InnoDB, with foreign keys carrying deliberate, medically-safe `CASCADE` / `RESTRICT` / `SET NULL` rules — for example, `bmi_logs`, `allergies`, and `medications` all `RESTRICT` deletion of their `family_members` row, so routine record edits can never silently destroy medical history (a full account deletion explicitly cascades through these in the correct order instead).
 
 <details>
 <summary><b>📊 Entity-Relationship Diagram (click to expand)</b></summary>
@@ -285,6 +365,7 @@ erDiagram
     FAMILY_MEMBERS ||--o{ ID_CARDS : "issuance history"
     FAMILY_MEMBERS ||--o{ SHARING_PERMISSIONS : grants
     FAMILY_MEMBERS ||--o{ INSURANCE_POLICIES : has
+    FAMILY_MEMBERS ||--o{ CHAT_MESSAGES : "asked about"
 
     REPORTS ||--o{ HEALTH_METRICS : "extracted into"
     REPORTS ||--o{ AI_JOBS : "processed by"
@@ -316,7 +397,7 @@ Longitudinal clinical facts not tied to a single report.
 |---|---|---|
 | 🟡 `allergies` | Known allergies | `allergen_name`, `severity` (`mild`/`moderate`/`severe`), `reaction_description` |
 | 🟡 `chronic_conditions` | Ongoing conditions | `condition_name`, `status` (`active`/`managed`/`resolved`) |
-| 🟡 `vaccinations` | Immunization history | `vaccine_name`, `dose_number`, `date_administered`, `next_due_date` |
+| 🟡 `vaccinations` | Immunization history | `vaccine_name`, `dose_number`, `date_administered`, `next_due_date`, `last_reminded_at` (dedupes the daily reminder email) |
 | 🟡 `doctors` | Known doctors | `name`, `specialization`, `hospital_or_clinic_name` |
 
 ### 3️⃣ Reports, Vitals & AI Processing
@@ -328,15 +409,16 @@ Uploaded documents (full-text searchable), structured vitals, and the async AI s
 | 🔵 `reports` | Uploaded documents | `type` (blood_test/prescription/xray/mri_ct/insurance/bill/ecg/other), `ocr_text` (FULLTEXT indexed with `ai_summary`), `ocr_status` (pending/processing/completed/failed), `ai_summary` (cache of the latest short summary), `is_archived` — soft-deletes |
 | 🔵 `bmi_logs` | BMI history over time | `height_cm`, `weight_kg`, `bmi_value` (auto-computed), `bmi_category` (auto-computed), `recorded_date`, `source` (`manual`/`report_extracted`) |
 | 🔵 `health_metrics` | Extracted vitals (BP, sugar, cholesterol, HbA1c, hemoglobin...) | `metric_type`, `value`, `unit`, `recorded_date`, `source` (`manual`/`ocr_extracted`/`ai_extracted`) |
-| 🔵 `ai_jobs` | Async AI job queue/quota tracking | `job_type` (ocr/summary/translation/entity_extraction), `status`, `provider`, `input_tokens`, `output_tokens` |
+| 🔵 `ai_jobs` | Async AI job history | `job_type` (ocr/summary/translation/entity_extraction), `status`, `provider` (`gemini`/`groq` — whichever actually served the call), `input_tokens`, `output_tokens` |
 | 🔵 `ai_responses` | **Permanent history** of every AI answer — every summary, every detailed explanation, every translation | `response_type`, `content`, `language`, `provider`, `generated_at` |
+| 🔵 `chat_messages` | Assistant chat log, per family member | `role` (`user`/`assistant`), `content`, `asked_by_user_id`, `input_tokens`/`output_tokens` (null for non-AI system replies, so a rate-limit notice never counts against usage) |
 
 ### 4️⃣ Medications
 
 | Table | Purpose | Key columns |
 |---|---|---|
-| 🟣 `medications` | Active/past prescriptions | `medicine_name`, `dosage`, `frequency`, `schedule_times` (JSON array), `active` |
-| 🟣 `medication_logs` | Per-dose adherence log | `scheduled_at`, `taken_at`, `status` (`taken`/`missed`/`skipped`) |
+| 🟣 `medications` | Active/past prescriptions | `medicine_name`, `dosage`, `frequency`, `schedule_times` (JSON array of `HH:MM`), `active`, `reminder_enabled` |
+| 🟣 `medication_logs` | Per-dose adherence log | `scheduled_at`, `taken_at`, `reminded_at` (dedupes the reminder email), `status` (`pending`/`taken`/`missed`/`skipped`) |
 
 ### 5️⃣ Sharing, Identity Cards & Compliance
 
@@ -356,6 +438,11 @@ Uploaded documents (full-text searchable), structured vitals, and the async AI s
 ```
 novix/
 ├── app/
+│   ├── Console/Commands/
+│   │   ├── GenerateMedicationLogs.php     # Daily — today's pending dose rows
+│   │   ├── ProcessMedicationReminders.php # Every 15 min — reminder emails + missed sweep
+│   │   ├── SendVaccinationReminders.php   # Daily — due-soon/overdue reminder emails
+│   │   └── ExpireFamilyInvitations.php
 │   ├── Http/Controllers/
 │   │   ├── Auth/                    # Login, Google OAuth, registration wizard
 │   │   ├── Concerns/                #   ResolvesActiveFamilyMember (shared trait)
@@ -367,9 +454,12 @@ novix/
 │   │   ├── FamilyDependentController.php # Add a dependent
 │   │   ├── InvitationController.php      # Accept/decline flow (public + reciprocal)
 │   │   ├── IdCardController.php          # Owner-side card management
-│   │   ├── ReportUploadController.php    # Batch upload
-│   │   ├── ReportController.php          # Report detail, OCR text edit, status polling
-│   │   ├── ReportAiController.php        # Detailed explanation + translation
+│   │   ├── ReportUploadController.php    # Batch upload + upload-time auto-detect
+│   │   ├── ReportController.php          # Report detail, search/filter, OCR text edit
+│   │   ├── ReportAiController.php        # Detailed explanation, translation, retry
+│   │   ├── MedicationController.php      # CRUD + dashboard dose-toggle
+│   │   ├── VaccinationController.php     # CRUD
+│   │   ├── AiChatController.php          # Assistant chat
 │   │   ├── ShareController.php           # Owner-side share creation + history
 │   │   ├── PublicShareController.php     # Public share view, PIN gate, PDF
 │   │   ├── TimelineController.php        # Merged timeline + PDF export
@@ -377,30 +467,41 @@ novix/
 │   ├── Http/Requests/Registration/  # Per-step wizard validation
 │   ├── Jobs/                        # ProcessReportOcrJob, ExtractHealthMetricsJob,
 │   │                                 #   GenerateShortSummaryJob
+│   ├── Mail/                        # FamilyInvitationMail, MedicationDoseReminderMail,
+│   │                                 #   VaccinationDueReminderMail
+│   ├── Rules/                       # NoHeaderInjection (CRLF-injection hardening)
 │   ├── Services/
-│   │   ├── Gemini/                  # GeminiClient, GeminiQuota
-│   │   ├── Ocr/                     # OcrExtractor (Tesseract + Imagick)
+│   │   ├── Ai/                      # AiClient — multi-credential fallback router
+│   │   ├── Assistant/               # AssistantContextBuilder (prompt from real records)
+│   │   ├── Gemini/                  # GeminiClient
+│   │   ├── Groq/                    # GroqClient
+│   │   ├── Ocr/                     # OcrExtractor (Tesseract + Imagick, parallel pages)
 │   │   ├── Pdf/                     # PdfExportService (shared by every PDF)
 │   │   ├── Qr/                      # QrCodeService (shared by every QR code)
-│   │   └── Reports/                 # HealthMetricExtractor (regex vitals parsing)
+│   │   └── Reports/                 # HealthMetricExtractor, ReportFieldDetector
 │   ├── Models/
 │   │   ├── Concerns/HasValidation.php   # Model-level validation trait
-│   │   └── *.php                        # 20 domain models
+│   │   └── *.php                        # 21 domain models
 │   └── Policies/
 ├── config/emergency_card.php        # Static EN/HI/GU label dictionary
-├── database/migrations/             # 29 sequential migrations
+├── database/migrations/             # 34 sequential migrations
 ├── resources/
 │   ├── js/
 │   │   ├── alpine/                  # registration-wizard, camera-capture, bmi-gauge,
 │   │   │                            #   location-select, tag-input, report-upload,
-│   │   │                            #   report-processing, metric-compare, share-actions...
+│   │   │                            #   report-processing, metric-compare, share-actions,
+│   │   │                            #   assistant-chat, dose-tracker...
 │   │   └── app.js                   # Registers all Alpine.data components
 │   └── views/
 │       ├── auth/wizard/             # 5 step partials
 │       ├── components/              # Reusable x-* Blade components
 │       ├── emergency/               # Public card + PDF templates
+│       ├── emails/                  # Branded HTML email templates
 │       ├── family/                  # Family list/show/add
 │       ├── invite/                  # Public invitation accept flow
+│       ├── medications/             # List, create/edit form
+│       ├── vaccinations/            # List, create/edit form
+│       ├── assistant/               # Chat UI
 │       ├── profile/tabs/            # Profile tabs (reused for dependents & full-access)
 │       ├── reports/                 # Upload, index, detail
 │       ├── shares/                  # Owner create/history + public views
@@ -408,6 +509,7 @@ novix/
 │       └── dashboard.blade.php
 └── routes/
     ├── web.php
+    ├── console.php                  # Scheduled command registration
     └── auth.php
 ```
 
@@ -416,7 +518,7 @@ novix/
 ## 🌐 Application Routes
 
 <details>
-<summary><b>70+ routes — click to expand full list, grouped by feature</b></summary>
+<summary><b>100+ routes — click to expand full list, grouped by feature</b></summary>
 
 **Auth & Registration**
 
@@ -433,7 +535,7 @@ novix/
 | Method | URI | Name |
 |---|---|---|
 | GET | `/dashboard` | `dashboard` |
-| POST | `/dashboard/switch/{familyMember}` | `dashboard.switch` |
+| POST | `/dashboard/switch/{familyMember}`, `/dashboard/dismiss-onboarding` | `dashboard.*` |
 | GET | `/profile` | `profile.edit` |
 | POST | `/profile/{familyMember?}/{basic-info,photo,address,health,emergency-contact}` | `profile.*` |
 | PATCH | `/profile/theme` | `profile.theme` |
@@ -454,10 +556,28 @@ novix/
 
 | Method | URI | Name |
 |---|---|---|
-| GET/POST | `/reports/upload`, `/reports` | `reports.upload`, `reports.store`, `reports.index` |
+| POST | `/reports/detect` | `reports.detect` (upload-time auto-detect) |
+| GET/POST | `/reports/upload`, `/reports` | `reports.upload`, `reports.store`, `reports.index` (search + type/date filters) |
 | GET | `/reports/{report}`, `/reports/{report}/{status,file}` | `reports.show`, `reports.status`, `reports.file` |
 | PATCH | `/reports/{report}/ocr-text` | `reports.ocr-text` |
-| POST | `/reports/{report}/{detailed-explanation,translate}` | `reports.*` |
+| POST | `/reports/{report}/{detailed-explanation,translate,retry-summary}` | `reports.*` |
+
+**Medications & Vaccinations**
+
+| Method | URI | Name |
+|---|---|---|
+| GET | `/medications`, `/medications/create`, `/medications/{medication}/edit` | `medications.*` |
+| POST/PATCH/DELETE | `/medications`, `/medications/{medication}` | `medications.*` |
+| POST | `/medications/{medication}/toggle-dose` | `medications.toggle-dose` |
+| GET | `/vaccinations`, `/vaccinations/create`, `/vaccinations/{vaccination}/edit` | `vaccinations.*` |
+| POST/PATCH/DELETE | `/vaccinations`, `/vaccinations/{vaccination}` | `vaccinations.*` |
+
+**AI Assistant**
+
+| Method | URI | Name |
+|---|---|---|
+| GET | `/assistant` | `assistant` |
+| POST | `/assistant/send` | `assistant.send` |
 
 **Emergency Card**
 
@@ -575,7 +695,8 @@ Then visit **http://localhost:8000** 🎉
 - **Public pages leak nothing extra.** The emergency card shows only what a responder needs (never the home address); a shared report's PDF shows only name/age/blood group (never address or emergency contact) alongside the actual report content.
 - Report files and QR codes are stored on a private disk and served through authorization-checked routes — never a public, guessable URL.
 - Sensitive actions — account creation, invitations, sharing grants/revokes, card reissues/deactivation, and every share view — are written to an append-only `audit_log` with IP/user-agent capture.
-- AI cost is gated by design: only the automatic short summary ever runs without a user click; the daily Gemini quota is checked before every automatic call and the job defers itself rather than failing outright when the free tier is nearly exhausted.
+- AI cost is bounded by design: only the automatic short summary ever runs without a user click, and every other AI feature is on-demand and cached where re-viewing the same thing shouldn't spend usage twice.
+- A custom `NoHeaderInjection` validation rule rejects embedded CR/LF in every user-supplied email field that reaches outbound mail (family invitations, password reset, registration) — closes a real CRLF-injection gap in Laravel's own default `email` validation rule (CVE-2026-48019) that's unpatched on this app's framework line.
 - Full account deletion requires a typed "DELETE" confirmation plus current-password re-entry, and explicitly cascades through every dependent table in the correct order.
 - 2FA columns (`two_factor_secret`, `two_factor_recovery_codes`) are stored `encrypted`/`encrypted:array` at the Eloquent cast level.
 
@@ -585,20 +706,25 @@ Found a vulnerability? Please open a private security advisory rather than a pub
 
 ## 🗺️ Roadmap
 
-- [x] Full database schema (28 tables, normalized, FK-audited)
+- [x] Full database schema (29 tables, normalized, FK-audited)
 - [x] Session-backed multi-step registration wizard
 - [x] Google OAuth + email/password auth
-- [x] Family dashboard with live BMI gauge
+- [x] Family dashboard with live BMI gauge and a first-run checklist
 - [x] Tabbed profile editor
 - [x] Family invitations — dependents and reciprocal linked-account sharing
 - [x] Emergency ID card with real QR generation, reissue, and instant deactivate
 - [x] Dark mode (server-persisted)
-- [x] Report upload + real OCR pipeline (Tesseract + Imagick/Ghostscript)
-- [x] AI report summarization, on-demand detailed explanations, and cached translation (Gemini)
+- [x] Report upload with upload-time auto-detect and duplicate detection
+- [x] Fast, parallel OCR pipeline (Tesseract + Imagick/Ghostscript) with rotation retry
+- [x] AI report summarization, on-demand detailed explanations, cached translation, and an assistant chat
+- [x] Multi-credential AI fallback chain (3 Gemini keys + Groq) — no single key outage takes AI features down
+- [x] Medication management with reminder scheduling and real email delivery (Resend)
+- [x] Vaccination tracking with due/overdue reminder emails
 - [x] Health timeline with filters, full-text search, and compare-over-time
 - [x] Secure, time-boxed, PIN-protectable report sharing links with real QR + PDF export
-- [ ] Medicine reminder scheduling (the `reminder_enabled` column exists — no notification job yet)
 - [ ] Insurance policy management UI (`insurance_policies` table exists — no controller/views yet)
+- [ ] Domain verification for outbound email (currently limited to the Resend account's own address until a custom domain is verified)
+- [ ] Public deployment
 - [ ] Native mobile app / PWA packaging
 
 ---
