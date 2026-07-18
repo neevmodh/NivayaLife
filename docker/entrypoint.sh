@@ -11,6 +11,14 @@ mkdir -p /run/php
 
 cd /var/www/html
 
+# A persistent volume mounted over storage/app (so uploaded reports survive
+# a redeploy) replaces whatever the image built there and typically comes
+# back owned by root — reassert www-data ownership every boot rather than
+# only at image-build time, or uploads/OCR would fail with a permission error.
+mkdir -p storage/app/private storage/app/public
+chown -R www-data:www-data storage/app
+chmod -R 775 storage/app
+
 # Managed MySQL providers (e.g. Aiven) require SSL and hand you a CA cert
 # rather than a file path — paste its PEM contents into DB_SSL_CA_CONTENT
 # and we materialize it here for Laravel's MYSQL_ATTR_SSL_CA option.
