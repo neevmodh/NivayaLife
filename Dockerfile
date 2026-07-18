@@ -10,10 +10,15 @@ COPY vite.config.js tailwind.config.js postcss.config.js ./
 RUN npm run build
 
 # ---- Stage 2: PHP dependencies ----
+# The composer:2 image is CLI-only and doesn't have gd/imagick etc. — only
+# the runtime stage below does — so platform-requirement checks have to be
+# skipped here. The dependency code itself doesn't care which stage
+# installed it, only that the runtime that actually executes it has the
+# right extensions, which it does.
 FROM composer:2 AS vendor
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
 COPY . .
 RUN composer dump-autoload --optimize --no-dev
 
