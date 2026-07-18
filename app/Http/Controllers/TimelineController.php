@@ -146,7 +146,14 @@ class TimelineController extends Controller
         }
 
         if ($wantsAll || $type === 'medication') {
-            foreach ($active->medications()->whereBetween('start_date', [$from, $to])->get() as $medication) {
+            // whereBetween never matches a NULL start_date (common for
+            // medications added without one, e.g. via the profile's medicine
+            // list) — falling back to "still active" keeps those visible
+            // instead of silently vanishing from every date range.
+            $medicationsQuery = $active->medications()
+                ->where(fn ($q) => $q->whereBetween('start_date', [$from, $to])->orWhere('active', true));
+
+            foreach ($medicationsQuery->get() as $medication) {
                 $entries->push([
                     'type' => 'medication',
                     'date' => $medication->start_date ?? $medication->created_at,
