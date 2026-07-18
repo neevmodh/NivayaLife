@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Registration;
 
+use App\Rules\NoHeaderInjection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,7 +30,7 @@ class Step1Request extends FormRequest
             return $rules;
         }
 
-        $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')];
+        $rules['email'] = ['required', 'string', 'email', 'max:255', new NoHeaderInjection, Rule::unique('users', 'email')];
         $rules['password'] = ['required', 'confirmed', 'min:8'];
 
         return $rules;

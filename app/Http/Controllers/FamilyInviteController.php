@@ -6,6 +6,7 @@ use App\Mail\FamilyInvitationMail;
 use App\Models\AuditLog;
 use App\Models\FamilyInvitation;
 use App\Models\FamilyMember;
+use App\Rules\NoHeaderInjection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class FamilyInviteController extends Controller
         $validated = $request->validate([
             'relation' => ['required', 'in:spouse,father,mother,son,daughter,grandfather,grandmother,other'],
             'full_name' => ['required', 'string', 'min:2', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255', new NoHeaderInjection],
         ]);
 
         $alreadyPending = FamilyInvitation::where('primary_account_id', $user->id)

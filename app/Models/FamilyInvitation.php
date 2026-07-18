@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasValidation;
+use App\Rules\NoHeaderInjection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -33,7 +34,7 @@ class FamilyInvitation extends Model
         return [
             'primary_account_id' => ['required', 'integer', 'exists:users,id'],
             'family_member_id' => ['required', 'integer', 'exists:family_members,id'],
-            'invited_email' => ['required', 'email', 'max:255'],
+            'invited_email' => ['required', 'email', 'max:255', new NoHeaderInjection],
             'status' => ['required', 'in:pending,accepted,expired'],
         ];
     }

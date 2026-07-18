@@ -533,8 +533,26 @@ GEMINI_MODEL=gemini-flash-latest
 GROQ_API_KEY=optional-groq-key-as-final-fallback
 GROQ_MODEL=llama-3.3-70b-versatile
 
+# Family invitations and medication/vaccination reminders need a real
+# mailer — defaults to MAIL_MAILER=log (writes to the log file, sends
+# nothing) until you set this up. Uses Resend (resend.com, free tier)
+# by default; swap MAIL_MAILER and its config in config/mail.php for
+# SMTP/Postmark/SES if you'd rather use something else.
+MAIL_MAILER=resend
+MAIL_FROM_ADDRESS="onboarding@resend.dev"
+RESEND_KEY=your-resend-api-key
+
 QUEUE_CONNECTION=database
 ```
+
+> **Note:** Resend's `onboarding@resend.dev` sender only delivers to the
+> email address your Resend account was created with, until you verify
+> a custom domain (resend.com/domains) — needed before invitations can
+> reach anyone besides yourself.
+
+**Important:** `php artisan serve` and `queue:work` only read `.env` once, at
+startup. If you change any credentials while they're already running, restart
+both — otherwise they'll keep using the old values silently.
 
 Run the app **and** a queue worker — OCR and AI calls run as background jobs and never block the upload response:
 
