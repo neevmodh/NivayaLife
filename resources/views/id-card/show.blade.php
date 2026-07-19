@@ -28,6 +28,27 @@
             </div>
         @endif
 
+        @php
+            $missingPhoto = ! $active->photo_path;
+            $missingAddress = ! $active->address_line1;
+            $editUrl = $active->linked_user_id === auth()->id() ? route('profile.edit') : route('family.member.edit', $active);
+            // If both are missing, address is the more consequential gap for
+            // an emergency card, so it wins the deep-link tie-break.
+            $editTab = $missingAddress ? 'address' : 'photo';
+        @endphp
+
+        @if($missingPhoto || $missingAddress)
+            <div class="mb-6 flex items-start justify-between gap-4 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div>
+                    <p class="text-sm font-bold text-novix-ink dark:text-white">Complete {{ $active->linked_user_id === auth()->id() ? 'your' : "{$active->full_name}'s" }} card</p>
+                    <p class="mt-0.5 text-xs text-novix-muted">
+                        Add a {{ $missingPhoto && $missingAddress ? 'photo and address' : ($missingPhoto ? 'photo' : 'address') }} for a more complete emergency card. Both are optional, but help responders identify {{ $active->linked_user_id === auth()->id() ? 'you' : 'them' }}.
+                    </p>
+                </div>
+                <a href="{{ $editUrl }}?tab={{ $editTab }}" class="flex-shrink-0 rounded-lg bg-novix-green px-4 py-2 text-xs font-semibold text-white hover:bg-novix-green-dark">Add details</a>
+            </div>
+        @endif
+
         {{-- Card --}}
         <div class="mx-auto overflow-hidden rounded-novix shadow-novix {{ $card->is_active ? 'bg-novix-green' : 'bg-gray-400' }}">
             <div class="flex items-center justify-between px-6 pt-5">
@@ -38,11 +59,8 @@
             </div>
 
             <div class="flex flex-col items-center gap-4 p-6 text-center sm:flex-row sm:items-center sm:gap-5 sm:text-left">
-                @if($active->photo_path)
-                    <img src="{{ Storage::url($card->photo_path ?? $active->photo_path) }}" class="h-20 w-20 flex-shrink-0 rounded-2xl border-2 border-white/30 object-cover sm:h-24 sm:w-24" alt="{{ $active->full_name }}">
-                @else
-                    <span class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-white/30 bg-white/10 text-3xl font-bold text-white sm:h-24 sm:w-24">{{ strtoupper(substr($active->full_name, 0, 1)) }}</span>
-                @endif
+                <x-avatar :photo-path="$card->photo_path ?? $active->photo_path" :full-name="$active->full_name" :gender="$active->gender" :age="$active->age()"
+                    size="h-20 w-20 sm:h-24 sm:w-24" rounded="rounded-2xl" color-class="bg-white/10 text-white" class="flex-shrink-0 border-2 border-white/30" />
 
                 <div class="min-w-0 flex-1 text-white">
                     <h1 class="truncate text-xl font-bold">{{ $active->full_name }}</h1>

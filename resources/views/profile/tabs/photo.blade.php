@@ -11,11 +11,7 @@
     <div class="mt-6" x-data="{ retaking: false }">
         <template x-if="!retaking">
             <div class="flex flex-col items-center gap-4">
-                @if($currentPhotoUrl)
-                    <img src="{{ $currentPhotoUrl }}" class="h-40 w-40 rounded-full object-cover shadow-novix-sm" alt="{{ $member->full_name }}">
-                @else
-                    <span class="flex h-40 w-40 items-center justify-center rounded-full bg-novix-mint text-4xl font-bold text-novix-green">{{ strtoupper(substr($member->full_name, 0, 1)) }}</span>
-                @endif
+                <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-40 w-40" class="shadow-novix-sm" />
                 <button type="button" @click="retaking = true" class="rounded-xl bg-novix-green px-6 py-2.5 text-sm font-semibold text-white shadow-novix-sm hover:bg-novix-green-dark">
                     {{ $isDependentEdit ? 'Retake or upload a new photo' : 'Retake selfie / upload new photo' }}
                 </button>

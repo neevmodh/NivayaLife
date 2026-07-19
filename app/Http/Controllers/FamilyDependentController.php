@@ -17,7 +17,14 @@ class FamilyDependentController extends Controller
     {
         $user = $request->user();
 
-        $pincodeRule = $request->input('country') === 'India' ? ['required', 'digits:6'] : ['required', 'string', 'max:12'];
+        // The location-select widget always defaults its hidden country
+        // field to India even when untouched, so "was an address actually
+        // given" has to key off address_line1 rather than country.
+        $pincodeRule = match (true) {
+            filled($request->input('address_line1')) && $request->input('country') === 'India' => ['required', 'digits:6'],
+            filled($request->input('address_line1')) => ['required', 'string', 'max:12'],
+            default => ['nullable', 'string', 'max:12'],
+        };
 
         $validated = $request->validate([
             'relation' => ['required', 'in:spouse,father,mother,son,daughter,grandfather,grandmother,other'],
@@ -25,11 +32,11 @@ class FamilyDependentController extends Controller
             'date_of_birth' => ['required', 'date', 'before:today'],
             'gender' => ['required', 'in:male,female,other,prefer_not_to_say'],
             'blood_group' => ['required', 'in:A+,A-,B+,B-,AB+,AB-,O+,O-,Unknown'],
-            'photo' => ['required', 'image', 'max:5120'],
-            'country' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
-            'address_line1' => ['required', 'string', 'max:255'],
+            'photo' => ['nullable', 'image', 'max:5120'],
+            'country' => ['nullable', 'string', 'max:255'],
+            'state' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'address_line1' => ['nullable', 'string', 'max:255'],
             'address_line2' => ['nullable', 'string', 'max:255'],
             'pincode' => $pincodeRule,
             'height_cm' => ['required', 'numeric', 'min:30', 'max:280'],
@@ -39,8 +46,11 @@ class FamilyDependentController extends Controller
             'emergency_contact_relation' => ['required', 'string', 'max:255'],
         ]);
 
-        $photoPath = 'avatars/'.Str::uuid().'.jpg';
-        Storage::disk('public')->put($photoPath, file_get_contents($request->file('photo')->getRealPath()));
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = 'avatars/'.Str::uuid().'.jpg';
+            Storage::disk('public')->put($photoPath, file_get_contents($request->file('photo')->getRealPath()));
+        }
 
         DB::transaction(function () use ($user, $validated, $photoPath) {
             $familyMember = FamilyMember::create([
@@ -54,12 +64,12 @@ class FamilyDependentController extends Controller
                 'height_cm' => $validated['height_cm'],
                 'weight_kg' => $validated['weight_kg'],
                 'photo_path' => $photoPath,
-                'address_line1' => $validated['address_line1'],
-                'address_line2' => $validated['address_line2'] ?? null,
-                'city' => $validated['city'],
-                'state' => $validated['state'],
-                'pincode' => $validated['pincode'],
-                'country' => $validated['country'],
+                'address_line1' => ($validated['address_line1'] ?? null) ?: null,
+                'address_line2' => ($validated['address_line2'] ?? null) ?: null,
+                'city' => ($validated['city'] ?? null) ?: null,
+                'state' => ($validated['state'] ?? null) ?: null,
+                'pincode' => ($validated['pincode'] ?? null) ?: null,
+                'country' => ($validated['country'] ?? null) ?: null,
                 'emergency_contact_name' => $validated['emergency_contact_name'],
                 'emergency_contact_phone' => $validated['emergency_contact_phone'],
                 'emergency_contact_relation' => $validated['emergency_contact_relation'],

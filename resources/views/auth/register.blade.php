@@ -74,6 +74,11 @@
                 </button>
                 <span x-show="currentStep === 1"></span>
 
+                <button type="button" x-show="currentStep === 2" x-cloak @click="skipPhoto()" :disabled="loading"
+                    class="ml-auto mr-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-novix-muted transition hover:text-novix-ink disabled:opacity-60">
+                    Skip for now
+                </button>
+
                 <button type="button" @click="submitStep(currentStep)" :disabled="loading"
                     class="ml-auto flex items-center gap-2 rounded-xl bg-novix-green px-7 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark disabled:opacity-60">
                     <svg x-show="loading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" stroke-opacity="0.3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>

@@ -54,11 +54,7 @@
                         @php($reciprocal = $isReciprocal($member))
                         <div class="rounded-novix bg-white p-5 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5 {{ $reciprocal ? 'border border-novix-blue/20' : '' }}">
                             <div class="flex items-start gap-3">
-                                @if($member->photo_path)
-                                    <img src="{{ Storage::url($member->photo_path) }}" class="h-12 w-12 rounded-full object-cover" alt="{{ $member->full_name }}">
-                                @else
-                                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-novix-mint text-sm font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ strtoupper(substr($member->full_name, 0, 1)) }}</span>
-                                @endif
+                                <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-12 w-12" />
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-sm font-bold text-novix-ink dark:text-white">{{ $member->full_name }}</p>
                                     <p class="flex items-center gap-1 text-xs text-novix-muted">
@@ -159,11 +155,7 @@
                     @foreach($sharedWith as $grant)
                         <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
                             <div class="flex items-center gap-3">
-                                @if($grant->grantedToUser?->avatar_path)
-                                    <img src="{{ Storage::url($grant->grantedToUser->avatar_path) }}" class="h-12 w-12 rounded-full object-cover" alt="{{ $grant->grantedToUser->name }}">
-                                @else
-                                    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-novix-mint text-sm font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ strtoupper(substr($grant->grantedToUser->name ?? '?', 0, 1)) }}</span>
-                                @endif
+                                <x-avatar :photo-path="$grant->grantedToUser?->avatar_path" :full-name="$grant->grantedToUser->name ?? '?'" size="h-12 w-12" />
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-sm font-bold text-novix-ink dark:text-white">{{ $grant->grantedToUser->name ?? 'Unknown' }}</p>
                                     <p class="text-xs text-novix-muted">{{ $grant->grantedToUser->email ?? '' }}</p>

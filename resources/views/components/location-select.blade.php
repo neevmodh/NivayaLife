@@ -4,6 +4,7 @@
     'city' => '',
     'dynamicErrors' => false,
     'elementId' => null,
+    'required' => true,
 ])
 
 <div
@@ -25,10 +26,13 @@
     </template>
 
     <div x-show="loaded" x-cloak>
-        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Country *</label>
-        <select x-model="countryIso" @change="onCountryChange()" required
+        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Country{{ $required ? ' *' : ' (optional)' }}</label>
+        <select x-model="countryIso" @change="onCountryChange()" @if($required) required @endif
             @if($dynamicErrors) :class="errorFor('country') ? 'border-novix-pink-dark' : 'border-gray-200 focus:border-novix-green'" @endif
             class="w-full appearance-none rounded-xl border bg-novix-cream/40 px-4 py-3 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-novix-green' }}">
+            @unless($required)
+                <option value="">{{ __('Select a country') }}</option>
+            @endunless
             <template x-for="c in countries" :key="c.isoCode">
                 <option :value="c.isoCode" x-text="c.name" :selected="c.isoCode === countryIso"></option>
             </template>
@@ -36,8 +40,8 @@
     </div>
 
     <div x-show="loaded" x-cloak>
-        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">State *</label>
-        <select x-model="stateIso" @change="onStateChange()" :disabled="states.length === 0" required
+        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">State{{ $required ? ' *' : ' (optional)' }}</label>
+        <select x-model="stateIso" @change="onStateChange()" :disabled="states.length === 0" @if($required) required @endif
             :class="states.length === 0 ? 'cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-novix-cream/40 text-novix-ink'"
             class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 text-sm shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
             <option value="">{{ __('Select a state') }}</option>
@@ -48,8 +52,8 @@
     </div>
 
     <div x-show="loaded" x-cloak>
-        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">City *</label>
-        <select name="city" x-model="cityName" :disabled="cities.length === 0" required
+        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">City{{ $required ? ' *' : ' (optional)' }}</label>
+        <select name="city" x-model="cityName" :disabled="cities.length === 0" @if($required) required @endif
             :class="cities.length === 0 ? 'cursor-not-allowed bg-gray-100 text-gray-400' : 'bg-novix-cream/40 text-novix-ink'"
             class="w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 text-sm shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
             <option value="">{{ __('Select a city') }}</option>

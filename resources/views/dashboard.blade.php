@@ -78,11 +78,8 @@
 
             <div class="relative flex flex-col items-center gap-6 p-6 text-white sm:flex-row sm:items-center sm:p-8">
                 <div class="relative flex-shrink-0">
-                    @if($active->photo_path)
-                        <img src="{{ Storage::url($active->photo_path) }}" class="h-24 w-24 rounded-full border-4 border-white/25 object-cover shadow-lg" alt="{{ $active->full_name }}">
-                    @else
-                        <span class="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/25 bg-white/10 text-3xl font-bold shadow-lg">{{ strtoupper(substr($active->full_name, 0, 1)) }}</span>
-                    @endif
+                    <x-avatar :photo-path="$active->photo_path" :full-name="$active->full_name" :gender="$active->gender" :age="$active->age()"
+                        size="h-24 w-24" color-class="bg-white/10 text-white" class="border-4 border-white/25 shadow-lg" />
                     <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-novix-mint text-novix-green shadow" aria-hidden="true">
                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
@@ -179,11 +176,8 @@
                         <form method="POST" action="{{ route('dashboard.switch', $member) }}" class="group flex flex-col items-center gap-1.5">
                             @csrf
                             <button type="submit" class="relative transition group-hover:-translate-y-0.5" aria-label="Switch to {{ $member->full_name }}">
-                                @if($member->photo_path)
-                                    <img src="{{ Storage::url($member->photo_path) }}" class="h-14 w-14 rounded-full object-cover ring-2 ring-offset-2 dark:ring-offset-novix-ink {{ $member->id === $active->id ? 'ring-novix-green' : 'ring-gray-200 group-hover:ring-novix-mint' }}" alt="{{ $member->full_name }}">
-                                @else
-                                    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-novix-mint text-lg font-bold text-novix-green ring-2 ring-offset-2 dark:ring-offset-novix-ink {{ $member->id === $active->id ? 'ring-novix-green' : 'ring-gray-200 group-hover:ring-novix-mint' }}">{{ strtoupper(substr($member->full_name, 0, 1)) }}</span>
-                                @endif
+                                <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()"
+                                    size="h-14 w-14" class="ring-2 ring-offset-2 dark:ring-offset-novix-ink {{ $member->id === $active->id ? 'ring-novix-green' : 'ring-gray-200 group-hover:ring-novix-mint' }}" />
                                 @if($member->id === $active->id)
                                     <span class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-novix-green ring-2 ring-white dark:ring-novix-ink" aria-hidden="true">
                                         <svg class="h-2.5 w-2.5 text-white" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>

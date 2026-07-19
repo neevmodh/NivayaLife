@@ -3,8 +3,8 @@
 @endphp
 
 <div x-ref="step2">
-    <h2 class="text-xl font-bold text-novix-ink dark:text-white">Add your photo</h2>
-    <p class="mt-1 text-sm text-novix-muted">Used on your emergency ID card, so it should clearly show your face.</p>
+    <h2 class="text-xl font-bold text-novix-ink dark:text-white">Add your photo <span class="text-sm font-normal text-novix-muted">(optional)</span></h2>
+    <p class="mt-1 text-sm text-novix-muted">Used on your emergency ID card. You can skip this and add it later from your profile.</p>
 
     <div class="mt-6">
         <x-camera-capture :upload-url="route('register.step2')" :existing-preview-url="$existingPreview" />

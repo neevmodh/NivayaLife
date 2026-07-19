@@ -119,11 +119,14 @@ class RegistrationWizardController extends Controller
     public function savePhoto(Request $request): JsonResponse
     {
         $request->validate([
-            'photo' => ['required', 'image', 'max:5120'],
+            'photo' => ['nullable', 'image', 'max:5120'],
         ]);
 
-        $path = 'tmp-registration/'.$request->session()->getId().'.jpg';
-        Storage::disk('local')->put($path, file_get_contents($request->file('photo')->getRealPath()));
+        $path = null;
+        if ($request->hasFile('photo')) {
+            $path = 'tmp-registration/'.$request->session()->getId().'.jpg';
+            Storage::disk('local')->put($path, file_get_contents($request->file('photo')->getRealPath()));
+        }
 
         session(['wizard.step2.avatar_tmp_path' => $path]);
         $this->advanceFurthestStep(2);
@@ -131,13 +134,19 @@ class RegistrationWizardController extends Controller
         return response()->json([
             'success' => true,
             'next_step' => 3,
-            'preview_url' => route('register.photo-preview').'?t='.time(),
+            'preview_url' => $path ? route('register.photo-preview').'?t='.time() : null,
         ]);
     }
 
     public function saveStep3(Step3Request $request): JsonResponse
     {
-        session(['wizard.step3' => $request->validated()]);
+        // Normalize blanks to null so a skipped address stores clean NULLs
+        // in the DB rather than empty strings.
+        $data = collect($request->validated())
+            ->map(fn ($value) => $value === '' ? null : $value)
+            ->all();
+
+        session(['wizard.step3' => $data]);
         $this->advanceFurthestStep(3);
 
         return response()->json(['success' => true, 'next_step' => 4]);
@@ -178,16 +187,14 @@ class RegistrationWizardController extends Controller
         $step5 = $request->validated();
 
         $avatarTmpPath = $step2['avatar_tmp_path'] ?? null;
-        if (! $avatarTmpPath || ! Storage::disk('local')->exists($avatarTmpPath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Your photo could not be found — please go back to step 2 and retake it.',
-            ], 422);
-        }
+        $hasPhoto = $avatarTmpPath && Storage::disk('local')->exists($avatarTmpPath);
 
-        $user = DB::transaction(function () use ($step1, $step3, $step4, $step5, $avatarTmpPath, $request) {
-            $permanentAvatarPath = 'avatars/'.Str::uuid().'.jpg';
-            Storage::disk('public')->put($permanentAvatarPath, Storage::disk('local')->get($avatarTmpPath));
+        $user = DB::transaction(function () use ($step1, $step3, $step4, $step5, $avatarTmpPath, $hasPhoto, $request) {
+            $permanentAvatarPath = null;
+            if ($hasPhoto) {
+                $permanentAvatarPath = 'avatars/'.Str::uuid().'.jpg';
+                Storage::disk('public')->put($permanentAvatarPath, Storage::disk('local')->get($avatarTmpPath));
+            }
 
             $user = User::create([
                 'name' => $step1['full_name'],
@@ -210,12 +217,12 @@ class RegistrationWizardController extends Controller
                 'height_cm' => $step4['height_cm'],
                 'weight_kg' => $step4['weight_kg'],
                 'photo_path' => $permanentAvatarPath,
-                'address_line1' => $step3['address_line1'],
+                'address_line1' => $step3['address_line1'] ?? null,
                 'address_line2' => $step3['address_line2'] ?? null,
-                'city' => $step3['city'],
-                'state' => $step3['state'],
-                'pincode' => $step3['pincode'],
-                'country' => $step3['country'],
+                'city' => $step3['city'] ?? null,
+                'state' => $step3['state'] ?? null,
+                'pincode' => $step3['pincode'] ?? null,
+                'country' => $step3['country'] ?? null,
                 'emergency_contact_name' => $step5['emergency_contact_name'],
                 'emergency_contact_phone' => $step5['emergency_contact_phone'],
                 'emergency_contact_relation' => $step5['emergency_contact_relation'],
@@ -258,7 +265,9 @@ class RegistrationWizardController extends Controller
             return $user;
         });
 
-        Storage::disk('local')->delete($avatarTmpPath);
+        if ($avatarTmpPath) {
+            Storage::disk('local')->delete($avatarTmpPath);
+        }
         $request->session()->forget('wizard');
 
         Auth::login($user, remember: true);

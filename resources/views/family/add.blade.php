@@ -130,27 +130,27 @@
                 <x-blood-group-select dynamic-errors />
 
                 <div>
-                    <p class="mb-2 text-sm font-semibold text-novix-ink dark:text-white">Take or upload their photo</p>
+                    <p class="mb-2 text-sm font-semibold text-novix-ink dark:text-white">Take or upload their photo <span class="font-normal text-novix-muted">(optional)</span></p>
                     <x-camera-capture :upload-url="'#'" element-id="novix-dependent-camera" />
                     <p x-cloak x-show="errorFor('photo')" x-text="errorFor('photo')" class="mt-2 text-center text-sm text-novix-pink-dark"></p>
                 </div>
 
                 <div>
                     <div class="mb-2 flex items-center justify-between">
-                        <p class="text-sm font-semibold text-novix-ink dark:text-white">Address</p>
+                        <p class="text-sm font-semibold text-novix-ink dark:text-white">Address <span class="font-normal text-novix-muted">(optional)</span></p>
                         <label class="flex items-center gap-2 text-xs font-medium text-novix-muted">
                             <input type="checkbox" @change="applySameAddress($event.target.checked)" class="rounded border-gray-300 text-novix-green focus:ring-novix-green">
                             Same as my address
                         </label>
                     </div>
 
-                    <x-location-select element-id="novix-dependent-location" dynamic-errors />
+                    <x-location-select element-id="novix-dependent-location" :required="false" dynamic-errors />
 
                     <div class="mt-4 grid grid-cols-1 gap-4">
                         <div class="relative">
-                            <input type="text" name="address_line1" x-model="form_address_line1" placeholder=" " required
+                            <input type="text" name="address_line1" x-model="form_address_line1" placeholder=" "
                                 class="peer w-full rounded-xl border border-gray-200 bg-novix-cream/40 px-4 pt-5 pb-2 text-sm text-novix-ink shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
-                            <label class="pointer-events-none absolute left-4 top-3.5 text-sm text-novix-muted transition-all duration-150 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-novix-green peer-[&:not(:placeholder-shown)]:top-1.5 peer-[&:not(:placeholder-shown)]:text-[11px]">Address line 1 *</label>
+                            <label class="pointer-events-none absolute left-4 top-3.5 text-sm text-novix-muted transition-all duration-150 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-novix-green peer-[&:not(:placeholder-shown)]:top-1.5 peer-[&:not(:placeholder-shown)]:text-[11px]">Address line 1 (optional)</label>
                         </div>
                         <div class="relative">
                             <input type="text" name="address_line2" x-model="form_address_line2" placeholder=" "
@@ -158,9 +158,9 @@
                             <label class="pointer-events-none absolute left-4 top-3.5 text-sm text-novix-muted transition-all duration-150 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-novix-green peer-[&:not(:placeholder-shown)]:top-1.5 peer-[&:not(:placeholder-shown)]:text-[11px]">Address line 2 (optional)</label>
                         </div>
                         <div class="relative">
-                            <input type="text" name="pincode" x-model="form_pincode" inputmode="numeric" maxlength="12" placeholder=" " required
+                            <input type="text" name="pincode" x-model="form_pincode" inputmode="numeric" maxlength="12" placeholder=" "
                                 class="peer w-full rounded-xl border border-gray-200 bg-novix-cream/40 px-4 pt-5 pb-2 text-sm text-novix-ink shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
-                            <label class="pointer-events-none absolute left-4 top-3.5 text-sm text-novix-muted transition-all duration-150 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-novix-green peer-[&:not(:placeholder-shown)]:top-1.5 peer-[&:not(:placeholder-shown)]:text-[11px]">Pincode / postal code *</label>
+                            <label class="pointer-events-none absolute left-4 top-3.5 text-sm text-novix-muted transition-all duration-150 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-novix-green peer-[&:not(:placeholder-shown)]:top-1.5 peer-[&:not(:placeholder-shown)]:text-[11px]">Pincode / postal code (optional)</label>
                         </div>
                     </div>
                 </div>

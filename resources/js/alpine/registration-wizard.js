@@ -121,6 +121,34 @@ export default function registrationWizard({ resumeStep = 1, csrfToken, checkEma
             }
         },
 
+        /** Photo can be added later from the profile page — this posts step 2 with no file, same endpoint savePhoto() already treats as optional. */
+        async skipPhoto() {
+            this.serverErrors = {};
+            this.loading = true;
+
+            try {
+                const res = await fetch(stepUrls[2], {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, Accept: 'application/json' },
+                    body: new FormData(),
+                });
+                const json = await res.json();
+
+                if (!res.ok || json.success === false) {
+                    this.serverErrors = json.errors || (json.message ? { _general: [json.message] } : {});
+                    this.triggerShake();
+                    return;
+                }
+
+                this.furthestStep = Math.max(this.furthestStep, json.next_step);
+                this.currentStep = json.next_step;
+            } catch (e) {
+                this.triggerShake();
+            } finally {
+                this.loading = false;
+            }
+        },
+
         triggerShake() {
             this.shake = true;
             setTimeout(() => (this.shake = false), 500);

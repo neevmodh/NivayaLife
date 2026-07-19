@@ -19,9 +19,12 @@
     </x-slot>
 
     @php
-        $initialTab = (!$isDependentEdit && ($errors->hasBag('updatePassword') || $errors->hasBag('userDeletion') || session('status') === 'password-updated'))
-            ? 'security'
-            : 'basic';
+        $requestedTab = request()->query('tab');
+        $initialTab = match (true) {
+            $requestedTab && array_key_exists($requestedTab, $tabs) => $requestedTab,
+            !$isDependentEdit && ($errors->hasBag('updatePassword') || $errors->hasBag('userDeletion') || session('status') === 'password-updated') => 'security',
+            default => 'basic',
+        };
     @endphp
 
     <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8" x-data="{ tab: @js($initialTab) }">

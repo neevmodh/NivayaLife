@@ -40,7 +40,7 @@
                 @foreach($archivedMembers as $archived)
                     <div class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 dark:border-white/10">
                         <div class="flex items-center gap-3">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-500 dark:bg-white/10">{{ strtoupper(substr($archived->full_name, 0, 1)) }}</span>
+                            <x-avatar :photo-path="null" :full-name="$archived->full_name" :gender="$archived->gender" :age="$archived->age()" size="h-9 w-9" color-class="bg-gray-100 text-gray-500 dark:bg-white/10" />
                             <div>
                                 <p class="text-sm font-medium text-novix-ink dark:text-white">{{ $archived->full_name }}</p>
                                 <p class="text-xs text-novix-muted">Archived {{ $archived->deleted_at->diffForHumans() }}</p>

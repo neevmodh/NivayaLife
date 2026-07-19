@@ -42,11 +42,7 @@
                     <div class="relative">
                         <button @click="switcherOpen = !switcherOpen" @click.outside="switcherOpen = false"
                             class="flex items-center gap-2 rounded-full border border-gray-200 py-1 pl-1 pr-3 text-sm font-medium text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
-                            @if($navActive->photo_path)
-                                <img src="{{ Storage::url($navActive->photo_path) }}" class="h-7 w-7 rounded-full object-cover" alt="">
-                            @else
-                                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-novix-mint text-xs font-bold text-novix-green">{{ strtoupper(substr($navActive->full_name, 0, 1)) }}</span>
-                            @endif
+                            <x-avatar :photo-path="$navActive->photo_path" :full-name="$navActive->full_name" :gender="$navActive->gender" :age="$navActive->age()" size="h-7 w-7" />
                             {{ Str::of($navActive->full_name)->words(1, '') }}
                         </button>
                         <div x-show="switcherOpen" x-cloak x-transition
@@ -56,11 +52,7 @@
                                 <form method="POST" action="{{ route('dashboard.switch', $member) }}">
                                     @csrf
                                     <button type="submit" class="flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm hover:bg-novix-cream dark:hover:bg-white/10 {{ $navActive->id === $member->id ? 'bg-novix-mint/60 dark:bg-white/10' : '' }}">
-                                        @if($member->photo_path)
-                                            <img src="{{ Storage::url($member->photo_path) }}" class="h-8 w-8 rounded-full object-cover" alt="">
-                                        @else
-                                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-novix-mint text-xs font-bold text-novix-green">{{ strtoupper(substr($member->full_name, 0, 1)) }}</span>
-                                        @endif
+                                        <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
                                         <span>
                                             <span class="block font-medium text-novix-ink dark:text-white">{{ $member->full_name }}</span>
                                             <span class="block text-xs capitalize text-novix-muted">{{ $member->relation }}</span>

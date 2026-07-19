@@ -71,14 +71,10 @@ export default function familyAddPage({
                 const cameraEl = document.getElementById('novix-dependent-camera');
                 const camera = window.Alpine.$data(cameraEl);
 
-                if (!camera.capturedDataUrl) {
-                    this.errors = { photo: ['Please take or upload their photo before continuing.'] };
-                    this.triggerShake();
-                    return;
-                }
-
                 const body = new FormData(event.target);
-                body.append('photo', camera.dataUrlToBlob(camera.capturedDataUrl), 'photo.jpg');
+                if (camera.capturedDataUrl) {
+                    body.append('photo', camera.dataUrlToBlob(camera.capturedDataUrl), 'photo.jpg');
+                }
 
                 const res = await fetch(dependentUrl, {
                     method: 'POST',

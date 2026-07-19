@@ -32,11 +32,8 @@
 
         {{-- Identity --}}
         <div class="flex items-center gap-4 border-b border-gray-100 p-6">
-            @if($member->photo_path)
-                <img src="{{ Storage::url($member->photo_path) }}" class="h-20 w-20 flex-shrink-0 rounded-2xl object-cover" alt="{{ $member->full_name }}">
-            @else
-                <span class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl bg-novix-mint text-2xl font-bold text-novix-green">{{ strtoupper(substr($member->full_name, 0, 1)) }}</span>
-            @endif
+            <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()"
+                size="h-20 w-20" rounded="rounded-2xl" class="flex-shrink-0" />
             <div class="min-w-0 flex-1">
                 <h1 class="truncate text-lg font-bold text-novix-ink">{{ $member->full_name }}</h1>
                 <p class="text-sm text-novix-muted">
