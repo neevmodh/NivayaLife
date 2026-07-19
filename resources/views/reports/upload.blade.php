@@ -28,7 +28,7 @@
             @drop.prevent="onDrop($event)"
         >
             <input type="file" id="report-file-input" class="hidden" multiple
-                accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                accept=".pdf,.jpg,.jpeg,.png,.webp,.tiff,.tif,.bmp,.gif,.docx,application/pdf,image/jpeg,image/png,image/webp,image/tiff,image/bmp,image/gif,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 @change="onFilesSelected($event.target.files); $event.target.value = ''">
             <input type="file" id="report-camera-input" class="hidden"
                 accept="image/*" capture="environment"
@@ -45,7 +45,7 @@
                 <label for="report-file-input" class="cursor-pointer rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark">Choose Files</label>
                 <label for="report-camera-input" class="cursor-pointer rounded-xl border-2 border-novix-green px-5 py-2.5 text-sm font-semibold text-novix-green transition hover:bg-novix-mint/40 sm:hidden">Use Camera</label>
             </div>
-            <p class="mt-3 text-xs text-novix-muted">PDF, JPG, or PNG &middot; up to 10MB each &middot; multiple files supported</p>
+            <p class="mt-3 text-xs text-novix-muted">PDF, Word, or image (JPG/PNG/WEBP/TIFF/BMP/GIF) &middot; up to 10MB each &middot; multiple files supported</p>
         </div>
 
         {{-- File cards --}}
@@ -54,8 +54,8 @@
                 <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <div class="flex gap-4">
                         <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-novix-cream dark:bg-white/10">
-                            <img x-show="!f.isPdf" :src="f.previewUrl" class="h-full w-full object-cover" alt="">
-                            <div x-show="f.isPdf" class="flex h-full w-full items-center justify-center text-3xl" aria-hidden="true">&#128196;</div>
+                            <img x-show="!f.isDocument" :src="f.previewUrl" class="h-full w-full object-cover" alt="">
+                            <div x-show="f.isDocument" class="flex h-full w-full items-center justify-center text-3xl" aria-hidden="true">&#128196;</div>
                         </div>
 
                         <div class="min-w-0 flex-1">

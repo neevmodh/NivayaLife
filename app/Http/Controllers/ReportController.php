@@ -147,7 +147,7 @@ class ReportController extends Controller
         abort_unless($report->familyMember->canBeEditedBy($user), 403);
 
         $validated = $request->validate([
-            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,tiff,tif,bmp,gif,docx', 'max:10240'],
         ]);
 
         $file = $validated['file'];

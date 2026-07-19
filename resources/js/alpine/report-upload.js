@@ -74,17 +74,19 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
             const today = new Date().toISOString().slice(0, 10);
 
             for (const file of Array.from(fileList)) {
+                const isDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || /\.docx$/i.test(file.name);
                 const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
-                const isImage = /^image\//.test(file.type) || /\.(jpe?g|png)$/i.test(file.name);
-                if (!isPdf && !isImage) continue;
+                const isImage = /^image\//.test(file.type) || /\.(jpe?g|png|webp|tiff?|bmp|gif)$/i.test(file.name);
+                const isDocument = isPdf || isDocx;
+                if (!isDocument && !isImage) continue;
                 if (file.size > 10 * 1024 * 1024) continue;
 
                 const entry = {
                     id: crypto.randomUUID(),
                     file,
-                    isPdf,
+                    isDocument,
                     name: file.name,
-                    previewUrl: isPdf ? null : URL.createObjectURL(file),
+                    previewUrl: isDocument ? null : URL.createObjectURL(file),
                     type: guessType(file.name),
                     reportDate: today,
                     hospital: '',
@@ -126,7 +128,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
         /** Compressed exactly once per file and reused for both detection and the real upload, so their server-side content hashes match and OCR only runs once. */
         getUploadBlob(entry) {
             if (!entry.blobPromise) {
-                entry.blobPromise = entry.isPdf ? Promise.resolve(entry.file) : compressImage(entry.file);
+                entry.blobPromise = entry.isDocument ? Promise.resolve(entry.file) : compressImage(entry.file);
             }
 
             return entry.blobPromise;

@@ -7,6 +7,7 @@ use Illuminate\Process\Pool;
 use Illuminate\Support\Facades\Process;
 use Imagick;
 use RuntimeException;
+use ZipArchive;
 
 /**
  * PDFs are rasterized page-by-page with Imagick (which shells out to
@@ -32,9 +33,19 @@ class OcrExtractor
         return "report_ocr:{$fileHash}";
     }
 
+    private const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
     /** @return string Extracted text, empty string if nothing readable was found. */
     public function extract(string $absolutePath, string $mimeType): string
     {
+        // A .docx is already digital text (a zip of XML), not a scanned
+        // image — reading it directly is both more accurate and far
+        // cheaper than rasterizing it and running Tesseract over a
+        // screenshot of its content.
+        if ($mimeType === self::DOCX_MIME) {
+            return $this->extractDocx($absolutePath);
+        }
+
         $tempFiles = [];
 
         try {
@@ -80,6 +91,32 @@ class OcrExtractor
                 @unlink($file);
             }
         }
+    }
+
+    /**
+     * A .docx is a zip archive; its body text lives in word/document.xml as
+     * a series of <w:t> runs. Turning every </w:p> (paragraph end) into a
+     * newline before stripping tags keeps paragraph breaks instead of
+     * collapsing the whole document onto one line.
+     */
+    private function extractDocx(string $path): string
+    {
+        $zip = new ZipArchive;
+
+        if ($zip->open($path) !== true) {
+            throw new RuntimeException('Could not open the Word document as a zip archive.');
+        }
+
+        $xml = $zip->getFromName('word/document.xml');
+        $zip->close();
+
+        if ($xml === false) {
+            throw new RuntimeException('Word document has no readable content (missing word/document.xml).');
+        }
+
+        $withBreaks = str_replace(['</w:p>', '<w:br/>', '<w:br />'], "\n", $xml);
+
+        return trim(html_entity_decode(strip_tags($withBreaks), ENT_QUOTES | ENT_XML1));
     }
 
     /**

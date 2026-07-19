@@ -101,7 +101,7 @@
                     <p class="mt-1 text-xs text-novix-muted">A blurry or angled photo is the usual cause — reuploading a clearer shot often fixes it. You can still view the original file above, or add your own notes below.</p>
                     <p x-show="reuploadError" x-cloak x-text="reuploadError" class="mt-2 text-xs font-semibold text-novix-pink-dark"></p>
                     <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                        <input type="file" x-ref="reuploadInput" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="hidden" @change="reuploadFile($event.target.files[0]); $event.target.value = ''">
+                        <input type="file" x-ref="reuploadInput" accept=".pdf,.jpg,.jpeg,.png,.webp,.tiff,.tif,.bmp,.gif,.docx,application/pdf,image/jpeg,image/png,image/webp,image/tiff,image/bmp,image/gif,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden" @change="reuploadFile($event.target.files[0]); $event.target.value = ''">
                         <button type="button" @click="$refs.reuploadInput.click()" :disabled="reuploading" class="rounded-lg bg-novix-green px-4 py-2 text-xs font-semibold text-white hover:bg-novix-green-dark disabled:opacity-50">
                             <span x-show="!reuploading">Reupload document</span>
                             <span x-show="reuploading">Uploading&hellip;</span>
