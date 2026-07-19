@@ -4,6 +4,15 @@
     // forms (create/edit) exclude these columns entirely, not just mask them.
     $sensitivePattern = '/password|secret|token|recovery_codes/i';
 
+    // photo_path/avatar_path live on the public disk (same as everywhere
+    // else in the app, e.g. <x-avatar>) so Storage::url() resolves them
+    // directly. "avatar" is a raw external URL (Google's profile photo),
+    // used as-is. Deliberately NOT extended to reports.file_path — those
+    // live on the private disk behind their own authorization check, and
+    // are sensitive medical documents rather than profile photos.
+    $publicDiskImageColumns = ['photo_path', 'avatar_path'];
+    $externalUrlColumns = ['avatar'];
+
     $sortUrl = fn ($column) => route('admin.tables.show', array_filter([
         'table' => $table, 'q' => $q ?: null, 'sort' => $column,
         'dir' => ($sortColumn === $column && $sortDir === 'asc') ? 'desc' : 'asc',
@@ -90,6 +99,14 @@
                                             <span class="text-novix-muted">••••••••</span>
                                         @elseif($value === null)
                                             <span class="text-novix-muted">—</span>
+                                        @elseif(in_array($column, $publicDiskImageColumns))
+                                            <a href="{{ Storage::url($value) }}" target="_blank">
+                                                <img src="{{ Storage::url($value) }}" alt="" class="h-8 w-8 rounded-full object-cover" loading="lazy">
+                                            </a>
+                                        @elseif(in_array($column, $externalUrlColumns))
+                                            <a href="{{ $value }}" target="_blank">
+                                                <img src="{{ $value }}" alt="" class="h-8 w-8 rounded-full object-cover" loading="lazy">
+                                            </a>
                                         @else
                                             {{ Str::limit((string) $value, 60) }}
                                         @endif

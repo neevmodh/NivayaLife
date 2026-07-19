@@ -282,8 +282,9 @@
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Recent signups</h3>
                 <div class="mt-3 space-y-3">
                     @forelse($recentUsers as $user)
-                        <div class="flex items-center justify-between text-sm">
-                            <div class="min-w-0">
+                        <div class="flex items-center gap-3 text-sm">
+                            <x-avatar :photo-path="$user->avatar_path" :full-name="$user->name" size="h-9 w-9" />
+                            <div class="min-w-0 flex-1">
                                 <p class="truncate font-semibold text-novix-ink dark:text-white">{{ $user->name }}</p>
                                 <p class="truncate text-xs text-novix-muted">{{ $user->email }}</p>
                             </div>

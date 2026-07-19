@@ -80,7 +80,7 @@ class AdminDashboardController extends Controller
             'aiJobsByStatus' => $aiJobsByStatus,
             'failedJobCount' => DB::table('failed_jobs')->count(),
             'pendingJobCount' => DB::table('jobs')->count(),
-            'recentUsers' => User::latest()->take(10)->get(['id', 'name', 'email', 'created_at']),
+            'recentUsers' => User::latest()->take(10)->get(['id', 'name', 'email', 'avatar_path', 'created_at']),
             'recentAuditLog' => AuditLog::with('user:id,name,email')->latest()->take(20)->get(),
             'signupSeries' => $this->dailySeries(User::query(), $since),
             'reportSeries' => $this->dailySeries(Report::query(), $since, 'uploaded_at'),
