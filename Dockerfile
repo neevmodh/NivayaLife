@@ -47,7 +47,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" pdo_mysql mbstring exif pcntl bcmath gd zip \
     && pecl install imagick && docker-php-ext-enable imagick \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    # ImageMagick's Debian package ships a default policy.xml that blocks its
+    # PDF/PS/EPS coders (the Ghostscript delegate) outright, as a blanket
+    # security-hardening default unrelated to whether the app actually needs
+    # them — it does, that's the entire point of installing ghostscript
+    # above, to rasterize PDF reports for OCR. Without this, every PDF
+    # upload fails at Imagick::readImage() with "not authorized" rather than
+    # anywhere OCR-quality-related. Scoped to just PDF/PS/EPS rather than
+    # disabling the policy file wholesale.
+    && find /etc/ImageMagick* -name policy.xml -exec sed -i \
+        -e '/pattern="PDF"/s/rights="none"/rights="read"/' \
+        -e '/pattern="PS"/s/rights="none"/rights="read"/' \
+        -e '/pattern="EPS"/s/rights="none"/rights="read"/' \
+        {} +
 
 WORKDIR /var/www/html
 
