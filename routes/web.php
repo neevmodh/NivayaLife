@@ -20,9 +20,12 @@ use App\Http\Controllers\ReportUploadController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\VaccinationController;
+use App\Models\PageView;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    PageView::record('/');
+
     return view('welcome');
 });
 
@@ -149,6 +152,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/tables/{table}/{id}/edit', [AdminRecordController::class, 'edit'])->name('tables.edit');
     Route::put('/tables/{table}/{id}', [AdminRecordController::class, 'update'])->name('tables.update');
     Route::delete('/tables/{table}/{id}', [AdminRecordController::class, 'destroy'])->name('tables.destroy');
+    Route::get('/tables/{table}/export', [AdminDashboardController::class, 'export'])->name('tables.export');
     Route::get('/tables/{table}', [AdminDashboardController::class, 'table'])->name('tables.show');
 });
 

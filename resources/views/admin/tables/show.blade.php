@@ -8,6 +8,10 @@
         'table' => $table, 'q' => $q ?: null, 'sort' => $column,
         'dir' => ($sortColumn === $column && $sortDir === 'asc') ? 'desc' : 'asc',
     ]));
+
+    $exportUrl = route('admin.tables.export', array_filter([
+        'table' => $table, 'q' => $q ?: null, 'sort' => $sortColumn, 'dir' => $sortDir,
+    ]));
 @endphp
 
 <x-app-layout>
@@ -17,6 +21,9 @@
                 <span class="font-mono">{{ $table }}</span>
             </h2>
             <div class="flex gap-2">
+                <a href="{{ $exportUrl }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                    Export CSV
+                </a>
                 @if($isEditable)
                     <a href="{{ route('admin.tables.create', $table) }}" class="rounded-lg bg-novix-green px-4 py-2 text-sm font-semibold text-white hover:bg-novix-green-dark">
                         Add row

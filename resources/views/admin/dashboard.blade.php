@@ -68,6 +68,86 @@
             </div>
         </div>
 
+        {{-- Landing page traffic --}}
+        <div>
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-novix-muted">Landing page traffic</h3>
+
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Total views</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pageViewsTotal) }}</p>
+                    <p class="mt-1 text-xs text-novix-muted">{{ number_format($pageViewsToday) }} today</p>
+                </div>
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Views in range</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pageViewsInRange) }}</p>
+                    <p class="mt-1 text-xs text-novix-muted">for the selected period</p>
+                </div>
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Unique visitors</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($uniqueVisitorsInRange) }}</p>
+                    <p class="mt-1 text-xs text-novix-muted">by IP, in range</p>
+                </div>
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Visitor → signup</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ $conversionRate !== null ? $conversionRate.'%' : '—' }}</p>
+                    <p class="mt-1 text-xs text-novix-muted">signups ÷ views, in range</p>
+                </div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
+                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Views over time</h3>
+                    @if(collect($pageViewSeries)->sum('count') === 0)
+                        <p class="mt-3 text-sm text-novix-muted">No landing page views recorded yet.</p>
+                    @else
+                        <div class="mt-2" x-data="adminChart({
+                            type: 'area',
+                            series: [{ name: 'Views', data: @js(collect($pageViewSeries)->pluck('count')) }],
+                            options: {
+                                colors: ['{{ $novixPalette[3] }}'],
+                                stroke: { curve: 'smooth', width: 2 },
+                                fill: { type: 'gradient', gradient: { opacityFrom: 0.5, opacityTo: 0.05 } },
+                                dataLabels: { enabled: false },
+                                xaxis: { categories: @js(collect($pageViewSeries)->pluck('date')), labels: { show: false }, axisTicks: { show: false } },
+                                grid: { borderColor: 'rgba(148,163,184,0.2)' },
+                            },
+                        })"></div>
+                    @endif
+                </div>
+
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Top referrers</h3>
+                    <div class="mt-3 space-y-2">
+                        @forelse($topReferrers as $host => $count)
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="truncate text-novix-muted">{{ $host }}</span>
+                                <span class="flex-shrink-0 font-semibold text-novix-ink dark:text-white">{{ number_format($count) }}</span>
+                            </div>
+                        @empty
+                            <p class="text-sm text-novix-muted">No referrer data yet — most visits are likely direct.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Views by hour of day</h3>
+                <div class="mt-2" x-data="adminChart({
+                    type: 'bar',
+                    series: [{ name: 'Views', data: @js($pageViewsByHour) }],
+                    options: {
+                        colors: ['{{ $novixPalette[2] }}'],
+                        plotOptions: { bar: { borderRadius: 4, columnWidth: '70%' } },
+                        xaxis: { categories: @js(collect(range(0, 23))->map(fn($h) => sprintf('%02d:00', $h))) },
+                        dataLabels: { enabled: false },
+                        grid: { borderColor: 'rgba(148,163,184,0.2)' },
+                        height: 220,
+                    },
+                })"></div>
+            </div>
+        </div>
+
         {{-- Time-series charts --}}
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">

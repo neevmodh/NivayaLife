@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AiJob;
 use App\Models\AuditLog;
 use App\Models\FamilyMember;
+use App\Models\PageView;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -60,6 +61,11 @@ class AdminDashboardController extends Controller
             ->groupBy('blood_group')
             ->pluck('total', 'blood_group');
 
+        $landingViewsInRange = PageView::where('path', '/')->where('created_at', '>=', $since);
+        $pageViewsInRange = (clone $landingViewsInRange)->count();
+        $uniqueVisitorsInRange = (clone $landingViewsInRange)->distinct('ip_address')->count('ip_address');
+        $signupsInRange = User::where('created_at', '>=', $since)->count();
+
         return view('admin.dashboard', [
             'range' => $range,
             'userCount' => User::count(),
@@ -76,17 +82,29 @@ class AdminDashboardController extends Controller
             'pendingJobCount' => DB::table('jobs')->count(),
             'recentUsers' => User::latest()->take(10)->get(['id', 'name', 'email', 'created_at']),
             'recentAuditLog' => AuditLog::with('user:id,name,email')->latest()->take(20)->get(),
-            'signupSeries' => $this->dailySeries(User::class, $since),
-            'reportSeries' => $this->dailySeries(Report::class, $since, 'uploaded_at'),
+            'signupSeries' => $this->dailySeries(User::query(), $since),
+            'reportSeries' => $this->dailySeries(Report::query(), $since, 'uploaded_at'),
             'bloodGroupDistribution' => $bloodGroupDistribution,
             'ageBuckets' => $this->ageBuckets(),
+            'pageViewsTotal' => PageView::where('path', '/')->count(),
+            'pageViewsToday' => PageView::where('path', '/')->whereDate('created_at', now())->count(),
+            'pageViewsInRange' => $pageViewsInRange,
+            'uniqueVisitorsInRange' => $uniqueVisitorsInRange,
+            'pageViewSeries' => $this->dailySeries(PageView::where('path', '/'), $since),
+            'pageViewsByHour' => $this->hourlyDistribution($since),
+            'topReferrers' => $this->topReferrers($since),
+            'conversionRate' => $pageViewsInRange > 0 ? round($signupsInRange / $pageViewsInRange * 100, 1) : null,
         ]);
     }
 
-    /** Zero-filled daily counts from $since to today, so a chart never shows a misleading gap for a quiet day. */
-    private function dailySeries(string $modelClass, \Illuminate\Support\Carbon $since, string $dateColumn = 'created_at'): array
+    /**
+     * Zero-filled daily counts from $since to today, so a chart never shows a
+     * misleading gap for a quiet day. Takes a query builder rather than a
+     * model class so a caller can pre-filter it (e.g. PageView for one path).
+     */
+    private function dailySeries($query, \Illuminate\Support\Carbon $since, string $dateColumn = 'created_at'): array
     {
-        $raw = $modelClass::query()
+        $raw = (clone $query)
             ->where($dateColumn, '>=', $since)
             ->selectRaw("DATE({$dateColumn}) as day, count(*) as total")
             ->groupBy('day')
@@ -101,6 +119,40 @@ class AdminDashboardController extends Controller
                 return ['date' => $date, 'count' => (int) ($raw[$date] ?? 0)];
             })
             ->all();
+    }
+
+    /** Zero-filled 0-23 hour-of-day counts for landing-page views, so the chart shows every hour even if some had none. */
+    private function hourlyDistribution(\Illuminate\Support\Carbon $since): array
+    {
+        $raw = PageView::where('path', '/')
+            ->where('created_at', '>=', $since)
+            ->selectRaw('HOUR(created_at) as hour, count(*) as total')
+            ->groupBy('hour')
+            ->pluck('total', 'hour');
+
+        return collect(range(0, 23))->map(fn ($hour) => (int) ($raw[$hour] ?? 0))->all();
+    }
+
+    /** Grouped by host rather than full URL, since two full referer URLs from the same site are the same "source" for this purpose. */
+    private function topReferrers(\Illuminate\Support\Carbon $since): array
+    {
+        $raw = PageView::where('path', '/')
+            ->where('created_at', '>=', $since)
+            ->whereNotNull('referer')
+            ->selectRaw('referer, count(*) as total')
+            ->groupBy('referer')
+            ->orderByDesc('total')
+            ->limit(50)
+            ->pluck('total', 'referer');
+
+        $hostCounts = [];
+        foreach ($raw as $referer => $count) {
+            $host = parse_url($referer, PHP_URL_HOST) ?: $referer;
+            $hostCounts[$host] = ($hostCounts[$host] ?? 0) + $count;
+        }
+        arsort($hostCounts);
+
+        return array_slice($hostCounts, 0, 8, true);
     }
 
     /** Computed from the age() accessor, not a DB column, so this is done in PHP rather than SQL. */
@@ -134,6 +186,56 @@ class AdminDashboardController extends Controller
      */
     public function table(Request $request, string $table): View
     {
+        [$query, $meta] = $this->buildTableQuery($request, $table);
+
+        $rows = (clone $query)->orderBy($meta['sortColumn'], $meta['sortDir'])->paginate(25)->withQueryString();
+
+        return view('admin.tables.show', [
+            'table' => $table,
+            'rows' => $rows,
+            'isEditable' => ! in_array($table, AdminRecordController::SYSTEM_TABLES),
+            ...$meta,
+        ]);
+    }
+
+    /**
+     * CSV of every row matching the current search/sort (not just the
+     * current page) — same sensitive-column masking as the on-screen view,
+     * since a downloaded file is easier to lose track of than a browser tab.
+     */
+    public function export(Request $request, string $table): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        [$query, $meta] = $this->buildTableQuery($request, $table);
+
+        $sensitivePattern = '/password|secret|token|recovery_codes/i';
+        $columns = $meta['columns'];
+
+        return response()->streamDownload(function () use ($query, $meta, $columns, $sensitivePattern) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $columns);
+
+            (clone $query)->orderBy($meta['sortColumn'], $meta['sortDir'])
+                ->chunk(500, function ($rows) use ($handle, $columns, $sensitivePattern) {
+                    foreach ($rows as $row) {
+                        fputcsv($handle, collect($columns)->map(function ($column) use ($row, $sensitivePattern) {
+                            $value = $row->$column ?? null;
+
+                            return preg_match($sensitivePattern, $column) && $value !== null ? '••••••••' : $value;
+                        })->all());
+                    }
+                });
+
+            fclose($handle);
+        }, "{$table}.csv", ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * Shared by table() and export(): validates the table name, resolves
+     * sortable/searchable columns from the schema, and applies the current
+     * search term. Returns [query builder, metadata array for the view].
+     */
+    private function buildTableQuery(Request $request, string $table): array
+    {
         // The table name reaches the query builder only after being checked
         // against the schema's own real table list — never interpolated
         // from the request unvalidated.
@@ -163,18 +265,13 @@ class AdminDashboardController extends Controller
             });
         }
 
-        $rows = $query->orderBy($sortColumn, $sortDir)->paginate(25)->withQueryString();
-
-        return view('admin.tables.show', [
-            'table' => $table,
+        return [$query, [
             'columns' => $columns,
-            'rows' => $rows,
             'primaryKey' => $primaryKey,
             'sortColumn' => $sortColumn,
             'sortDir' => $sortDir,
             'q' => $q,
             'searchableColumns' => $searchableColumns,
-            'isEditable' => ! in_array($table, AdminRecordController::SYSTEM_TABLES),
-        ]);
+        ]];
     }
 }
