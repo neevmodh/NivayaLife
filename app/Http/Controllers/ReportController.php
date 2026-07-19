@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesActiveFamilyMember;
+use App\Jobs\ProcessReportOcrJob;
 use App\Models\Report;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -127,6 +129,51 @@ class ReportController extends Controller
         ]);
 
         $report->update(['ocr_text' => $validated['ocr_text']]);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Replaces the file behind a report that failed OCR — a bad phone photo
+     * usually needs a genuinely different (clearer, better-lit, right-way-up)
+     * shot, not just another attempt at reading the same image. Everything
+     * derived from the old file (OCR text, AI summary/translations/detailed
+     * explanations, extracted health metrics) is cleared since none of it
+     * describes the new document, and OCR is re-run from scratch.
+     */
+    public function reupload(Request $request, Report $report): JsonResponse
+    {
+        $user = $request->user();
+        abort_unless($report->familyMember->canBeEditedBy($user), 403);
+
+        $validated = $request->validate([
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
+        ]);
+
+        $file = $validated['file'];
+        $oldPath = $report->file_path;
+        $newPath = $file->store("reports/{$report->family_member_id}", 'local');
+
+        DB::transaction(function () use ($report, $file, $newPath) {
+            $report->healthMetrics()->delete();
+            $report->aiResponses()->delete();
+
+            $report->update([
+                'file_path' => $newPath,
+                'original_filename' => $file->getClientOriginalName(),
+                'file_size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+                'file_hash' => hash_file('sha256', $file->getRealPath()),
+                'ocr_status' => 'pending',
+                'ocr_text' => null,
+                'ai_summary' => null,
+                'ai_summary_generated_at' => null,
+            ]);
+        });
+
+        Storage::disk('local')->delete($oldPath);
+
+        ProcessReportOcrJob::dispatch($report->fresh());
 
         return response()->json(['success' => true]);
     }

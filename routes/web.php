@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/reports/{report}/status', [ReportController::class, 'status'])->name('reports.status');
     Route::get('/reports/{report}/file', [ReportController::class, 'file'])->name('reports.file');
     Route::patch('/reports/{report}/ocr-text', [ReportController::class, 'updateOcrText'])->name('reports.ocr-text');
+    Route::post('/reports/{report}/reupload', [ReportController::class, 'reupload'])->name('reports.reupload');
     Route::post('/reports/{report}/detailed-explanation', [ReportAiController::class, 'detailedExplanation'])->name('reports.detailed-explanation');
     Route::post('/reports/{report}/retry-summary', [ReportAiController::class, 'retrySummary'])->name('reports.retry-summary');
     Route::post('/reports/{report}/translate', [ReportAiController::class, 'translate'])->name('reports.translate');

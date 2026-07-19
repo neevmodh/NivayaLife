@@ -12,6 +12,7 @@ export default function reportProcessing({
     detailedExplanationUrl,
     retrySummaryUrl,
     translateUrl,
+    reuploadUrl,
     csrfToken,
     initialOcrStatus,
     initialOcrText,
@@ -32,6 +33,9 @@ export default function reportProcessing({
         ocrDraft: '',
         savingOcr: false,
         ocrSaveError: null,
+
+        reuploading: false,
+        reuploadError: null,
 
         detailedExplanations: initialDetailedExplanations || [],
         loadingDetailed: false,
@@ -106,6 +110,42 @@ export default function reportProcessing({
                 this.ocrSaveError = 'Network error — please try again.';
             } finally {
                 this.savingOcr = false;
+            }
+        },
+
+        /**
+         * Replaces the file behind a failed report and starts over — a full
+         * reload afterward (rather than just updating reactive state) is
+         * deliberate: the file preview above, and which of image/PDF markup
+         * renders it, are computed server-side from the report's mime type
+         * at page load, not tracked here, so they need a fresh render too.
+         */
+        async reuploadFile(file) {
+            if (!file) return;
+
+            this.reuploading = true;
+            this.reuploadError = null;
+            try {
+                const body = new FormData();
+                body.append('file', file);
+
+                const res = await fetch(reuploadUrl, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, Accept: 'application/json' },
+                    body,
+                });
+                const json = await res.json();
+
+                if (json.success) {
+                    window.location.reload();
+                    return;
+                }
+
+                this.reuploadError = json.message || Object.values(json.errors || {})[0]?.[0] || 'Could not upload that file — please try again.';
+            } catch (e) {
+                this.reuploadError = 'Network error — please try again.';
+            } finally {
+                this.reuploading = false;
             }
         },
 

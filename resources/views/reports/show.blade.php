@@ -23,6 +23,7 @@
             detailedExplanationUrl: @js(route('reports.detailed-explanation', $report)),
             retrySummaryUrl: @js(route('reports.retry-summary', $report)),
             translateUrl: @js(route('reports.translate', $report)),
+            reuploadUrl: @js(route('reports.reupload', $report)),
             csrfToken: @js(csrf_token()),
             initialOcrStatus: @js($report->ocr_status),
             initialOcrText: @js($report->ocr_text),
@@ -97,8 +98,16 @@
             <template x-if="!aiSummary && ocrStatus === 'failed'">
                 <div class="mt-3 rounded-xl bg-novix-cream/60 p-4 text-center dark:bg-white/5">
                     <p class="text-sm text-novix-ink dark:text-white">We couldn't read this document automatically.</p>
-                    <p class="mt-1 text-xs text-novix-muted">You can still view the original file above, or add your own notes below.</p>
-                    <button type="button" @click="startEditOcr()" class="mt-3 rounded-lg bg-novix-green px-4 py-2 text-xs font-semibold text-white hover:bg-novix-green-dark">Add notes</button>
+                    <p class="mt-1 text-xs text-novix-muted">A blurry or angled photo is the usual cause — reuploading a clearer shot often fixes it. You can still view the original file above, or add your own notes below.</p>
+                    <p x-show="reuploadError" x-cloak x-text="reuploadError" class="mt-2 text-xs font-semibold text-novix-pink-dark"></p>
+                    <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                        <input type="file" x-ref="reuploadInput" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="hidden" @change="reuploadFile($event.target.files[0]); $event.target.value = ''">
+                        <button type="button" @click="$refs.reuploadInput.click()" :disabled="reuploading" class="rounded-lg bg-novix-green px-4 py-2 text-xs font-semibold text-white hover:bg-novix-green-dark disabled:opacity-50">
+                            <span x-show="!reuploading">Reupload document</span>
+                            <span x-show="reuploading">Uploading&hellip;</span>
+                        </button>
+                        <button type="button" @click="startEditOcr()" class="rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">Add notes instead</button>
+                    </div>
                 </div>
             </template>
 

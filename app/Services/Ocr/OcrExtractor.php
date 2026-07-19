@@ -43,11 +43,24 @@ class OcrExtractor
                 : [$this->preprocessImage($absolutePath, $tempFiles)];
 
             $multiPage = count($pageImages) > 1;
-            $rawTexts = $this->runTesseractBatch($pageImages);
+            $rawTexts = $this->runTesseractBatch($pageImages, 'eng');
 
             $pageTexts = [];
             foreach ($pageImages as $index => $imagePath) {
                 $text = $rawTexts[$index];
+
+                // English-only missing it usually means the page actually
+                // has non-Latin text (Hindi/Gujarati headers, stamps, or
+                // patient details are common on Indian lab reports) —
+                // Tesseract's multi-language mode reads those, but it also
+                // measurably hurts accuracy on plain English text, which is
+                // the common case, so it's only worth paying for here.
+                if (! $this->looksUsable($text) && $this->multiLanguages() !== 'eng') {
+                    $wider = trim($this->runTesseract($imagePath, $this->multiLanguages()));
+                    if ($this->alnumCount($wider) > $this->alnumCount($text)) {
+                        $text = $wider;
+                    }
+                }
 
                 // A failed/garbled read is often a sideways or upside-down
                 // phone photo — Tesseract's own deskew only fixes small
@@ -79,16 +92,16 @@ class OcrExtractor
      * @param  string[]  $pageImages
      * @return array<int, string> Keyed the same as $pageImages.
      */
-    private function runTesseractBatch(array $pageImages): array
+    private function runTesseractBatch(array $pageImages, string $languages): array
     {
         $texts = [];
         $anySucceeded = false;
         $lastError = null;
 
         foreach (array_chunk($pageImages, self::MAX_CONCURRENT_PAGES, preserve_keys: true) as $batch) {
-            $results = Process::pool(function (Pool $pool) use ($batch) {
+            $results = Process::pool(function (Pool $pool) use ($batch, $languages) {
                 foreach ($batch as $key => $imagePath) {
-                    $this->configureTesseract($pool->as($key), $imagePath);
+                    $this->configureTesseract($pool->as($key), $imagePath, $languages);
                 }
             })->run();
 
@@ -140,7 +153,12 @@ class OcrExtractor
         return preg_match_all('/[A-Za-z0-9]|[\x{0900}-\x{097F}]|[\x{0A80}-\x{0AFF}]/u', $text);
     }
 
-    /** Tries the other three orientations and keeps whichever reads best. */
+    /**
+     * Tries the other three orientations and keeps whichever reads best.
+     * Uses the full language set rather than English-only — by this point
+     * English-only has already failed at every orientation attempted so
+     * far, so it's worth the wider (if slightly less precise) net.
+     */
     private function retryRotated(string $imagePath, array &$tempFiles): ?string
     {
         $best = null;
@@ -148,7 +166,7 @@ class OcrExtractor
 
         foreach ([90, 180, 270] as $degrees) {
             $rotatedPath = $this->rotatedCopy($imagePath, $degrees, $tempFiles);
-            $text = trim($this->runTesseract($rotatedPath));
+            $text = trim($this->runTesseract($rotatedPath, $this->multiLanguages()));
             $score = $this->alnumCount($text);
 
             if ($score > $bestScore) {
@@ -230,20 +248,22 @@ class OcrExtractor
     }
 
     /**
-     * Indian lab/clinic reports routinely mix English medical terms with
-     * Hindi or Gujarati headers, patient details, or stamps — Tesseract's
-     * multi-language mode reads all three scripts in a single pass rather
-     * than silently dropping anything not in the Latin alphabet. Only
-     * languages whose trained data is actually installed are requested —
-     * asking for a missing one makes Tesseract fail outright, and not every
-     * environment (e.g. a local dev machine) has the hin/guj packs installed.
+     * Indian lab/clinic reports occasionally mix in Hindi or Gujarati
+     * headers, patient details, or stamps alongside the (usually dominant)
+     * English text. Tesseract's multi-language mode can read those scripts,
+     * but combining dictionaries measurably hurts its accuracy on plain
+     * English too — so this is only used as a fallback when English-only
+     * comes back unusable, never as the first attempt. Only languages whose
+     * trained data is actually installed are requested — asking for a
+     * missing one makes Tesseract fail outright, and not every environment
+     * (e.g. a local dev machine) has the hin/guj packs installed.
      */
-    private static ?string $languages = null;
+    private static ?string $multiLanguages = null;
 
-    private function languages(): string
+    private function multiLanguages(): string
     {
-        if (self::$languages !== null) {
-            return self::$languages;
+        if (self::$multiLanguages !== null) {
+            return self::$multiLanguages;
         }
 
         $installed = trim(Process::run(['tesseract', '--list-langs'])->output());
@@ -251,21 +271,21 @@ class OcrExtractor
 
         $wanted = array_values(array_intersect(['eng', 'hin', 'guj'], $available));
 
-        return self::$languages = $wanted === [] ? 'eng' : implode('+', $wanted);
+        return self::$multiLanguages = $wanted === [] ? 'eng' : implode('+', $wanted);
     }
 
     /** OEM 1 (LSTM-only) reads faster and at least as accurately as the default combined engine on modern trained data. */
-    private function configureTesseract(PendingProcess $pendingProcess, string $imagePath): void
+    private function configureTesseract(PendingProcess $pendingProcess, string $imagePath, string $languages): void
     {
         $pendingProcess
             ->timeout(60)
             ->env(['OMP_THREAD_LIMIT' => '1'])
-            ->command(['tesseract', $imagePath, 'stdout', '-l', $this->languages(), '--oem', '1', '--psm', '3']);
+            ->command(['tesseract', $imagePath, 'stdout', '-l', $languages, '--oem', '1', '--psm', '3']);
     }
 
-    private function runTesseract(string $imagePath): string
+    private function runTesseract(string $imagePath, string $languages): string
     {
-        $result = Process::timeout(60)->env(['OMP_THREAD_LIMIT' => '1'])->run(['tesseract', $imagePath, 'stdout', '-l', $this->languages(), '--oem', '1', '--psm', '3']);
+        $result = Process::timeout(60)->env(['OMP_THREAD_LIMIT' => '1'])->run(['tesseract', $imagePath, 'stdout', '-l', $languages, '--oem', '1', '--psm', '3']);
 
         if ($result->failed()) {
             throw new RuntimeException('Tesseract failed: '.$result->errorOutput());
