@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trusting '*' is safe here: the container is only ever reached
         // through the platform's own proxy, never directly from the internet.
         $middleware->trustProxies(at: '*');
+
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

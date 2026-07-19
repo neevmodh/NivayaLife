@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyCardController;
@@ -136,5 +137,13 @@ Route::get('/s/{token}', [PublicShareController::class, 'show'])->name('share.pu
 Route::post('/s/{token}/pin', [PublicShareController::class, 'verifyPin'])->name('share.public.pin');
 Route::get('/s/{token}/pdf', [PublicShareController::class, 'pdf'])->name('share.public.pdf');
 Route::get('/s/{token}/file/{report}', [PublicShareController::class, 'file'])->name('share.public.file');
+
+// Read-only operational dashboard — behind the normal account login plus
+// the is_admin flag (see EnsureUserIsAdmin), not a separate credential.
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/tables', [AdminDashboardController::class, 'tables'])->name('tables');
+    Route::get('/tables/{table}', [AdminDashboardController::class, 'table'])->name('tables.show');
+});
 
 require __DIR__.'/auth.php';

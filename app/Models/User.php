@@ -57,6 +57,7 @@ class User extends Authenticatable
             'two_factor_recovery_codes' => 'encrypted:array',
             'two_factor_confirmed_at' => 'datetime',
             'onboarding_dismissed_at' => 'datetime',
+            'is_admin' => 'boolean',
         ];
     }
 

@@ -34,6 +34,9 @@
                     <a href="{{ route('family.index') }}" class="{{ request()->routeIs('family.*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Family</a>
                     <a href="{{ route('id-card.show') }}" class="{{ request()->routeIs('id-card.show') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Emergency Card</a>
                     <a href="{{ route('assistant') }}" class="{{ request()->routeIs('assistant*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Assistant</a>
+                    @if(auth()->user()?->is_admin)
+                        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.*') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Admin</a>
+                    @endif
                 </div>
             </div>
 
