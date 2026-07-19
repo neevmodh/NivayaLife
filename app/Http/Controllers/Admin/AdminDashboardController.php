@@ -74,7 +74,7 @@ class AdminDashboardController extends Controller
         return view('admin.tables.index', ['tables' => $tables]);
     }
 
-    /** Paginated, read-only row browser for a single table — no edit/delete/create path exists anywhere in this controller. */
+    /** Paginated row browser for a single table. Create/edit/delete links only render when the table isn't a system/internal one — see AdminRecordController. */
     public function table(Request $request, string $table): View
     {
         // The table name reaches the query builder only after being checked
@@ -91,6 +91,8 @@ class AdminDashboardController extends Controller
             'table' => $table,
             'columns' => $columns,
             'rows' => $rows,
+            'primaryKey' => $orderColumn,
+            'isEditable' => ! in_array($table, AdminRecordController::SYSTEM_TABLES),
         ]);
     }
 }

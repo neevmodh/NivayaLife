@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminRecordController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyCardController;
@@ -138,11 +139,16 @@ Route::post('/s/{token}/pin', [PublicShareController::class, 'verifyPin'])->name
 Route::get('/s/{token}/pdf', [PublicShareController::class, 'pdf'])->name('share.public.pdf');
 Route::get('/s/{token}/file/{report}', [PublicShareController::class, 'file'])->name('share.public.file');
 
-// Read-only operational dashboard — behind the normal account login plus
-// the is_admin flag (see EnsureUserIsAdmin), not a separate credential.
+// Operational dashboard + database editor — behind the normal account login
+// plus the is_admin flag (see EnsureUserIsAdmin), not a separate credential.
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/tables', [AdminDashboardController::class, 'tables'])->name('tables');
+    Route::get('/tables/{table}/create', [AdminRecordController::class, 'create'])->name('tables.create');
+    Route::post('/tables/{table}', [AdminRecordController::class, 'store'])->name('tables.store');
+    Route::get('/tables/{table}/{id}/edit', [AdminRecordController::class, 'edit'])->name('tables.edit');
+    Route::put('/tables/{table}/{id}', [AdminRecordController::class, 'update'])->name('tables.update');
+    Route::delete('/tables/{table}/{id}', [AdminRecordController::class, 'destroy'])->name('tables.destroy');
     Route::get('/tables/{table}', [AdminDashboardController::class, 'table'])->name('tables.show');
 });
 
