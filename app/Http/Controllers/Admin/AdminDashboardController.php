@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AiJob;
 use App\Models\AuditLog;
 use App\Models\FamilyMember;
+use App\Models\LoginLog;
 use App\Models\PageView;
 use App\Models\Report;
 use App\Models\User;
@@ -66,6 +67,11 @@ class AdminDashboardController extends Controller
         $uniqueVisitorsInRange = (clone $landingViewsInRange)->distinct('ip_address')->count('ip_address');
         $signupsInRange = User::where('created_at', '>=', $since)->count();
 
+        $loginsInRangeQuery = LoginLog::where('created_at', '>=', $since);
+        $successfulLoginsInRange = (clone $loginsInRangeQuery)->where('successful', true)->count();
+        $failedLoginsInRange = (clone $loginsInRangeQuery)->where('successful', false)->count();
+        $uniqueUsersLoggedInRange = (clone $loginsInRangeQuery)->where('successful', true)->distinct('user_id')->count('user_id');
+
         return view('admin.dashboard', [
             'range' => $range,
             'userCount' => User::count(),
@@ -91,9 +97,17 @@ class AdminDashboardController extends Controller
             'pageViewsInRange' => $pageViewsInRange,
             'uniqueVisitorsInRange' => $uniqueVisitorsInRange,
             'pageViewSeries' => $this->dailySeries(PageView::where('path', '/'), $since),
-            'pageViewsByHour' => $this->hourlyDistribution($since),
+            'pageViewsByHour' => $this->hourlyDistribution(PageView::where('path', '/'), $since),
             'topReferrers' => $this->topReferrers($since),
             'conversionRate' => $pageViewsInRange > 0 ? round($signupsInRange / $pageViewsInRange * 100, 1) : null,
+            'loginsToday' => LoginLog::where('successful', true)->whereDate('created_at', now())->count(),
+            'successfulLoginsInRange' => $successfulLoginsInRange,
+            'failedLoginsInRange' => $failedLoginsInRange,
+            'uniqueUsersLoggedInRange' => $uniqueUsersLoggedInRange,
+            'loginSuccessSeries' => $this->dailySeries(LoginLog::where('successful', true), $since),
+            'loginFailedSeries' => $this->dailySeries(LoginLog::where('successful', false), $since),
+            'loginsByHour' => $this->hourlyDistribution(LoginLog::where('successful', true), $since),
+            'mostActiveUsers' => $this->mostActiveUsers($since),
         ]);
     }
 
@@ -121,16 +135,30 @@ class AdminDashboardController extends Controller
             ->all();
     }
 
-    /** Zero-filled 0-23 hour-of-day counts for landing-page views, so the chart shows every hour even if some had none. */
-    private function hourlyDistribution(\Illuminate\Support\Carbon $since): array
+    /** Zero-filled 0-23 hour-of-day counts, so the chart shows every hour even if some had none. */
+    private function hourlyDistribution($query, \Illuminate\Support\Carbon $since): array
     {
-        $raw = PageView::where('path', '/')
+        $raw = (clone $query)
             ->where('created_at', '>=', $since)
             ->selectRaw('HOUR(created_at) as hour, count(*) as total')
             ->groupBy('hour')
             ->pluck('total', 'hour');
 
         return collect(range(0, 23))->map(fn ($hour) => (int) ($raw[$hour] ?? 0))->all();
+    }
+
+    /** Top 8 users by successful login count in range — a quick "who's actually using this" signal. */
+    private function mostActiveUsers(\Illuminate\Support\Carbon $since): \Illuminate\Support\Collection
+    {
+        return LoginLog::where('successful', true)
+            ->where('created_at', '>=', $since)
+            ->whereNotNull('user_id')
+            ->selectRaw('user_id, count(*) as total')
+            ->groupBy('user_id')
+            ->orderByDesc('total')
+            ->limit(8)
+            ->with('user:id,name,email')
+            ->get();
     }
 
     /** Grouped by host rather than full URL, since two full referer URLs from the same site are the same "source" for this purpose. */

@@ -148,6 +148,88 @@
             </div>
         </div>
 
+        {{-- Sign-ins --}}
+        <div>
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-novix-muted">Sign-ins</h3>
+
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Logins today</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($loginsToday) }}</p>
+                </div>
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Successful (range)</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($successfulLoginsInRange) }}</p>
+                    <p class="mt-1 text-xs text-novix-muted">{{ number_format($uniqueUsersLoggedInRange) }} unique users</p>
+                </div>
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Failed (range)</p>
+                    <p class="mt-1 text-2xl font-bold {{ $failedLoginsInRange > 0 ? 'text-novix-pink-dark' : 'text-novix-ink dark:text-white' }}">{{ number_format($failedLoginsInRange) }}</p>
+                </div>
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Avg. logins / active user</p>
+                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ $uniqueUsersLoggedInRange > 0 ? number_format($successfulLoginsInRange / $uniqueUsersLoggedInRange, 1) : '—' }}</p>
+                    <p class="mt-1 text-xs text-novix-muted">in the selected period</p>
+                </div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
+                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Logins per day</h3>
+                    <div class="mt-2" x-data="adminChart({
+                        type: 'bar',
+                        series: [
+                            { name: 'Successful', data: @js(collect($loginSuccessSeries)->pluck('count')) },
+                            { name: 'Failed', data: @js(collect($loginFailedSeries)->pluck('count')) },
+                        ],
+                        options: {
+                            colors: ['{{ $novixPalette[0] }}', '{{ $novixPalette[5] }}'],
+                            chart: { stacked: true },
+                            plotOptions: { bar: { borderRadius: 3, columnWidth: '55%' } },
+                            dataLabels: { enabled: false },
+                            legend: { position: 'top', fontSize: '11px' },
+                            xaxis: { categories: @js(collect($loginSuccessSeries)->pluck('date')), labels: { show: false }, axisTicks: { show: false } },
+                            grid: { borderColor: 'rgba(148,163,184,0.2)' },
+                        },
+                    })"></div>
+                </div>
+
+                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Most active users</h3>
+                    <div class="mt-3 space-y-3">
+                        @forelse($mostActiveUsers as $entry)
+                            <div class="flex items-center gap-3 text-sm">
+                                <x-avatar :photo-path="$entry->user?->avatar_path" :full-name="$entry->user?->name ?? 'Unknown'" size="h-8 w-8" />
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate font-semibold text-novix-ink dark:text-white">{{ $entry->user?->name ?? 'Deleted user' }}</p>
+                                    <p class="truncate text-xs text-novix-muted">{{ $entry->user?->email }}</p>
+                                </div>
+                                <span class="flex-shrink-0 rounded-full bg-novix-mint px-2 py-0.5 text-xs font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ $entry->total }}</span>
+                            </div>
+                        @empty
+                            <p class="text-sm text-novix-muted">No logins yet.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Successful logins by hour of day</h3>
+                <div class="mt-2" x-data="adminChart({
+                    type: 'bar',
+                    series: [{ name: 'Logins', data: @js($loginsByHour) }],
+                    options: {
+                        colors: ['{{ $novixPalette[0] }}'],
+                        plotOptions: { bar: { borderRadius: 4, columnWidth: '70%' } },
+                        xaxis: { categories: @js(collect(range(0, 23))->map(fn($h) => sprintf('%02d:00', $h))) },
+                        dataLabels: { enabled: false },
+                        grid: { borderColor: 'rgba(148,163,184,0.2)' },
+                        height: 220,
+                    },
+                })"></div>
+            </div>
+        </div>
+
         {{-- Time-series charts --}}
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
