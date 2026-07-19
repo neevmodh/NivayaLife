@@ -3,6 +3,11 @@
     // / secrets on screen at all, in case of a shared screen. The write
     // forms (create/edit) exclude these columns entirely, not just mask them.
     $sensitivePattern = '/password|secret|token|recovery_codes/i';
+
+    $sortUrl = fn ($column) => route('admin.tables.show', array_filter([
+        'table' => $table, 'q' => $q ?: null, 'sort' => $column,
+        'dir' => ($sortColumn === $column && $sortDir === 'asc') ? 'desc' : 'asc',
+    ]));
 @endphp
 
 <x-app-layout>
@@ -32,7 +37,21 @@
             <div class="mb-4 rounded-xl bg-novix-pink/20 px-4 py-3 text-sm font-semibold text-novix-pink-dark">{{ session('admin_error') }}</div>
         @endif
 
-        <p class="mb-4 text-sm text-novix-muted">{{ number_format($rows->total()) }} rows{{ $isEditable ? '' : ' · read-only' }}</p>
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-sm text-novix-muted">{{ number_format($rows->total()) }} rows{{ $isEditable ? '' : ' · read-only' }}</p>
+
+            <form method="GET" action="{{ route('admin.tables.show', $table) }}" class="flex items-center gap-2">
+                @if($sortColumn !== $primaryKey || $sortDir !== 'desc')
+                    <input type="hidden" name="sort" value="{{ $sortColumn }}">
+                    <input type="hidden" name="dir" value="{{ $sortDir }}">
+                @endif
+                <input type="search" name="q" value="{{ $q }}" placeholder="Search {{ count($searchableColumns) }} text column{{ count($searchableColumns) === 1 ? '' : 's' }}…"
+                    class="w-64 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-novix-ink shadow-sm focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
+                @if($q)
+                    <a href="{{ route('admin.tables.show', $table) }}" class="text-xs font-semibold text-novix-muted hover:text-novix-ink">Clear</a>
+                @endif
+            </form>
+        </div>
 
         <div class="overflow-hidden rounded-novix bg-white shadow-novix-sm dark:bg-white/5">
             <div class="overflow-x-auto">
@@ -40,7 +59,14 @@
                     <thead>
                         <tr class="border-b border-gray-100 dark:border-white/10">
                             @foreach($columns as $column)
-                                <th class="whitespace-nowrap px-3 py-2 font-semibold uppercase tracking-wide text-novix-muted">{{ $column }}</th>
+                                <th class="whitespace-nowrap px-3 py-2 font-semibold uppercase tracking-wide text-novix-muted">
+                                    <a href="{{ $sortUrl($column) }}" class="inline-flex items-center gap-1 hover:text-novix-ink dark:hover:text-white">
+                                        {{ $column }}
+                                        @if($sortColumn === $column)
+                                            <span aria-hidden="true">{{ $sortDir === 'asc' ? '▲' : '▼' }}</span>
+                                        @endif
+                                    </a>
+                                </th>
                             @endforeach
                             @if($isEditable)
                                 <th class="whitespace-nowrap px-3 py-2"></th>
@@ -69,7 +95,7 @@
                                 @endif
                             </tr>
                         @empty
-                            <tr><td colspan="{{ count($columns) + ($isEditable ? 1 : 0) }}" class="px-3 py-4 text-novix-muted">No rows.</td></tr>
+                            <tr><td colspan="{{ count($columns) + ($isEditable ? 1 : 0) }}" class="px-3 py-4 text-novix-muted">No rows{{ $q ? ' match that search' : '' }}.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
