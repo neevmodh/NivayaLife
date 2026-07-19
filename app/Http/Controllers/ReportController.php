@@ -123,7 +123,7 @@ class ReportController extends Controller
         abort_unless($report->familyMember->canBeEditedBy($user), 403);
 
         $validated = $request->validate([
-            'ocr_text' => ['required', 'string'],
+            'ocr_text' => ['nullable', 'string'],
         ]);
 
         $report->update(['ocr_text' => $validated['ocr_text']]);

@@ -142,7 +142,7 @@
         </div>
 
         {{-- Extracted text --}}
-        <div class="mt-6 rounded-novix bg-white shadow-novix-sm dark:bg-white/5" x-data="{ open: false }">
+        <div class="mt-6 rounded-novix bg-white shadow-novix-sm dark:bg-white/5" x-data="{ open: false }" x-init="$watch('editingOcr', (value) => { if (value) open = true })">
             <button type="button" @click="open = !open" class="flex w-full items-center justify-between p-5 text-left">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Extracted Text</h3>
                 <svg class="h-4 w-4 text-novix-muted transition-transform" :class="open ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -158,6 +158,7 @@
                 <template x-if="editingOcr">
                     <div>
                         <textarea x-model="ocrDraft" rows="10" class="w-full rounded-xl border border-gray-200 bg-novix-cream/40 p-3 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white"></textarea>
+                        <p x-show="ocrSaveError" x-cloak x-text="ocrSaveError" class="mt-2 text-xs font-semibold text-novix-pink-dark"></p>
                         <div class="mt-3 flex justify-end gap-2">
                             <button type="button" @click="editingOcr = false" class="rounded-lg px-4 py-2 text-xs font-semibold text-novix-muted hover:text-novix-ink">Cancel</button>
                             <button type="button" @click="saveOcr()" :disabled="savingOcr" class="rounded-lg bg-novix-green px-4 py-2 text-xs font-semibold text-white hover:bg-novix-green-dark disabled:opacity-50">

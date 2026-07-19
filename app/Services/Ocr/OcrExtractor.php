@@ -124,12 +124,20 @@ class OcrExtractor
 
         $alnumCount = $this->alnumCount($text);
 
-        return $alnumCount >= 15 && ($alnumCount / max(strlen($text), 1)) >= 0.4;
+        // mb_strlen (characters), not strlen (bytes) — Devanagari/Gujarati
+        // characters are multi-byte in UTF-8, so a byte count would deflate
+        // this ratio for perfectly good non-Latin OCR text.
+        return $alnumCount >= 15 && ($alnumCount / max(mb_strlen($text, 'UTF-8'), 1)) >= 0.4;
     }
 
+    /**
+     * Counts Latin alphanumerics plus Devanagari (Hindi) and Gujarati script
+     * characters — a report OCR'd correctly in one of those scripts would
+     * otherwise score as unreadable noise, since neither is in [A-Za-z0-9].
+     */
     private function alnumCount(string $text): int
     {
-        return preg_match_all('/[A-Za-z0-9]/', $text);
+        return preg_match_all('/[A-Za-z0-9]|[\x{0900}-\x{097F}]|[\x{0A80}-\x{0AFF}]/u', $text);
     }
 
     /** Tries the other three orientations and keeps whichever reads best. */
@@ -221,18 +229,43 @@ class OcrExtractor
         return $path;
     }
 
+    /**
+     * Indian lab/clinic reports routinely mix English medical terms with
+     * Hindi or Gujarati headers, patient details, or stamps — Tesseract's
+     * multi-language mode reads all three scripts in a single pass rather
+     * than silently dropping anything not in the Latin alphabet. Only
+     * languages whose trained data is actually installed are requested —
+     * asking for a missing one makes Tesseract fail outright, and not every
+     * environment (e.g. a local dev machine) has the hin/guj packs installed.
+     */
+    private static ?string $languages = null;
+
+    private function languages(): string
+    {
+        if (self::$languages !== null) {
+            return self::$languages;
+        }
+
+        $installed = trim(Process::run(['tesseract', '--list-langs'])->output());
+        $available = array_map('trim', explode("\n", $installed));
+
+        $wanted = array_values(array_intersect(['eng', 'hin', 'guj'], $available));
+
+        return self::$languages = $wanted === [] ? 'eng' : implode('+', $wanted);
+    }
+
     /** OEM 1 (LSTM-only) reads faster and at least as accurately as the default combined engine on modern trained data. */
     private function configureTesseract(PendingProcess $pendingProcess, string $imagePath): void
     {
         $pendingProcess
             ->timeout(60)
             ->env(['OMP_THREAD_LIMIT' => '1'])
-            ->command(['tesseract', $imagePath, 'stdout', '--oem', '1', '--psm', '3']);
+            ->command(['tesseract', $imagePath, 'stdout', '-l', $this->languages(), '--oem', '1', '--psm', '3']);
     }
 
     private function runTesseract(string $imagePath): string
     {
-        $result = Process::timeout(60)->env(['OMP_THREAD_LIMIT' => '1'])->run(['tesseract', $imagePath, 'stdout', '--oem', '1', '--psm', '3']);
+        $result = Process::timeout(60)->env(['OMP_THREAD_LIMIT' => '1'])->run(['tesseract', $imagePath, 'stdout', '-l', $this->languages(), '--oem', '1', '--psm', '3']);
 
         if ($result->failed()) {
             throw new RuntimeException('Tesseract failed: '.$result->errorOutput());

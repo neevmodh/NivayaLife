@@ -31,6 +31,7 @@ export default function reportProcessing({
         editingOcr: false,
         ocrDraft: '',
         savingOcr: false,
+        ocrSaveError: null,
 
         detailedExplanations: initialDetailedExplanations || [],
         loadingDetailed: false,
@@ -81,11 +82,13 @@ export default function reportProcessing({
 
         startEditOcr() {
             this.ocrDraft = this.ocrText || '';
+            this.ocrSaveError = null;
             this.editingOcr = true;
         },
 
         async saveOcr() {
             this.savingOcr = true;
+            this.ocrSaveError = null;
             try {
                 const res = await fetch(ocrTextUrl, {
                     method: 'PATCH',
@@ -96,7 +99,11 @@ export default function reportProcessing({
                 if (json.success) {
                     this.ocrText = this.ocrDraft;
                     this.editingOcr = false;
+                } else {
+                    this.ocrSaveError = json.message || 'Could not save your notes right now — please try again.';
                 }
+            } catch (e) {
+                this.ocrSaveError = 'Network error — please try again.';
             } finally {
                 this.savingOcr = false;
             }
