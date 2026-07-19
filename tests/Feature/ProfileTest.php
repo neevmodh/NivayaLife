@@ -21,46 +21,31 @@ class ProfileTest extends TestCase
         $response->assertOk();
     }
 
+    /**
+     * Name/DOB/gender/blood-group live on the profile's "basic info" tab,
+     * a JSON endpoint of its own — there's no single combined PATCH /profile
+     * covering the whole form, and no email field at all (email changes
+     * aren't a feature this app exposes, since it doubles as the login).
+     */
     public function test_profile_information_can_be_updated(): void
     {
         $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->patch('/profile', [
-                'name' => 'Test User',
-                'email' => 'test@example.com',
+            ->postJson('/profile/basic-info', [
+                'full_name' => 'Test User',
+                'date_of_birth' => '1990-01-01',
+                'gender' => 'male',
+                'blood_group' => 'O+',
             ]);
 
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
+        $response->assertJson(['success' => true]);
 
-        $user->refresh();
-
-        $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
+        $this->assertSame('Test User', $user->fresh()->name);
     }
 
-    public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->patch('/profile', [
-                'name' => 'Test User',
-                'email' => $user->email,
-            ]);
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
-
-        $this->assertNotNull($user->refresh()->email_verified_at);
-    }
-
+    /** Full account deletion requires the password plus typing DELETE as an explicit, harder-to-fat-finger confirmation. */
     public function test_user_can_delete_their_account(): void
     {
         $user = User::factory()->create();
@@ -69,6 +54,7 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->delete('/profile', [
                 'password' => 'password',
+                'confirmation' => 'DELETE',
             ]);
 
         $response
@@ -88,6 +74,7 @@ class ProfileTest extends TestCase
             ->from('/profile')
             ->delete('/profile', [
                 'password' => 'wrong-password',
+                'confirmation' => 'DELETE',
             ]);
 
         $response
