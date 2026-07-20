@@ -9,18 +9,20 @@ export default function cameraCapture({ uploadUrl, existingPreviewUrl = null, cs
         stream: null,
         capturedDataUrl: existingPreviewUrl,
         hasCaptured: !!existingPreviewUrl,
+        // The browser's camera-permission prompt fires the instant
+        // getUserMedia() is called — starting the camera on init() meant
+        // asking for it the moment this step merely became visible, before
+        // the person had done anything. Now it only starts on an explicit
+        // "Turn on camera" click, so the permission prompt lines up with a
+        // real user action instead of ambushing them on page load.
+        cameraStarted: false,
         cameraError: null,
         uploading: false,
         uploadError: null,
         justSaved: false,
 
-        async init() {
-            if (!this.hasCaptured) {
-                await this.startCamera();
-            }
-        },
-
         async startCamera() {
+            this.cameraStarted = true;
             this.cameraError = null;
 
             if (!navigator.mediaDevices?.getUserMedia) {
