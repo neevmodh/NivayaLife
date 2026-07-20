@@ -65,7 +65,12 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    // Novix is India-only for now (Hindi/Gujarati OCR, IST-local users), so
+    // the whole app — timestamps, logs, and the database connection below —
+    // runs on India time rather than the more common "store UTC, convert on
+    // display" pattern, which only pays for itself once there's more than
+    // one timezone of real users to serve.
+    'timezone' => env('APP_TIMEZONE', 'Asia/Kolkata'),
 
     /*
     |--------------------------------------------------------------------------

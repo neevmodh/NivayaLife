@@ -57,6 +57,12 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            // Sets the MySQL session's own time_zone on connect, so
+            // NOW()/CURRENT_TIMESTAMP() in raw SQL (and how TIMESTAMP
+            // columns convert on read/write) match app.timezone above,
+            // rather than PHP writing IST wall-clock values into a session
+            // that's still assuming UTC.
+            'timezone' => env('DB_TIMEZONE', '+05:30'),
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
