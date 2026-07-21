@@ -4,24 +4,24 @@
 <meta charset="utf-8">
 <style>
     @page { margin: 0; }
-    body { font-family: DejaVu Sans, sans-serif; color: #fff; font-size: 7px; line-height: 1.15; margin: 0; padding: 6pt 9pt; background: #1E5A45; }
+    body { font-family: DejaVu Sans, sans-serif; color: #fff; font-size: 7px; line-height: 1.15; margin: 0; padding: 6pt 9pt; background: #0F6A61; }
     div, span, td { line-height: 1.15; }
     .card { width: 222pt; }
-    .brand { font-size: 6px; letter-spacing: 1px; text-transform: uppercase; color: #B7E4CF; }
+    .brand { font-size: 6px; letter-spacing: 1px; text-transform: uppercase; color: #9FDDD2; }
     table.layout { width: 222pt; table-layout: fixed; border-collapse: collapse; }
     table.layout td { vertical-align: top; overflow: hidden; }
     table.layout .info-cell { width: 158pt; }
     table.layout .qr-cell { width: 64pt; }
     .name { font-size: 11px; font-weight: bold; margin-top: 1pt; }
-    .meta { font-size: 7px; color: #DDF3E6; margin-top: 1pt; }
+    .meta { font-size: 7px; color: #CFEFEA; margin-top: 1pt; }
     .blood { margin-top: 4pt; }
-    .blood-label { font-size: 6px; text-transform: uppercase; letter-spacing: 1px; color: #DDF3E6; }
+    .blood-label { font-size: 6px; text-transform: uppercase; letter-spacing: 1px; color: #CFEFEA; }
     .blood-value { font-size: 17px; font-weight: bold; }
     .row { margin-top: 4pt; font-size: 7px; }
-    .row .label { color: #B7E4CF; text-transform: uppercase; font-size: 6px; letter-spacing: 0.5px; }
+    .row .label { color: #9FDDD2; text-transform: uppercase; font-size: 6px; letter-spacing: 0.5px; }
     .qr-cell { text-align: right; }
     .qr { width: 48pt; height: 48pt; background: #fff; padding: 3pt; border-radius: 4pt; }
-    .card-number { font-size: 6px; color: #B7E4CF; margin-top: 3pt; }
+    .card-number { font-size: 6px; color: #9FDDD2; margin-top: 3pt; }
 </style>
 </head>
 <body>

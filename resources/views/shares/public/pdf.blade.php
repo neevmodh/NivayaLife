@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <style>
     @page { margin: 28px 34px; }
-    body { font-family: DejaVu Sans, sans-serif; color: #1F2A24; font-size: 11px; }
-    .header { background: #1E5A45; color: #fff; padding: 14px 18px; border-radius: 8px; }
-    .header .brand { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #B7E4CF; }
+    body { font-family: DejaVu Sans, sans-serif; color: #12211F; font-size: 11px; }
+    .header { background: #0F6A61; color: #fff; padding: 14px 18px; border-radius: 8px; }
+    .header .brand { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #9FDDD2; }
     .header .name { font-size: 17px; font-weight: bold; margin-top: 3px; }
-    .header .meta { font-size: 10px; color: #DDF3E6; margin-top: 3px; }
+    .header .meta { font-size: 10px; color: #CFEFEA; margin-top: 3px; }
     .report { margin-top: 18px; page-break-inside: avoid; }
     .report-title { font-size: 13px; font-weight: bold; }
-    .report-meta { font-size: 10px; color: #6B7A72; margin-top: 2px; }
-    .preview { margin-top: 8px; max-width: 100%; max-height: 260px; border: 1px solid #E7E1D4; border-radius: 6px; }
-    .section-title { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #6B7A72; font-weight: bold; margin-top: 10px; }
+    .report-meta { font-size: 10px; color: #5C7876; margin-top: 2px; }
+    .preview { margin-top: 8px; max-width: 100%; max-height: 260px; border: 1px solid #DCE8E6; border-radius: 6px; }
+    .section-title { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #5C7876; font-weight: bold; margin-top: 10px; }
     .section-body { margin-top: 4px; font-size: 10px; white-space: pre-line; }
-    .divider { border-top: 1px solid #E7E1D4; margin-top: 16px; }
-    .footer { margin-top: 16px; font-size: 9px; color: #6B7A72; }
+    .divider { border-top: 1px solid #DCE8E6; margin-top: 16px; }
+    .footer { margin-top: 16px; font-size: 9px; color: #5C7876; }
 </style>
 </head>
 <body>
