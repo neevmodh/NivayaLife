@@ -1,8 +1,8 @@
 const ZONES = {
-    underweight: '#5B94C4',
-    normal: '#0F6A61',
-    overweight: '#E8A544',
-    obese: '#B8452A',
+    underweight: '#8FB8E0',
+    normal: '#1E5A45',
+    overweight: '#F5C879',
+    obese: '#E8615A',
 };
 
 export function categoryFor(bmi) {
@@ -59,7 +59,7 @@ export default function bmiGauge({ heightCm = null, weightKg = null, editable = 
         },
 
         get categoryColor() {
-            return ZONES[this.category] || '#8CA6A3';
+            return ZONES[this.category] || '#9AA79F';
         },
 
         get categoryLabel() {

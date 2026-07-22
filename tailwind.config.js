@@ -15,37 +15,33 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-            // "Modern Teal" — a 2026 refresh of the original warm-forest
-            // theme. Token names deliberately kept as-is (green/mint/pink/
-            // etc.) even though the actual hues moved, rather than renaming
-            // every text-novix-green/bg-novix-mint/etc. call site across the
-            // whole app — only the palette definition changes here, and it
-            // cascades everywhere automatically. Every text-usable value
-            // below is checked against WCAG AA (4.5:1) on both cream and
-            // white, the app's two real background colors.
             colors: {
                 novix: {
-                    cream: '#F5FAF9',
+                    cream: '#FBF6EA',
                     card: '#FFFFFF',
                     green: {
-                        DEFAULT: '#0F6A61',
-                        dark: '#0B4F48',
-                        light: '#17847A',
+                        DEFAULT: '#1E5A45',
+                        dark: '#123D2F',
+                        light: '#2E7A5D',
                     },
-                    mint: '#CFEFEA',
+                    mint: '#DCEFE3',
                     pink: {
-                        DEFAULT: '#FFB9A3',
-                        dark: '#B8452A',
+                        DEFAULT: '#F4A9A0',
+                        dark: '#E8615A',
                     },
-                    yellow: '#946012',
-                    blue: '#3D6F9E',
-                    ink: '#12211F',
-                    muted: '#5C7876',
+                    yellow: '#F5C879',
+                    blue: '#8FB8E0',
+                    ink: '#1F2A24',
+                    // Darkened from #6B7A72 (4.19:1 on cream, below WCAG AA's
+                    // 4.5:1 for normal text) — this color is used everywhere
+                    // for secondary text, so the fix belongs here once rather
+                    // than at each call site.
+                    muted: '#5A6960',
                 },
             },
             boxShadow: {
-                novix: '0 12px 32px -12px rgba(15, 106, 97, 0.20)',
-                'novix-sm': '0 4px 14px -4px rgba(15, 106, 97, 0.14)',
+                novix: '0 12px 32px -12px rgba(30, 90, 69, 0.18)',
+                'novix-sm': '0 4px 14px -4px rgba(30, 90, 69, 0.12)',
             },
             borderRadius: {
                 novix: '1.5rem',

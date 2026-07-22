@@ -4,31 +4,31 @@
 <meta charset="utf-8">
 <style>
     @page { margin: 28px 34px; }
-    body { font-family: DejaVu Sans, sans-serif; color: #12211F; font-size: 12px; }
-    .header { background: #0F6A61; color: #fff; padding: 16px 20px; border-radius: 10px; }
-    .header .brand { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #9FDDD2; }
+    body { font-family: DejaVu Sans, sans-serif; color: #1F2A24; font-size: 12px; }
+    .header { background: #1E5A45; color: #fff; padding: 16px 20px; border-radius: 10px; }
+    .header .brand { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #B7E4CF; }
     .header .title { font-size: 20px; font-weight: bold; margin-top: 4px; }
     .identity { width: 100%; margin-top: 16px; }
     .identity td { vertical-align: top; }
     .photo { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; }
-    .photo-placeholder { width: 90px; height: 90px; border-radius: 12px; background: #CFEFEA; color: #0F6A61; font-size: 32px; font-weight: bold; text-align: center; line-height: 90px; }
+    .photo-placeholder { width: 90px; height: 90px; border-radius: 12px; background: #DDF3E6; color: #1E5A45; font-size: 32px; font-weight: bold; text-align: center; line-height: 90px; }
     .name { font-size: 18px; font-weight: bold; }
-    .meta { color: #5C7876; font-size: 12px; margin-top: 3px; }
-    .blood-box { background: #FDE6DD; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
-    .blood-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #B8452A; font-weight: bold; }
-    .blood-value { font-size: 30px; font-weight: bold; color: #B8452A; float: right; margin-top: -22px; }
+    .meta { color: #6B7A72; font-size: 12px; margin-top: 3px; }
+    .blood-box { background: #FBE3E1; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
+    .blood-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #B23B32; font-weight: bold; }
+    .blood-value { font-size: 30px; font-weight: bold; color: #B23B32; float: right; margin-top: -22px; }
     .section { margin-top: 16px; }
-    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #5C7876; font-weight: bold; border-bottom: 1px solid #DCE8E6; padding-bottom: 4px; }
+    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #6B7A72; font-weight: bold; border-bottom: 1px solid #E7E1D4; padding-bottom: 4px; }
     .section-body { margin-top: 6px; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: bold; text-transform: uppercase; margin-right: 6px; }
-    .badge-severe { background: #B8452A; color: #fff; }
-    .badge-moderate { background: #E8A544; color: #12211F; }
-    .badge-mild { background: #DCEFEA; color: #12211F; }
-    .contact-box { background: #CFEFEA; border-radius: 10px; padding: 12px 16px; margin-top: 6px; }
-    .footer { margin-top: 22px; border-top: 1px solid #DCE8E6; padding-top: 10px; }
+    .badge-severe { background: #B23B32; color: #fff; }
+    .badge-moderate { background: #F5C879; color: #1F2A24; }
+    .badge-mild { background: #EFEAE0; color: #1F2A24; }
+    .contact-box { background: #DDF3E6; border-radius: 10px; padding: 12px 16px; margin-top: 6px; }
+    .footer { margin-top: 22px; border-top: 1px solid #E7E1D4; padding-top: 10px; }
     .footer table { width: 100%; }
     .qr { width: 80px; height: 80px; }
-    .muted { color: #5C7876; }
+    .muted { color: #6B7A72; }
     ul { margin: 0; padding-left: 16px; }
 </style>
 </head>

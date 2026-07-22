@@ -19,7 +19,7 @@ export default function adminChart({ type, series, options = {} }) {
                     height: options.height || 260,
                     toolbar: { show: false },
                     fontFamily: 'Figtree, sans-serif',
-                    foreColor: isDark ? '#F5FAF9' : '#12211F',
+                    foreColor: isDark ? '#FBF6EA' : '#1F2A24',
                 },
                 theme: { mode: isDark ? 'dark' : 'light' },
                 series,
@@ -36,7 +36,7 @@ export default function adminChart({ type, series, options = {} }) {
                 const nowDark = document.documentElement.classList.contains('dark');
                 this.chart.updateOptions({
                     theme: { mode: nowDark ? 'dark' : 'light' },
-                    chart: { foreColor: nowDark ? '#F5FAF9' : '#12211F' },
+                    chart: { foreColor: nowDark ? '#FBF6EA' : '#1F2A24' },
                 });
             });
             this._observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });

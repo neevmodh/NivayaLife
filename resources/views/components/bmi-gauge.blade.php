@@ -29,7 +29,7 @@
 
     <div class="relative mx-auto" style="width: {{ $size }}px; height: {{ $size * 0.53 }}px;">
         <div class="absolute inset-x-0 top-0 overflow-hidden" style="height: {{ $size * 0.5 }}px;">
-            <div class="absolute rounded-full" style="width:{{ $size }}px; height:{{ $size }}px; left:0; top:0; background: conic-gradient(from 270deg, #5B94C4 0deg 43.71deg, #0F6A61 43.71deg 77.14deg, #E8A544 77.14deg 102.86deg, #B8452A 102.86deg 180deg, transparent 180deg 360deg);"></div>
+            <div class="absolute rounded-full" style="width:{{ $size }}px; height:{{ $size }}px; left:0; top:0; background: conic-gradient(from 270deg, #8FB8E0 0deg 43.71deg, #1E5A45 43.71deg 77.14deg, #F5C879 77.14deg 102.86deg, #E8615A 102.86deg 180deg, transparent 180deg 360deg);"></div>
             <div class="absolute rounded-full bg-novix-cream dark:bg-novix-ink" style="width:{{ $size * 0.68 }}px; height:{{ $size * 0.68 }}px; left:{{ $size * 0.16 }}px; top:{{ $size * 0.16 }}px;"></div>
         </div>
         <div class="absolute bottom-2 left-1/2 origin-bottom rounded-full bg-novix-ink transition-transform duration-700 ease-out dark:bg-white"
