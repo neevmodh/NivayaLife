@@ -82,7 +82,7 @@ class ShareController extends Controller
             'report_id' => $report?->id,
             'family_member_id' => $familyMember->id,
             'access_type' => $validated['access_type'],
-            'shared_with_label' => $validated['shared_with_label'] ?: null,
+            'shared_with_label' => $validated['shared_with_label'] ?? null,
             'expires_at' => $expiresAt,
             'is_one_time' => $request->boolean('is_one_time'),
         ]);
