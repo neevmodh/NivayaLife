@@ -16,6 +16,15 @@ import torchxrayvision as xrv
 from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from PIL import Image
 
+# On a shared/CPU-quota-limited host (e.g. Railway's low-resource tiers),
+# torch's default of spawning a thread per visible core causes severe
+# contention rather than speedup — inference on a single small image was
+# observed taking 2+ minutes. Forcing single-threaded execution avoids that
+# thrash, mirroring the same fix already applied to Tesseract in the main
+# app's OcrExtractor (OMP_THREAD_LIMIT=1).
+torch.set_num_threads(1)
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+
 SERVICE_TOKEN = os.environ.get("XRAY_VISION_TOKEN")
 MAX_FINDINGS = 8
 

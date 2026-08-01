@@ -23,9 +23,21 @@ MAX_ENTITIES = 15
 
 app = FastAPI()
 
-# Loaded once per process — both are the expensive part.
-ocr_engine = PaddleOCR(use_angle_cls=True, lang="en", show_log=False)
-nlp = medspacy.load("en_core_sci_sm")
+# Loaded once per process — both are the expensive part. cpu_threads=1
+# avoids the same thread-contention slowdown fixed in xray-vision-service
+# (torch.set_num_threads(1)) — on a CPU-quota-limited host, letting these
+# libraries spawn a thread per visible core causes severe contention rather
+# than speedup.
+ocr_engine = PaddleOCR(use_angle_cls=True, lang="en", show_log=False, cpu_threads=1)
+
+# medspacy_pyrush (the default sentence-boundary component) conflicts with
+# en_core_sci_sm's own built-in parser, which already sets sentence
+# boundaries — both trying to set token.sent_start raises spaCy's E043
+# ("Refusing to write to token.sent_start if its document is parsed").
+# Excluding it from medspacy_enable leaves sentence splitting to the base
+# model and only adds medspaCy's target-matching + negation/context
+# detection on top.
+nlp = medspacy.load("en_core_sci_sm", medspacy_enable=["medspacy_target_matcher", "medspacy_context"])
 
 
 class Image_(BaseModel):

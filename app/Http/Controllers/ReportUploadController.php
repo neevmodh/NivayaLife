@@ -40,7 +40,7 @@ class ReportUploadController extends Controller
         $validated = $request->validate([
             'family_member_id' => ['required', 'integer', 'exists:family_members,id'],
             'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,tiff,tif,bmp,gif,docx', 'max:10240'],
-            'type' => ['required', 'in:blood_test,prescription,xray,mri_ct,insurance,bill,ecg,other'],
+            'type' => ['required', 'in:blood_test,prescription,xray,sonography,mri_ct,insurance,bill,ecg,other'],
             'report_date' => ['required', 'date', 'before_or_equal:today'],
             'hospital_or_clinic_name' => ['nullable', 'string', 'max:255'],
             'doctor_name' => ['nullable', 'string', 'max:255'],
