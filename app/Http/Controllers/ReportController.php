@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesActiveFamilyMember;
 use App\Jobs\ProcessReportOcrJob;
+use App\Models\HealthMetric;
 use App\Models\Report;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -96,7 +98,41 @@ class ReportController extends Controller
             'canEdit' => $report->familyMember->canBeEditedBy($user),
             'detailedExplanations' => $detailedExplanations,
             'translations' => $translations,
+            'metricHistories' => $this->metricHistories($report),
         ]);
+    }
+
+    /**
+     * Trend data for whichever metric_types this report has values for —
+     * only across the family member's full history, and only kept when
+     * there are 2+ points, since a single point has nothing to trend
+     * against (same threshold the timeline's client-side compare feature
+     * already uses).
+     *
+     * @return Collection<string, array{label: string, unit: ?string, points: array<int, array{date: string, value: float}>}>
+     */
+    private function metricHistories(Report $report): Collection
+    {
+        $types = $report->healthMetrics->pluck('metric_type')->unique()->values();
+
+        if ($types->isEmpty()) {
+            return collect();
+        }
+
+        return HealthMetric::where('family_member_id', $report->family_member_id)
+            ->whereIn('metric_type', $types)
+            ->orderBy('recorded_date')
+            ->get()
+            ->groupBy('metric_type')
+            ->filter(fn ($group) => $group->count() >= 2)
+            ->map(fn ($group) => [
+                'metric_type' => $group->first()->metric_type,
+                'unit' => $group->first()->unit,
+                'points' => $group->map(fn ($m) => [
+                    'date' => $m->recorded_date->toDateString(),
+                    'value' => (float) $m->value,
+                ])->values()->all(),
+            ]);
     }
 
     /** Lightweight polling endpoint the detail page uses to reflect OCR/summary progress live, without a full reload. */
@@ -117,6 +153,7 @@ class ReportController extends Controller
             'analysis_method' => $report->analysis_method,
             'xray_findings' => $report->xray_findings,
             'detected_entities' => $report->detected_entities,
+            'lab_results' => $report->lab_results,
             'summary_job_failed' => $summaryJobFailed,
         ]);
     }

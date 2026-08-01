@@ -18,11 +18,16 @@ class ReportFieldDetector
     private const TYPE_KEYWORDS = [
         'prescription' => ['prescription', ' rx ', 'sig:', 'dosage', 'tablet', 'capsule', 'take as directed'],
         'xray' => ['x-ray', 'xray', 'radiograph'],
+        'sonography' => ['sonography', 'ultrasound', 'usg', 'doppler study'],
         'mri_ct' => ['mri', 'ct scan', 'computed tomography', 'magnetic resonance'],
         'ecg' => ['ecg', 'ekg', 'electrocardiogram', 'cardiogram'],
         'insurance' => ['insurance', 'policy no', 'mediclaim', 'sum insured', 'premium'],
         'bill' => ['invoice', 'receipt', 'amount paid', 'bill no', 'total amount', 'grand total'],
-        'blood_test' => ['cbc', 'complete blood count', 'hemoglobin', 'blood test', 'lipid profile', 'blood sugar', 'hba1c', 'lft', 'kft', 'pathology', 'specimen'],
+        'dental' => ['dental', 'orthodontic', 'root canal', 'dentist', 'oral cavity'],
+        'discharge_summary' => ['discharge summary', 'discharge note', 'discharged on', 'admission date', 'condition on discharge'],
+        'pathology' => ['biopsy', 'histopathology', 'histopath', 'cytology', 'fnac', 'gross description', 'microscopic examination', 'specimen received'],
+        'eye_care' => ['ophthalm', 'optometr', 'visual acuity', 'retina', 'intraocular pressure', 'vision test'],
+        'blood_test' => ['cbc', 'complete blood count', 'hemoglobin', 'blood test', 'lipid profile', 'blood sugar', 'hba1c', 'lft', 'kft', 'specimen'],
     ];
 
     private const DATE_FORMATS = [

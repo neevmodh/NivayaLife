@@ -2,7 +2,8 @@
     $reportTypeIcons = [
         'blood_test' => '&#129656;', 'prescription' => '&#128138;', 'xray' => '&#129460;',
         'sonography' => '&#128266;', 'mri_ct' => '&#129504;', 'insurance' => '&#128737;', 'bill' => '&#129534;',
-        'ecg' => '&#128147;', 'other' => '&#128196;',
+        'ecg' => '&#128147;', 'dental' => '&#129463;', 'discharge_summary' => '&#127973;',
+        'pathology' => '&#129514;', 'eye_care' => '&#128065;', 'other' => '&#128196;',
     ];
     $ocrBadge = [
         'pending' => ['label' => 'Pending', 'class' => 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60'],

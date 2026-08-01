@@ -16,6 +16,10 @@ const TYPE_RULES = [
     [/ecg|ekg|cardio/i, 'ecg'],
     [/insurance|policy|mediclaim/i, 'insurance'],
     [/bill|invoice|receipt|payment/i, 'bill'],
+    [/dental|tooth|teeth|orthodont/i, 'dental'],
+    [/discharge/i, 'discharge_summary'],
+    [/biopsy|histopath|cytology|fnac/i, 'pathology'],
+    [/ophthalm|optometr|eye[\s_-]?(care|test|exam)/i, 'eye_care'],
     [new RegExp(`blood|cbc|${NOT_LETTER}lab${NOT_LETTER_END}|lft|kft|lipid|sugar|glucose|hba1c`, 'i'), 'blood_test'],
 ];
 
@@ -69,6 +73,10 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
             { value: 'insurance', label: 'Insurance', icon: '\u{1F4C4}' },
             { value: 'bill', label: 'Bill', icon: '\u{1F9FE}' },
             { value: 'ecg', label: 'ECG', icon: '\u{1F493}' },
+            { value: 'dental', label: 'Dental', icon: '\u{1F9B7}' },
+            { value: 'discharge_summary', label: 'Discharge Summary', icon: '\u{1F3E5}' },
+            { value: 'pathology', label: 'Pathology', icon: '\u{1F9EA}' },
+            { value: 'eye_care', label: 'Eye Care', icon: '\u{1F441}\u{FE0F}' },
             { value: 'other', label: 'Other', icon: '\u{1F4CB}' },
         ],
 
@@ -95,6 +103,9 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
                     doctor: '',
                     touched: { type: false, reportDate: false, hospital: false, doctor: false },
                     detecting: true,
+                    ocrPreview: '',
+                    ocrMethod: null,
+                    showOcrPreview: false,
                     blobPromise: null,
                     progress: 0,
                     status: 'draft', // draft | uploading | done | error | duplicate
@@ -161,6 +172,9 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
                 if (detected.report_date && !entry.touched.reportDate) entry.reportDate = detected.report_date;
                 if (detected.hospital_or_clinic_name && !entry.touched.hospital) entry.hospital = detected.hospital_or_clinic_name;
                 if (detected.doctor_name && !entry.touched.doctor) entry.doctor = detected.doctor_name;
+
+                entry.ocrPreview = json.text_preview || '';
+                entry.ocrMethod = json.method || null;
             } catch (e) {
                 // Detection is a nice-to-have; the form is still fully usable manually.
             } finally {

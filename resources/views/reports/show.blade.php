@@ -25,6 +25,7 @@
             translateUrl: @js(route('reports.translate', $report)),
             reuploadUrl: @js(route('reports.reupload', $report)),
             csrfToken: @js(csrf_token()),
+            reportType: @js($report->type),
             initialOcrStatus: @js($report->ocr_status),
             initialOcrText: @js($report->ocr_text),
             initialAiSummary: @js($report->ai_summary),
@@ -32,6 +33,7 @@
             initialAnalysisMethod: @js($report->analysis_method),
             initialXrayFindings: @js($report->xray_findings),
             initialDetectedEntities: @js($report->detected_entities),
+            initialLabResults: @js($report->lab_results),
             initialDetailedExplanations: @js($detailedExplanations),
             initialTranslations: @js($translations),
         })"
@@ -147,6 +149,68 @@
                 </div>
             </template>
         </div>
+
+        {{-- Structured lab results table --}}
+        <div x-show="labResults && labResults.length" x-cloak class="mt-6 overflow-hidden rounded-novix bg-white shadow-novix-sm dark:bg-white/5">
+            <h3 class="p-5 pb-0 text-sm font-bold text-novix-ink dark:text-white">Lab Results</h3>
+            <div class="mt-3 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-[11px] font-semibold uppercase tracking-wide text-novix-muted dark:border-white/10">
+                            <th class="px-5 py-2">Test</th>
+                            <th class="px-3 py-2">Result</th>
+                            <th class="px-3 py-2">Reference Range</th>
+                            <th class="px-5 py-2 text-right">Flag</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="row in (labResults || [])" :key="row.test + row.value">
+                            <tr class="border-b border-gray-50 last:border-0 dark:border-white/5">
+                                <td class="px-5 py-2.5 font-medium text-novix-ink dark:text-white" x-text="row.test"></td>
+                                <td class="px-3 py-2.5 text-novix-ink dark:text-white" x-text="row.value + (row.unit ? ' ' + row.unit : '')"></td>
+                                <td class="px-3 py-2.5 text-novix-muted" x-text="row.reference_range || '—'"></td>
+                                <td class="px-5 py-2.5 text-right">
+                                    <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                                        :class="{
+                                            'bg-novix-pink/20 text-novix-pink-dark': row.flag === 'low' || row.flag === 'abnormal',
+                                            'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300': row.flag === 'high',
+                                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300': row.flag === 'borderline',
+                                            'bg-novix-mint/60 text-novix-green dark:bg-novix-green/20 dark:text-novix-mint': row.flag === 'normal',
+                                            'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60': row.flag === 'unknown',
+                                        }"
+                                        x-text="row.flag.charAt(0).toUpperCase() + row.flag.slice(1)"></span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            <p class="p-5 pt-3 text-xs text-novix-muted">Extracted automatically — always confirm against the original document above before making any decisions.</p>
+        </div>
+
+        {{-- Trend charts --}}
+        @if($metricHistories->isNotEmpty())
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                @foreach($metricHistories as $history)
+                    <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                        <h3 class="text-sm font-bold text-novix-ink dark:text-white">{{ $metricLabels[$history['metric_type']] ?? Str::headline($history['metric_type']) }} over time</h3>
+                        <div class="mt-2" x-data="adminChart({
+                            type: 'line',
+                            series: [{ name: @js($metricLabels[$history['metric_type']] ?? Str::headline($history['metric_type'])), data: @js(collect($history['points'])->map(fn ($p) => ['x' => $p['date'], 'y' => $p['value']])) }],
+                            options: {
+                                height: 200,
+                                colors: ['#1E5A45'],
+                                stroke: { curve: 'smooth', width: 2 },
+                                dataLabels: { enabled: false },
+                                xaxis: { type: 'datetime', labels: { format: 'MMM d' } },
+                                yaxis: { title: { text: @js($history['unit'] ?? '') } },
+                                grid: { borderColor: 'rgba(148,163,184,0.2)' },
+                            },
+                        })"></div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
 
         {{-- Detailed explanation --}}
         <div class="mt-6 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">

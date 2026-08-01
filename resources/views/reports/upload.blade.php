@@ -115,6 +115,15 @@
                                         <input type="text" x-model="f.doctor" @input.once="f.touched.doctor = true" list="doctor-suggestions" placeholder="Optional &mdash; start typing" class="w-full rounded-lg border border-gray-200 bg-novix-cream/40 px-3 py-2 text-sm text-novix-ink focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
                                     </div>
                                 </div>
+
+                                <div class="mt-3" x-show="f.ocrPreview" x-cloak>
+                                    <button type="button" @click="f.showOcrPreview = !f.showOcrPreview" class="flex items-center gap-1 text-xs font-semibold text-novix-green hover:underline">
+                                        <svg class="h-3 w-3 transition-transform" :class="f.showOcrPreview ? 'rotate-90' : ''" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <span x-text="f.showOcrPreview ? 'Hide extracted text' : 'Preview extracted text'"></span>
+                                        <span class="text-novix-muted font-normal" x-text="f.ocrMethod === 'paddleocr' ? '(PaddleOCR)' : f.ocrMethod === 'tesseract' ? '(Tesseract)' : ''"></span>
+                                    </button>
+                                    <pre x-show="f.showOcrPreview" x-cloak class="mt-1.5 max-h-32 overflow-y-auto whitespace-pre-wrap rounded-lg bg-novix-cream/60 p-2.5 font-mono text-[11px] leading-snug text-novix-ink dark:bg-white/5 dark:text-white/80" x-text="f.ocrPreview"></pre>
+                                </div>
                             </div>
                         </div>
                     </div>

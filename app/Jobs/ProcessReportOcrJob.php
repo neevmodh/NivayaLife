@@ -6,7 +6,7 @@ use App\Models\AiJob;
 use App\Models\Report;
 use App\Services\Ai\AiClient;
 use App\Services\Ocr\OcrExtractor;
-use App\Services\ClinicalNlp\ClinicalNlpClient;
+use App\Services\Ocr\OcrResolver;
 use App\Services\XrayVision\XrayVisionClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,7 +38,7 @@ class ProcessReportOcrJob implements ShouldQueue
 
     public function __construct(public Report $report) {}
 
-    public function handle(OcrExtractor $ocrExtractor, AiClient $ai, XrayVisionClient $xrayVision, ClinicalNlpClient $clinicalNlp): void
+    public function handle(OcrExtractor $ocrExtractor, AiClient $ai, XrayVisionClient $xrayVision, OcrResolver $ocrResolver): void
     {
         $report = $this->report->fresh();
         if (! $report) {
@@ -59,48 +59,20 @@ class ProcessReportOcrJob implements ShouldQueue
             $absolutePath = Storage::disk('local')->path($report->file_path);
             $mimeType = $report->mime_type ?? '';
 
-            $text = null;
-            $usable = false;
-            $analysisMethod = null;
+            // The upload-time /reports/detect call already ran OcrResolver
+            // against this exact file (by hash) to pre-fill the form —
+            // reuse that result instead of paying for OCR twice.
+            $cached = $report->file_hash ? Cache::get(OcrExtractor::cacheKey($report->file_hash)) : null;
 
-            // PaddleOCR is the primary OCR engine — more accurate than
-            // Tesseract on real-world uploads. Any failure here (not
-            // configured, unreachable, bad response) just falls through to
-            // the Tesseract path below; PaddleOCR is infrastructure that can
-            // go down without breaking uploads.
-            if ($clinicalNlp->isConfigured()) {
-                try {
-                    $images = $ocrExtractor->visionImages($absolutePath, $mimeType);
-                    $paddleResult = $clinicalNlp->ocr($images);
-
-                    if ($paddleResult['looks_usable']) {
-                        $text = $paddleResult['text'];
-                        $usable = true;
-                        $analysisMethod = 'paddleocr';
-                    }
-                } catch (Throwable $e) {
-                    report($e);
-                }
-            }
-
-            if (! $usable) {
-                // The upload-time /reports/detect call already ran
-                // Tesseract against this exact file (by hash) to pre-fill
-                // the form — reuse it instead of paying for Tesseract
-                // twice.
-                $cached = $report->file_hash ? Cache::get(OcrExtractor::cacheKey($report->file_hash)) : null;
-
-                if ($cached) {
-                    $text = $cached['text'];
-                    $usable = $cached['looks_usable'];
-                } else {
-                    $text = $ocrExtractor->extract($absolutePath, $mimeType);
-                    $usable = $ocrExtractor->looksUsable($text);
-                }
-
-                if ($usable) {
-                    $analysisMethod = 'tesseract';
-                }
+            if ($cached) {
+                $text = $cached['text'];
+                $usable = $cached['looks_usable'];
+                $analysisMethod = $cached['method'] ?? null;
+            } else {
+                $result = $ocrResolver->resolve($absolutePath, $mimeType);
+                $text = $result['text'];
+                $usable = $result['looks_usable'];
+                $analysisMethod = $result['method'];
             }
 
             if (! $usable) {
@@ -125,6 +97,14 @@ class ProcessReportOcrJob implements ShouldQueue
 
             ExtractHealthMetricsJob::dispatch($report);
             GenerateShortSummaryJob::dispatch($report);
+
+            // Structured table extraction only makes sense for text-based
+            // lab reports — there's no table to parse from a narrative
+            // vision description, and other report types don't have this
+            // row/reference-range/flag shape.
+            if ($report->type === 'blood_test') {
+                ExtractLabResultsJob::dispatch($report);
+            }
         } catch (Throwable $e) {
             report($e);
 

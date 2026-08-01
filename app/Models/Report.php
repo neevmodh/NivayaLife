@@ -21,6 +21,10 @@ class Report extends Model
         'insurance' => 'Insurance document',
         'bill' => 'Medical bill',
         'ecg' => 'ECG',
+        'dental' => 'Dental report',
+        'discharge_summary' => 'Discharge summary',
+        'pathology' => 'Pathology/Biopsy report',
+        'eye_care' => 'Eye care report',
         'other' => 'Medical document',
     ];
 
@@ -42,6 +46,7 @@ class Report extends Model
         'analysis_method',
         'xray_findings',
         'detected_entities',
+        'lab_results',
         'ai_summary',
         'ai_summary_language',
         'ai_summary_generated_at',
@@ -56,6 +61,7 @@ class Report extends Model
             'ai_summary_generated_at' => 'datetime',
             'xray_findings' => 'array',
             'detected_entities' => 'array',
+            'lab_results' => 'array',
             'file_size' => 'integer',
             'is_archived' => 'boolean',
         ];
@@ -65,7 +71,7 @@ class Report extends Model
     {
         return [
             'family_member_id' => ['required', 'integer', 'exists:family_members,id'],
-            'type' => ['required', 'in:blood_test,prescription,xray,sonography,mri_ct,insurance,bill,ecg,other'],
+            'type' => ['required', 'in:blood_test,prescription,xray,sonography,mri_ct,insurance,bill,ecg,dental,discharge_summary,pathology,eye_care,other'],
             'file_path' => ['required', 'string'],
             'original_filename' => ['required', 'string', 'max:255'],
             'ocr_status' => ['required', 'in:pending,processing,completed,failed'],

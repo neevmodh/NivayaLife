@@ -14,6 +14,7 @@ export default function reportProcessing({
     translateUrl,
     reuploadUrl,
     csrfToken,
+    reportType,
     initialOcrStatus,
     initialOcrText,
     initialAiSummary,
@@ -21,6 +22,7 @@ export default function reportProcessing({
     initialAnalysisMethod,
     initialXrayFindings,
     initialDetectedEntities,
+    initialLabResults,
     initialDetailedExplanations,
     initialTranslations,
 }) {
@@ -32,6 +34,13 @@ export default function reportProcessing({
         analysisMethod: initialAnalysisMethod,
         xrayFindings: initialXrayFindings,
         detectedEntities: initialDetectedEntities,
+        labResults: initialLabResults,
+        // ExtractLabResultsJob runs in parallel with the summary job, not
+        // after it, so it can still be in flight once the summary is
+        // already showing — keep polling a bit longer for blood_test
+        // reports specifically, capped so a genuinely failed extraction
+        // doesn't poll forever.
+        labPollAttempts: 0,
         summaryJobFailed: false,
         pollHandle: null,
 
@@ -64,7 +73,8 @@ export default function reportProcessing({
 
         stillProcessing() {
             return ['pending', 'processing'].includes(this.ocrStatus)
-                || (this.ocrStatus === 'completed' && !this.aiSummary && !this.summaryJobFailed);
+                || (this.ocrStatus === 'completed' && !this.aiSummary && !this.summaryJobFailed)
+                || (reportType === 'blood_test' && this.ocrStatus === 'completed' && !this.labResults && this.labPollAttempts < 30);
         },
 
         get phaseLabel() {
@@ -84,7 +94,9 @@ export default function reportProcessing({
                 this.analysisMethod = json.analysis_method;
                 this.xrayFindings = json.xray_findings;
                 this.detectedEntities = json.detected_entities;
+                this.labResults = json.lab_results;
                 this.summaryJobFailed = json.summary_job_failed;
+                this.labPollAttempts += 1;
             } catch (e) { /* try again on the next tick */ }
 
             if (!this.stillProcessing() && this.pollHandle) {
