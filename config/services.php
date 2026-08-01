@@ -56,4 +56,22 @@ return [
         'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
     ],
 
+    // Optional standalone TorchXRayVision service (xray-vision-service/) —
+    // enriches chest X-ray reports with real classifier output. Purely
+    // additive: unset means the app falls back to Gemini-only vision
+    // description, exactly as it behaves today.
+    'xray_vision' => [
+        'url' => env('XRAY_VISION_URL'),
+        'token' => env('XRAY_VISION_TOKEN'),
+    ],
+
+    // Optional standalone PaddleOCR + scispaCy/medspaCy service
+    // (clinical-nlp-service/) — a second-opinion OCR engine tried after
+    // Tesseract, plus biomedical entity recognition on report text. Purely
+    // additive: unset means the app behaves exactly as it does today.
+    'clinical_nlp' => [
+        'url' => env('CLINICAL_NLP_URL'),
+        'token' => env('CLINICAL_NLP_TOKEN'),
+    ],
+
 ];

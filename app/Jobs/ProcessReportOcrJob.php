@@ -4,7 +4,10 @@ namespace App\Jobs;
 
 use App\Models\AiJob;
 use App\Models\Report;
+use App\Services\Ai\AiClient;
 use App\Services\Ocr\OcrExtractor;
+use App\Services\ClinicalNlp\ClinicalNlpClient;
+use App\Services\XrayVision\XrayVisionClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,7 +34,7 @@ class ProcessReportOcrJob implements ShouldQueue
 
     public function __construct(public Report $report) {}
 
-    public function handle(OcrExtractor $ocrExtractor): void
+    public function handle(OcrExtractor $ocrExtractor, AiClient $ai, XrayVisionClient $xrayVision, ClinicalNlpClient $clinicalNlp): void
     {
         $report = $this->report->fresh();
         if (! $report) {
@@ -49,6 +52,8 @@ class ProcessReportOcrJob implements ShouldQueue
         ]);
 
         try {
+            $absolutePath = Storage::disk('local')->path($report->file_path);
+
             // The upload-time /reports/detect call already ran OCR against
             // this exact file (by hash) to pre-fill the form — reuse it
             // instead of paying for Tesseract twice.
@@ -58,24 +63,56 @@ class ProcessReportOcrJob implements ShouldQueue
                 $text = $cached['text'];
                 $usable = $cached['looks_usable'];
             } else {
-                $absolutePath = Storage::disk('local')->path($report->file_path);
                 $text = $ocrExtractor->extract($absolutePath, $report->mime_type ?? '');
                 $usable = $ocrExtractor->looksUsable($text);
             }
 
-            if (! $usable) {
-                $report->update(['ocr_status' => 'failed']);
-                $aiJob->update([
-                    'status' => 'failed',
-                    'completed_at' => now(),
-                    'error_message' => 'No readable text could be extracted from this document.',
-                ]);
+            $analysisMethod = null;
 
-                return;
+            if (! $usable) {
+                $mimeType = $report->mime_type ?? '';
+
+                // PaddleOCR is a genuinely different engine — worth a second
+                // opinion when Tesseract comes back empty/garbled, before
+                // giving up on text entirely and falling to a vision
+                // description. Optional enrichment: any failure here just
+                // means falling through to the vision/failed path exactly
+                // as it worked before this existed.
+                if ($clinicalNlp->isConfigured()) {
+                    try {
+                        $images = $ocrExtractor->visionImages($absolutePath, $mimeType);
+                        $paddleResult = $clinicalNlp->ocr($images);
+
+                        if ($paddleResult['looks_usable']) {
+                            $text = $paddleResult['text'];
+                            $usable = true;
+                            $analysisMethod = 'paddleocr';
+                        }
+                    } catch (Throwable $e) {
+                        report($e);
+                    }
+                }
+
+                if (! $usable) {
+                    if ($ocrExtractor->isVisionEligible($mimeType) && $ai->hasVisionCapableCredential()) {
+                        $this->analyzeWithVision($report, $aiJob, $ocrExtractor, $ai, $xrayVision);
+
+                        return;
+                    }
+
+                    $report->update(['ocr_status' => 'failed']);
+                    $aiJob->update([
+                        'status' => 'failed',
+                        'completed_at' => now(),
+                        'error_message' => 'No readable text could be extracted from this document.',
+                    ]);
+
+                    return;
+                }
             }
 
-            $report->update(['ocr_text' => $text, 'ocr_status' => 'completed']);
-            $aiJob->update(['status' => 'completed', 'completed_at' => now()]);
+            $report->update(['ocr_text' => $text, 'ocr_status' => 'completed', 'analysis_method' => $analysisMethod]);
+            $aiJob->update(['status' => 'completed', 'completed_at' => now(), 'provider' => $analysisMethod === 'paddleocr' ? 'paddleocr' : 'tesseract']);
 
             ExtractHealthMetricsJob::dispatch($report);
             GenerateShortSummaryJob::dispatch($report);
@@ -89,5 +126,93 @@ class ProcessReportOcrJob implements ShouldQueue
                 'error_message' => Str::limit($e->getMessage(), 500),
             ]);
         }
+    }
+
+    /**
+     * Falls back to describing the file visually when OCR found no usable
+     * text — the common case for a raw scan image (X-ray/sonography/MRI)
+     * that has no embedded text for Tesseract to read at all. Writes
+     * straight to ai_summary instead of going through the usual
+     * GenerateShortSummaryJob, since there's no ocr_text for that job's
+     * text-only prompt to work from. ExtractHealthMetricsJob is
+     * deliberately not dispatched here either — its regex extraction
+     * assumes literal OCR'd lab values, not a narrative image description.
+     */
+    private function analyzeWithVision(Report $report, AiJob $aiJob, OcrExtractor $ocrExtractor, AiClient $ai, XrayVisionClient $xrayVision): void
+    {
+        try {
+            $absolutePath = Storage::disk('local')->path($report->file_path);
+            $images = $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? '');
+
+            // Real CNN classifier output, when available, for chest X-rays
+            // only — this is optional enrichment, never a dependency: any
+            // failure here (unconfigured, unreachable, bad response) just
+            // means the report falls back to the Gemini-only description
+            // that already works today.
+            $findings = null;
+            if ($report->type === 'xray' && $xrayVision->isConfigured()) {
+                try {
+                    $findings = $xrayVision->analyze($absolutePath);
+                } catch (Throwable $e) {
+                    report($e);
+                }
+            }
+
+            $result = $ai->generateWithImage($this->buildVisionPrompt($report, $findings), $images);
+            $content = $result['text']."\n\n".GenerateShortSummaryJob::DISCLAIMER;
+
+            $report->update([
+                'ocr_status' => 'completed',
+                'analysis_method' => 'vision',
+                'xray_findings' => $findings,
+            ]);
+            $report->recordAiResponse('summary', $content, 'en', $aiJob);
+
+            $aiJob->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+                'provider' => $result['provider'],
+                'input_tokens' => $result['input_tokens'],
+                'output_tokens' => $result['output_tokens'],
+            ]);
+        } catch (Throwable $e) {
+            report($e);
+
+            $report->update(['ocr_status' => 'failed']);
+            $aiJob->update([
+                'status' => 'failed',
+                'completed_at' => now(),
+                'error_message' => 'Could not read or visually analyze this document: '.Str::limit($e->getMessage(), 450),
+            ]);
+        }
+    }
+
+    /** @param  array<int, array{pathology: string, probability: float}>|null  $findings */
+    private function buildVisionPrompt(Report $report, ?array $findings): string
+    {
+        $findingsBlock = '';
+
+        if ($findings) {
+            $top = collect($findings)
+                ->take(6)
+                ->map(fn ($f) => $f['pathology'].' '.round($f['probability'] * 100).'%')
+                ->implode(', ');
+
+            $findingsBlock = <<<BLOCK
+
+
+            A chest X-ray classifier model estimated these probabilities for common findings: {$top}. Treat this only as supporting context — if the image doesn't actually look like a chest X-ray, ignore it entirely and describe what you actually see.
+            BLOCK;
+        }
+
+        return <<<PROMPT
+        You are looking at an uploaded {$report->typeLabel()} image inside a personal family health-record app. No text could be extracted from it automatically, so describe what you see directly.{$findingsBlock}
+
+        In 2-3 short sentences, state:
+        1. What kind of scan/document this appears to be.
+        2. What is visibly notable about it, described in plain, cautious language — do not state a definitive diagnosis, only describe visible findings a layperson would want summarized.
+
+        Be brief and plain — this is a teaser someone reads at a glance, not a full explanation. Do not use markdown formatting, headings, or bullet points. Do not include any disclaimer — one is appended separately.
+        PROMPT;
     }
 }

@@ -35,6 +35,46 @@ class OcrExtractor
 
     private const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
+    /** Vision analysis only ever sees the first few pages of a document — enough to describe it, without a huge multi-page request. */
+    private const MAX_VISION_PAGES = 3;
+
+    /** Whether this mime type can be handed to a vision model when OCR finds no usable text — true for any raster image or PDF, false for docx (always text, never a scan). */
+    public function isVisionEligible(string $mimeType): bool
+    {
+        return $mimeType !== self::DOCX_MIME && $mimeType !== '';
+    }
+
+    /**
+     * Produces base64-encoded images for a vision model to look at directly.
+     * Deliberately skips preprocessImage()'s despeckle/deskew/grayscale pass
+     * — that cleanup is tuned to make text easier for Tesseract to read, and
+     * would only degrade visual detail in a scan a vision model needs to see
+     * as-is.
+     *
+     * @return array<int, array{data: string, mimeType: string}>
+     */
+    public function visionImages(string $absolutePath, string $mimeType): array
+    {
+        if ($mimeType === 'application/pdf') {
+            $imagick = new Imagick;
+            $imagick->setResolution(300, 300);
+            $imagick->readImage($absolutePath);
+
+            $images = [];
+            foreach ($imagick as $page) {
+                if (count($images) >= self::MAX_VISION_PAGES) {
+                    break;
+                }
+                $images[] = ['data' => base64_encode($page->getImageBlob()), 'mimeType' => 'image/png'];
+            }
+            $imagick->clear();
+
+            return $images;
+        }
+
+        return [['data' => base64_encode(file_get_contents($absolutePath)), 'mimeType' => $mimeType]];
+    }
+
     /** @return string Extracted text, empty string if nothing readable was found. */
     public function extract(string $absolutePath, string $mimeType): string
     {

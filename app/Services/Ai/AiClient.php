@@ -69,6 +69,51 @@ class AiClient
         return $this->credentials() !== [];
     }
 
+    /**
+     * Same fallback/cooldown structure as generate(), but restricted to
+     * Gemini credentials only — Groq's configured model here is text-only,
+     * so it can't take an image part at all.
+     *
+     * @param  array<int, array{data: string, mimeType: string}>  $images
+     * @return array{text: string, input_tokens: ?int, output_tokens: ?int, provider: string}
+     */
+    public function generateWithImage(string $prompt, array $images): array
+    {
+        $credentials = array_values(array_filter($this->credentials(), fn ($c) => $c['provider'] === 'gemini'));
+
+        if ($credentials === []) {
+            throw new RuntimeException('No vision-capable AI provider is configured.');
+        }
+
+        $lastException = null;
+
+        foreach ([true, false] as $respectCooldown) {
+            foreach ($credentials as $index => $credential) {
+                if ($respectCooldown && Cache::has($this->cooldownKey($index))) {
+                    continue;
+                }
+
+                try {
+                    $result = (new GeminiClient($credential['key'], $credential['model']))->generateWithImages($prompt, $images);
+                    Cache::forget($this->cooldownKey($index));
+
+                    return $result + ['provider' => $credential['provider']];
+                } catch (Throwable $e) {
+                    $lastException = $e;
+                    Cache::put($this->cooldownKey($index), true, now()->addMinutes(self::COOLDOWN_MINUTES));
+                }
+            }
+        }
+
+        throw $lastException;
+    }
+
+    /** Whether a Gemini credential (the only vision-capable provider configured today) is available. */
+    public function hasVisionCapableCredential(): bool
+    {
+        return array_any($this->credentials(), fn ($c) => $c['provider'] === 'gemini');
+    }
+
     /** @return array{text: string, input_tokens: ?int, output_tokens: ?int} */
     private function call(array $credential, string $prompt): array
     {

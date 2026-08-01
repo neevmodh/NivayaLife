@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\AiJob;
 use App\Models\Report;
 use App\Services\Ai\AiClient;
+use App\Services\ClinicalNlp\ClinicalNlpClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,7 +31,7 @@ class GenerateShortSummaryJob implements ShouldQueue
 
     public function __construct(public Report $report) {}
 
-    public function handle(AiClient $ai): void
+    public function handle(AiClient $ai, ClinicalNlpClient $clinicalNlp): void
     {
         $report = $this->report->fresh();
 
@@ -65,6 +66,8 @@ class GenerateShortSummaryJob implements ShouldQueue
                 'input_tokens' => $result['input_tokens'],
                 'output_tokens' => $result['output_tokens'],
             ]);
+
+            $this->detectEntities($report, $clinicalNlp);
         } catch (Throwable $e) {
             report($e);
 
@@ -73,6 +76,25 @@ class GenerateShortSummaryJob implements ShouldQueue
                 'completed_at' => now(),
                 'error_message' => Str::limit($e->getMessage(), 500),
             ]);
+        }
+    }
+
+    /**
+     * Biomedical entity recognition (drug/diagnosis mentions) via the
+     * optional clinical-nlp-service — display-only enrichment, never a
+     * reason to fail this job: any error here is swallowed after logging.
+     */
+    private function detectEntities(Report $report, ClinicalNlpClient $clinicalNlp): void
+    {
+        if (! $clinicalNlp->isConfigured()) {
+            return;
+        }
+
+        try {
+            $entities = $clinicalNlp->extractEntities($report->ocr_text);
+            $report->update(['detected_entities' => $entities]);
+        } catch (Throwable $e) {
+            report($e);
         }
     }
 

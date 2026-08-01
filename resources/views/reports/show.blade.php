@@ -29,6 +29,9 @@
             initialOcrText: @js($report->ocr_text),
             initialAiSummary: @js($report->ai_summary),
             initialAiSummaryGeneratedAt: @js($report->ai_summary_generated_at?->toIso8601String()),
+            initialAnalysisMethod: @js($report->analysis_method),
+            initialXrayFindings: @js($report->xray_findings),
+            initialDetectedEntities: @js($report->detected_entities),
             initialDetailedExplanations: @js($detailedExplanations),
             initialTranslations: @js($translations),
         })"
@@ -92,8 +95,30 @@
 
             <p x-show="translationError" x-cloak x-text="translationError" class="mt-2 text-xs font-semibold text-novix-pink-dark"></p>
 
+            <p x-show="aiSummary && analysisMethod === 'vision'" x-cloak class="mt-3 inline-block rounded-full bg-novix-mint/60 px-2.5 py-0.5 text-xs font-semibold text-novix-green dark:bg-novix-green/15 dark:text-novix-mint">AI visual analysis — no readable text found, described from the image</p>
             <p x-show="aiSummary" x-cloak class="mt-3 whitespace-pre-line text-sm text-novix-ink dark:text-white" x-text="displayedSummary"></p>
             <p x-show="aiSummary && currentLanguage === 'en'" x-cloak class="mt-2 text-xs text-novix-muted" x-text="aiSummaryGeneratedAt ? 'Generated ' + new Date(aiSummaryGeneratedAt).toLocaleString() : ''"></p>
+
+            <div x-show="xrayFindings && xrayFindings.length" x-cloak class="mt-3 rounded-xl bg-novix-cream/60 p-3 dark:bg-white/5">
+                <p class="text-xs font-semibold text-novix-ink dark:text-white">Model findings (chest X-ray classifier)</p>
+                <ul class="mt-1.5 space-y-1">
+                    <template x-for="finding in (xrayFindings || []).slice(0, 6)" :key="finding.pathology">
+                        <li class="flex items-center justify-between text-xs text-novix-muted">
+                            <span x-text="finding.pathology"></span>
+                            <span x-text="Math.round(finding.probability * 100) + '%'"></span>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+
+            <div x-show="(detectedEntities || []).filter(e => !e.negated).length" x-cloak class="mt-3 rounded-xl bg-novix-cream/60 p-3 dark:bg-white/5">
+                <p class="text-xs font-semibold text-novix-ink dark:text-white">Mentioned in this report</p>
+                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                    <template x-for="entity in (detectedEntities || []).filter(e => !e.negated)" :key="entity.text">
+                        <span class="rounded-full bg-white px-2.5 py-0.5 text-xs text-novix-ink dark:bg-white/10 dark:text-white" x-text="entity.text"></span>
+                    </template>
+                </div>
+            </div>
 
             <template x-if="!aiSummary && ocrStatus === 'failed'">
                 <div class="mt-3 rounded-xl bg-novix-cream/60 p-4 text-center dark:bg-white/5">

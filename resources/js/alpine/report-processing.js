@@ -18,6 +18,9 @@ export default function reportProcessing({
     initialOcrText,
     initialAiSummary,
     initialAiSummaryGeneratedAt,
+    initialAnalysisMethod,
+    initialXrayFindings,
+    initialDetectedEntities,
     initialDetailedExplanations,
     initialTranslations,
 }) {
@@ -26,6 +29,9 @@ export default function reportProcessing({
         ocrText: initialOcrText,
         aiSummary: initialAiSummary,
         aiSummaryGeneratedAt: initialAiSummaryGeneratedAt,
+        analysisMethod: initialAnalysisMethod,
+        xrayFindings: initialXrayFindings,
+        detectedEntities: initialDetectedEntities,
         summaryJobFailed: false,
         pollHandle: null,
 
@@ -75,6 +81,9 @@ export default function reportProcessing({
                 this.ocrText = json.ocr_text;
                 this.aiSummary = json.ai_summary;
                 this.aiSummaryGeneratedAt = json.ai_summary_generated_at;
+                this.analysisMethod = json.analysis_method;
+                this.xrayFindings = json.xray_findings;
+                this.detectedEntities = json.detected_entities;
                 this.summaryJobFailed = json.summary_job_failed;
             } catch (e) { /* try again on the next tick */ }
 

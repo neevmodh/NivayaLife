@@ -114,6 +114,9 @@ class ReportController extends Controller
             'ocr_text' => $report->ocr_text,
             'ai_summary' => $report->ai_summary,
             'ai_summary_generated_at' => $report->ai_summary_generated_at?->toIso8601String(),
+            'analysis_method' => $report->analysis_method,
+            'xray_findings' => $report->xray_findings,
+            'detected_entities' => $report->detected_entities,
             'summary_job_failed' => $summaryJobFailed,
         ]);
     }

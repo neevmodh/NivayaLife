@@ -28,6 +28,31 @@ class GeminiClient
      */
     public function generate(string $prompt): array
     {
+        return $this->call([['text' => $prompt]]);
+    }
+
+    /**
+     * Same as generate(), but with one or more images attached alongside the
+     * prompt text — used for reports where OCR found no usable text (a raw
+     * X-ray/sonography/MRI scan) and the file needs to be described visually
+     * instead.
+     *
+     * @param  array<int, array{data: string, mimeType: string}>  $images  Each image's raw bytes, base64-encoded.
+     * @return array{text: string, input_tokens: ?int, output_tokens: ?int}
+     */
+    public function generateWithImages(string $prompt, array $images): array
+    {
+        $parts = [['text' => $prompt]];
+
+        foreach ($images as $image) {
+            $parts[] = ['inlineData' => ['mimeType' => $image['mimeType'], 'data' => $image['data']]];
+        }
+
+        return $this->call($parts);
+    }
+
+    private function call(array $parts): array
+    {
         if (! $this->apiKey) {
             throw new RuntimeException('GEMINI_API_KEY is not configured.');
         }
@@ -38,7 +63,7 @@ class GeminiClient
             ->withHeaders(['x-goog-api-key' => $this->apiKey, 'Content-Type' => 'application/json'])
             ->post($url, [
                 'contents' => [
-                    ['parts' => [['text' => $prompt]]],
+                    ['parts' => $parts],
                 ],
             ]);
 

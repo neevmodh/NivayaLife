@@ -11,6 +11,7 @@ const NOT_LETTER_END = '(?:$|[^a-z])';
 const TYPE_RULES = [
     [/rx|prescription|script/i, 'prescription'],
     [/x-?ray/i, 'xray'],
+    [/sono(graphy)?|ultrasound|usg/i, 'sonography'],
     [new RegExp(`${NOT_LETTER}mri${NOT_LETTER_END}|${NOT_LETTER}ct${NOT_LETTER_END}|scan`, 'i'), 'mri_ct'],
     [/ecg|ekg|cardio/i, 'ecg'],
     [/insurance|policy|mediclaim/i, 'insurance'],
@@ -63,6 +64,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
             { value: 'blood_test', label: 'Blood Test', icon: '\u{1FA78}' },
             { value: 'prescription', label: 'Prescription', icon: '\u{1F48A}' },
             { value: 'xray', label: 'X-Ray', icon: '\u{1F9B4}' },
+            { value: 'sonography', label: 'Sonography', icon: '\u{1F50A}' },
             { value: 'mri_ct', label: 'MRI/CT', icon: '\u{1F9E0}' },
             { value: 'insurance', label: 'Insurance', icon: '\u{1F4C4}' },
             { value: 'bill', label: 'Bill', icon: '\u{1F9FE}' },
@@ -125,10 +127,15 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
             this.files = this.files.filter((f) => f.id !== id);
         },
 
-        /** Compressed exactly once per file and reused for both detection and the real upload, so their server-side content hashes match and OCR only runs once. */
+        /**
+         * Compressed exactly once per file and reused for both detection and the real upload, so their server-side content hashes match and OCR only runs once.
+         * Scan types (X-Ray/Sonography/MRI-CT) skip compression entirely — the 2200px/JPEG-0.87 re-encode is tuned for photos of paper documents and would needlessly degrade diagnostic image detail before a vision model ever sees it.
+         */
         getUploadBlob(entry) {
+            const SCAN_TYPES = ['xray', 'sonography', 'mri_ct'];
             if (!entry.blobPromise) {
-                entry.blobPromise = entry.isDocument ? Promise.resolve(entry.file) : compressImage(entry.file);
+                const skipCompression = entry.isDocument || SCAN_TYPES.includes(entry.type);
+                entry.blobPromise = skipCompression ? Promise.resolve(entry.file) : compressImage(entry.file);
             }
 
             return entry.blobPromise;
