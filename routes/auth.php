@@ -8,37 +8,19 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegistrationWizardController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegistrationWizardController::class, 'create'])
+    Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
-    Route::get('register/check-email', [RegistrationWizardController::class, 'checkEmail'])
+    Route::get('register/check-email', [RegisteredUserController::class, 'checkEmail'])
         ->name('register.check-email');
 
-    Route::get('register/photo-preview', [RegistrationWizardController::class, 'photoPreview'])
-        ->name('register.photo-preview');
-
-    Route::get('register/summary', [RegistrationWizardController::class, 'summary'])
-        ->name('register.summary');
-
-    Route::post('register/step-1', [RegistrationWizardController::class, 'saveStep1'])
-        ->name('register.step1');
-
-    Route::post('register/step-2', [RegistrationWizardController::class, 'savePhoto'])
-        ->name('register.step2');
-
-    Route::post('register/step-3', [RegistrationWizardController::class, 'saveStep3'])
-        ->name('register.step3');
-
-    Route::post('register/step-4', [RegistrationWizardController::class, 'saveStep4'])
-        ->name('register.step4');
-
-    Route::post('register', [RegistrationWizardController::class, 'complete'])
-        ->name('register.complete');
+    Route::post('register', [RegisteredUserController::class, 'store'])
+        ->name('register.store');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');

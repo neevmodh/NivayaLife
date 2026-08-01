@@ -2,7 +2,7 @@ import './bootstrap';
 
 import Alpine from 'alpinejs';
 
-import registrationWizard from './alpine/registration-wizard';
+import registerForm from './alpine/register-form';
 import cameraCapture from './alpine/camera-capture';
 import locationSelect from './alpine/location-select';
 import bmiGauge from './alpine/bmi-gauge';
@@ -25,7 +25,7 @@ import adminChart from './alpine/admin-chart';
 
 window.Alpine = Alpine;
 
-Alpine.data('registrationWizard', registrationWizard);
+Alpine.data('registerForm', registerForm);
 Alpine.data('cameraCapture', cameraCapture);
 Alpine.data('locationSelect', locationSelect);
 Alpine.data('bmiGauge', bmiGauge);

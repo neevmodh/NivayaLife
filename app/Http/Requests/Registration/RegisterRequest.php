@@ -6,7 +6,7 @@ use App\Rules\NoHeaderInjection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class Step1Request extends FormRequest
+class RegisterRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -20,9 +20,13 @@ class Step1Request extends FormRequest
         $rules = [
             'full_name' => ['required', 'string', 'min:2', 'max:255'],
             'phone' => ['required', 'digits:10'],
-            'date_of_birth' => ['required', 'date', 'before:today'],
             'gender' => ['required', 'in:male,female,other,prefer_not_to_say'],
-            'blood_group' => ['required', 'in:A+,A-,B+,B-,AB+,AB-,O+,O-,Unknown'],
+            // Optional at signup — nothing in the app gates a feature on
+            // these, they're compliance/audit logging only, so a user isn't
+            // blocked from creating an account just to check three boxes.
+            'consent_account_creation' => ['nullable', 'boolean'],
+            'consent_upload' => ['nullable', 'boolean'],
+            'consent_ai_processing' => ['nullable', 'boolean'],
         ];
 
         if ($viaGoogle) {
