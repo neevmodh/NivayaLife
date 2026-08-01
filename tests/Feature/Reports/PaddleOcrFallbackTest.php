@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
- * Covers the PaddleOCR second-opinion fallback: when Tesseract's own read
- * comes back unusable, the clinical-nlp-service's /ocr endpoint gets a
- * chance to rescue the report before it's handed to the vision path.
+ * Covers OCR engine selection: PaddleOCR (via clinical-nlp-service) is the
+ * primary engine, Tesseract is the fallback when PaddleOCR isn't
+ * configured/reachable or finds nothing usable, and vision is the final
+ * fallback when neither text engine can read the file.
  */
 class PaddleOcrFallbackTest extends TestCase
 {
@@ -55,7 +56,7 @@ class PaddleOcrFallbackTest extends TestCase
         ]);
     }
 
-    public function test_paddleocr_rescues_a_tesseract_unusable_report(): void
+    public function test_paddleocr_is_used_as_the_primary_engine_when_it_finds_usable_text(): void
     {
         config([
             'services.gemini.key' => 'test-gemini-key',
@@ -91,12 +92,41 @@ class PaddleOcrFallbackTest extends TestCase
             && $request->hasHeader('X-Service-Token', 'shared-secret'));
 
         // GenerateShortSummaryJob runs the normal text-prompt path (not the
-        // vision path) once PaddleOCR has rescued usable ocr_text.
+        // vision path) once PaddleOCR has produced usable ocr_text.
         Http::assertSent(fn (HttpRequest $request) => str_contains($request->url(), 'generativelanguage')
             && ! collect($request->data()['contents'][0]['parts'])->contains(fn ($part) => isset($part['inlineData'])));
     }
 
-    public function test_falls_through_to_vision_when_paddleocr_also_finds_nothing_usable(): void
+    public function test_falls_back_to_tesseract_when_paddleocr_is_unconfigured(): void
+    {
+        config([
+            'services.gemini.key' => 'test-gemini-key',
+            'services.clinical_nlp.url' => null,
+        ]);
+
+        Http::fake([
+            'generativelanguage.googleapis.com/*' => Http::response([
+                'candidates' => [
+                    ['content' => ['parts' => [['text' => 'This appears to be a blank or unreadable image.']]]],
+                ],
+                'usageMetadata' => ['promptTokenCount' => 40, 'candidatesTokenCount' => 8],
+            ]),
+        ]);
+
+        $report = $this->makeBlankImageReport();
+
+        ProcessReportOcrJob::dispatchSync($report);
+
+        $report->refresh();
+
+        // Blank image → Tesseract also finds nothing, falls through to vision.
+        $this->assertSame('completed', $report->ocr_status);
+        $this->assertSame('vision', $report->analysis_method);
+
+        Http::assertNotSent(fn (HttpRequest $request) => str_contains($request->url(), 'clinical-nlp'));
+    }
+
+    public function test_falls_back_to_tesseract_when_paddleocr_finds_nothing_usable(): void
     {
         config([
             'services.gemini.key' => 'test-gemini-key',
@@ -119,18 +149,20 @@ class PaddleOcrFallbackTest extends TestCase
 
         $report->refresh();
 
+        // Both PaddleOCR and Tesseract find nothing on a blank image → vision.
         $this->assertSame('completed', $report->ocr_status);
         $this->assertSame('vision', $report->analysis_method);
     }
 
-    public function test_falls_through_to_vision_when_clinical_nlp_is_unconfigured(): void
+    public function test_falls_back_to_tesseract_when_paddleocr_service_errors(): void
     {
         config([
             'services.gemini.key' => 'test-gemini-key',
-            'services.clinical_nlp.url' => null,
+            'services.clinical_nlp.url' => 'http://clinical-nlp.test',
         ]);
 
         Http::fake([
+            'clinical-nlp.test/ocr' => Http::response('service unavailable', 503),
             'generativelanguage.googleapis.com/*' => Http::response([
                 'candidates' => [
                     ['content' => ['parts' => [['text' => 'This appears to be a blank or unreadable image.']]]],
@@ -147,7 +179,5 @@ class PaddleOcrFallbackTest extends TestCase
 
         $this->assertSame('completed', $report->ocr_status);
         $this->assertSame('vision', $report->analysis_method);
-
-        Http::assertNotSent(fn (HttpRequest $request) => str_contains($request->url(), 'clinical-nlp'));
     }
 }

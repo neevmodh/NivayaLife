@@ -19,12 +19,16 @@ use Illuminate\Support\Str;
 use Throwable;
 
 /**
- * Runs Tesseract (via OcrExtractor) against a freshly uploaded report. Never
- * retried automatically — a file that's unreadable once is going to stay
- * unreadable, and retrying just delays the "we couldn't read this" fallback
- * the user needs to see. Kicks off health-metric extraction and the
- * automatic short summary once OCR succeeds; on failure it deliberately
- * stops here, since there's nothing to summarize.
+ * Reads the text out of a freshly uploaded report. PaddleOCR (via
+ * ClinicalNlpClient) is tried first — it's consistently more accurate than
+ * Tesseract on real-world uploads (phone photos, skewed scans, mixed
+ * layouts) — with Tesseract as the fallback when PaddleOCR isn't
+ * configured, unreachable, or comes back empty. Never retried automatically
+ * — a file that's unreadable once is going to stay unreadable, and
+ * retrying just delays the "we couldn't read this" fallback the user needs
+ * to see. Kicks off health-metric extraction and the automatic short
+ * summary once OCR succeeds; on failure it deliberately stops here, since
+ * there's nothing to summarize.
  */
 class ProcessReportOcrJob implements ShouldQueue
 {
@@ -47,72 +51,77 @@ class ProcessReportOcrJob implements ShouldQueue
             'report_id' => $report->id,
             'job_type' => 'ocr',
             'status' => 'running',
-            'provider' => 'tesseract',
+            'provider' => 'pending',
             'started_at' => now(),
         ]);
 
         try {
             $absolutePath = Storage::disk('local')->path($report->file_path);
+            $mimeType = $report->mime_type ?? '';
 
-            // The upload-time /reports/detect call already ran OCR against
-            // this exact file (by hash) to pre-fill the form — reuse it
-            // instead of paying for Tesseract twice.
-            $cached = $report->file_hash ? Cache::get(OcrExtractor::cacheKey($report->file_hash)) : null;
-
-            if ($cached) {
-                $text = $cached['text'];
-                $usable = $cached['looks_usable'];
-            } else {
-                $text = $ocrExtractor->extract($absolutePath, $report->mime_type ?? '');
-                $usable = $ocrExtractor->looksUsable($text);
-            }
-
+            $text = null;
+            $usable = false;
             $analysisMethod = null;
 
-            if (! $usable) {
-                $mimeType = $report->mime_type ?? '';
+            // PaddleOCR is the primary OCR engine — more accurate than
+            // Tesseract on real-world uploads. Any failure here (not
+            // configured, unreachable, bad response) just falls through to
+            // the Tesseract path below; PaddleOCR is infrastructure that can
+            // go down without breaking uploads.
+            if ($clinicalNlp->isConfigured()) {
+                try {
+                    $images = $ocrExtractor->visionImages($absolutePath, $mimeType);
+                    $paddleResult = $clinicalNlp->ocr($images);
 
-                // PaddleOCR is a genuinely different engine — worth a second
-                // opinion when Tesseract comes back empty/garbled, before
-                // giving up on text entirely and falling to a vision
-                // description. Optional enrichment: any failure here just
-                // means falling through to the vision/failed path exactly
-                // as it worked before this existed.
-                if ($clinicalNlp->isConfigured()) {
-                    try {
-                        $images = $ocrExtractor->visionImages($absolutePath, $mimeType);
-                        $paddleResult = $clinicalNlp->ocr($images);
-
-                        if ($paddleResult['looks_usable']) {
-                            $text = $paddleResult['text'];
-                            $usable = true;
-                            $analysisMethod = 'paddleocr';
-                        }
-                    } catch (Throwable $e) {
-                        report($e);
+                    if ($paddleResult['looks_usable']) {
+                        $text = $paddleResult['text'];
+                        $usable = true;
+                        $analysisMethod = 'paddleocr';
                     }
+                } catch (Throwable $e) {
+                    report($e);
+                }
+            }
+
+            if (! $usable) {
+                // The upload-time /reports/detect call already ran
+                // Tesseract against this exact file (by hash) to pre-fill
+                // the form — reuse it instead of paying for Tesseract
+                // twice.
+                $cached = $report->file_hash ? Cache::get(OcrExtractor::cacheKey($report->file_hash)) : null;
+
+                if ($cached) {
+                    $text = $cached['text'];
+                    $usable = $cached['looks_usable'];
+                } else {
+                    $text = $ocrExtractor->extract($absolutePath, $mimeType);
+                    $usable = $ocrExtractor->looksUsable($text);
                 }
 
-                if (! $usable) {
-                    if ($ocrExtractor->isVisionEligible($mimeType) && $ai->hasVisionCapableCredential()) {
-                        $this->analyzeWithVision($report, $aiJob, $ocrExtractor, $ai, $xrayVision);
+                if ($usable) {
+                    $analysisMethod = 'tesseract';
+                }
+            }
 
-                        return;
-                    }
-
-                    $report->update(['ocr_status' => 'failed']);
-                    $aiJob->update([
-                        'status' => 'failed',
-                        'completed_at' => now(),
-                        'error_message' => 'No readable text could be extracted from this document.',
-                    ]);
+            if (! $usable) {
+                if ($ocrExtractor->isVisionEligible($mimeType) && $ai->hasVisionCapableCredential()) {
+                    $this->analyzeWithVision($report, $aiJob, $ocrExtractor, $ai, $xrayVision);
 
                     return;
                 }
+
+                $report->update(['ocr_status' => 'failed']);
+                $aiJob->update([
+                    'status' => 'failed',
+                    'completed_at' => now(),
+                    'error_message' => 'No readable text could be extracted from this document.',
+                ]);
+
+                return;
             }
 
             $report->update(['ocr_text' => $text, 'ocr_status' => 'completed', 'analysis_method' => $analysisMethod]);
-            $aiJob->update(['status' => 'completed', 'completed_at' => now(), 'provider' => $analysisMethod === 'paddleocr' ? 'paddleocr' : 'tesseract']);
+            $aiJob->update(['status' => 'completed', 'completed_at' => now(), 'provider' => $analysisMethod]);
 
             ExtractHealthMetricsJob::dispatch($report);
             GenerateShortSummaryJob::dispatch($report);
