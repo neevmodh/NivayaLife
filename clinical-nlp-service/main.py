@@ -29,6 +29,7 @@ app = FastAPI()
 # libraries spawn a thread per visible core causes severe contention rather
 # than speedup.
 ocr_engine = PaddleOCR(use_angle_cls=True, lang="en", show_log=False, cpu_threads=1)
+ocr_engine_hi = PaddleOCR(use_angle_cls=True, lang="hi", show_log=False, cpu_threads=1)
 
 # medspacy_pyrush (the default sentence-boundary component) conflicts with
 # en_core_sci_sm's own built-in parser, which already sets sentence
@@ -90,7 +91,17 @@ def ocr(payload: OcrRequest, x_service_token: str | None = Header(default=None))
 
         result = ocr_engine.ocr(array, cls=True)
         lines = [line[1][0] for block in (result or []) for line in (block or [])]
-        page_texts.append("\n".join(lines))
+        en_text = "\n".join(lines)
+
+        page_text = en_text
+        if not looks_usable(en_text):
+            hi_result = ocr_engine_hi.ocr(array, cls=True)
+            hi_lines = [line[1][0] for block in (hi_result or []) for line in (block or [])]
+            hi_text = "\n".join(hi_lines)
+            if len(hi_text) > len(en_text):
+                page_text = hi_text
+
+        page_texts.append(page_text)
 
     text = "\n\n".join(page_texts).strip()
 

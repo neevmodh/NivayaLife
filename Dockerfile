@@ -41,7 +41,7 @@ FROM php:8.4-fpm-bookworm
 # failed to load at container boot instead.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx supervisor gettext-base \
-        tesseract-ocr tesseract-ocr-hin tesseract-ocr-guj ghostscript \
+        tesseract-ocr tesseract-ocr-hin tesseract-ocr-guj tesseract-ocr-mar tesseract-ocr-tam tesseract-ocr-tel tesseract-ocr-ben tesseract-ocr-kan ghostscript \
         libmagickwand-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
         libzip-dev libonig-dev unzip git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \

@@ -346,7 +346,7 @@ class OcrExtractor
         $installed = trim(Process::run(['tesseract', '--list-langs'])->output());
         $available = array_map('trim', explode("\n", $installed));
 
-        $wanted = array_values(array_intersect(['eng', 'hin', 'guj'], $available));
+        $wanted = array_values(array_intersect(['eng', 'hin', 'guj', 'mar', 'tam', 'tel', 'ben', 'kan'], $available));
 
         return self::$multiLanguages = $wanted === [] ? 'eng' : implode('+', $wanted);
     }

@@ -6,11 +6,13 @@ use App\Models\AiJob;
 use App\Models\Report;
 use App\Services\Ai\AiClient;
 use App\Services\ClinicalNlp\ClinicalNlpClient;
+use App\Services\Ocr\OcrExtractor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -31,7 +33,7 @@ class GenerateShortSummaryJob implements ShouldQueue
 
     public function __construct(public Report $report) {}
 
-    public function handle(AiClient $ai, ClinicalNlpClient $clinicalNlp): void
+    public function handle(AiClient $ai, ClinicalNlpClient $clinicalNlp, OcrExtractor $ocrExtractor): void
     {
         $report = $this->report->fresh();
 
@@ -54,7 +56,7 @@ class GenerateShortSummaryJob implements ShouldQueue
         ]);
 
         try {
-            $result = $ai->generate($this->buildPrompt($report));
+            $result = $this->generateSummary($report, $ai, $ocrExtractor);
             $content = $result['text']."\n\n".self::DISCLAIMER;
 
             $report->recordAiResponse('summary', $content, 'en', $aiJob);
@@ -77,6 +79,37 @@ class GenerateShortSummaryJob implements ShouldQueue
                 'error_message' => Str::limit($e->getMessage(), 500),
             ]);
         }
+    }
+
+    /**
+     * Prescriptions are overwhelmingly the report type most likely to
+     * contain a doctor's handwriting — and OCR (Tesseract or PaddleOCR)
+     * routinely produces just enough clean, machine-printed text (a
+     * clinic's letterhead, typed patient details) to pass looksUsable()
+     * while silently losing or mangling the actual handwritten
+     * instructions, which is exactly the part a user needs read correctly.
+     * Neither OCR engine is built for handwriting at all — Gemini's vision
+     * model reads it noticeably better from the image directly, using the
+     * OCR text only as a cross-check rather than the source of truth. Any
+     * failure loading the image (missing file, unreadable format) falls
+     * back to the existing text-only prompt rather than failing the job.
+     *
+     * @return array{text: string, provider: string, input_tokens: ?int, output_tokens: ?int}
+     */
+    private function generateSummary(Report $report, AiClient $ai, OcrExtractor $ocrExtractor): array
+    {
+        if ($report->type === 'prescription') {
+            try {
+                $absolutePath = Storage::disk('local')->path($report->file_path);
+                $images = $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? '');
+
+                return $ai->generateWithImage($this->buildVisionPrompt($report), $images);
+            } catch (Throwable $e) {
+                report($e);
+            }
+        }
+
+        return $ai->generate($this->buildPrompt($report));
     }
 
     /**
@@ -112,6 +145,29 @@ class GenerateShortSummaryJob implements ShouldQueue
         Be brief and plain — this is a teaser someone reads at a glance, not a full explanation. Do not use markdown formatting, headings, or bullet points. Do not include any disclaimer — one is appended separately.
 
         OCR TEXT:
+        {$ocrText}
+        PROMPT;
+    }
+
+    /**
+     * Unlike buildPrompt(), this is paired with the actual report image —
+     * the model can read the handwriting directly rather than relying
+     * solely on what OCR managed to extract.
+     */
+    private function buildVisionPrompt(Report $report): string
+    {
+        $ocrText = Str::limit($report->ocr_text, self::MAX_OCR_CHARS, '');
+
+        return <<<PROMPT
+        You are looking at an uploaded prescription image inside a personal family health-record app. Read the image directly, including any handwritten portions — a doctor's handwriting is often illegible to automated text extraction, so do not rely only on the OCR text below; use it only as a possibly-incomplete cross-check, and prefer what you can actually see in the image whenever the two disagree.
+
+        In 2-3 short sentences, state:
+        1. What kind of report this is.
+        2. The medicines and instructions you can make out — say plainly if a portion of the handwriting is illegible rather than guessing with false confidence.
+
+        Be brief and plain — this is a teaser someone reads at a glance, not a full explanation. Do not use markdown formatting, headings, or bullet points. Do not include any disclaimer — one is appended separately.
+
+        OCR TEXT (may be incomplete — the handwriting itself may not have been captured):
         {$ocrText}
         PROMPT;
     }
