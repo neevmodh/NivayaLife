@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet">
 
+    @include('partials.pwa-meta')
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-novix-cream font-sans text-novix-ink antialiased dark:bg-novix-ink dark:text-novix-cream">
