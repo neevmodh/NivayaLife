@@ -52,7 +52,8 @@ class MedicationController extends Controller
         $familyMember = FamilyMember::findOrFail($validated['family_member_id']);
         abort_unless($familyMember->canBeEditedBy($request->user()), 403);
 
-        Medication::create($validated);
+        $medication = Medication::create($validated);
+        $medication->generateTodaysLogs();
 
         return redirect()->route('medications.index', ['member' => $familyMember->id])->with('status', 'Medication added.');
     }
@@ -72,6 +73,7 @@ class MedicationController extends Controller
         abort_unless($medication->familyMember->canBeEditedBy($request->user()), 403);
 
         $medication->update($this->validated($request));
+        $medication->generateTodaysLogs();
 
         return redirect()->route('medications.index', ['member' => $medication->family_member_id])->with('status', 'Medication updated.');
     }

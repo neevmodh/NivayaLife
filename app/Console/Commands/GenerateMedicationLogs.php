@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Medication;
-use App\Models\MedicationLog;
 use Illuminate\Console\Command;
 
 /**
@@ -30,18 +29,9 @@ class GenerateMedicationLogs extends Command
             ->where(function ($q) use ($today) {
                 $q->whereNull('end_date')->orWhereDate('end_date', '>=', $today);
             })
-            ->chunkById(100, function ($medications) use ($today, &$created) {
+            ->chunkById(100, function ($medications) use (&$created) {
                 foreach ($medications as $medication) {
-                    foreach ($medication->schedule_times ?? [] as $time) {
-                        $log = MedicationLog::firstOrCreate(
-                            ['medication_id' => $medication->id, 'scheduled_at' => $today->copy()->setTimeFromTimeString($time)],
-                            ['status' => 'pending']
-                        );
-
-                        if ($log->wasRecentlyCreated) {
-                            $created++;
-                        }
-                    }
+                    $created += $medication->generateTodaysLogs();
                 }
             });
 

@@ -68,4 +68,32 @@ class PushSubscriptionTest extends TestCase
             'keys' => ['p256dh' => 'public-key-value', 'auth' => 'auth-token-value'],
         ])->assertUnauthorized();
     }
+
+    public function test_test_notification_requires_an_existing_subscription(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->postJson(route('push-subscriptions.test'))
+            ->assertStatus(422)
+            ->assertJson(['status' => 'no_subscription']);
+    }
+
+    public function test_test_notification_is_sent_once_subscribed(): void
+    {
+        // Force WebPushService::isConfigured() to false regardless of the
+        // environment's real VAPID keys — this test only confirms the
+        // endpoint itself responds successfully once subscribed, not that
+        // an actual push goes out (that's a job for a real device).
+        config(['services.vapid.public_key' => null, 'services.vapid.private_key' => null]);
+
+        $user = User::factory()->create();
+        $this->actingAs($user)->postJson(route('push-subscriptions.store'), [
+            'endpoint' => 'https://fcm.example.com/send/abc123',
+            'keys' => ['p256dh' => 'public-key-value', 'auth' => 'auth-token-value'],
+        ])->assertOk();
+
+        $this->actingAs($user)->postJson(route('push-subscriptions.test'))
+            ->assertOk()
+            ->assertJson(['status' => 'sent']);
+    }
 }

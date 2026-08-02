@@ -61,7 +61,14 @@ class ReminderPushTest extends TestCase
         $mock = Mockery::mock(WebPushService::class);
         $mock->shouldReceive('sendToUser')
             ->once()
-            ->withArgs(fn ($user, $title, $body, $url) => $title === 'Medication reminder' && str_contains($body, 'Metformin') && $url === '/medications');
+            ->withArgs(function ($user, $title, $body, $url, $options) {
+                return $title === 'Medication reminder'
+                    && str_contains($body, 'Metformin')
+                    && $url === '/medications'
+                    && $options['requireInteraction'] === true
+                    && $options['actions'][0]['action'] === 'taken'
+                    && str_contains($options['actionUrls']['taken'], 'quick-action');
+            });
         $this->app->instance(WebPushService::class, $mock);
 
         $this->artisan(ProcessMedicationReminders::class)->assertSuccessful();
@@ -87,5 +94,63 @@ class ReminderPushTest extends TestCase
         $this->app->instance(WebPushService::class, $mock);
 
         $this->artisan(SendVaccinationReminders::class)->assertSuccessful();
+    }
+
+    public function test_a_still_pending_dose_gets_one_escalation_push_after_the_reminder_window(): void
+    {
+        Mail::fake();
+
+        $familyMember = $this->makeFamilyMember();
+        $medication = Medication::create([
+            'family_member_id' => $familyMember->id,
+            'medicine_name' => 'Metformin',
+            'dosage' => '500mg',
+            'schedule_times' => ['08:00'],
+            'active' => true,
+            'reminder_enabled' => true,
+        ]);
+        $log = MedicationLog::create([
+            'medication_id' => $medication->id,
+            'scheduled_at' => now()->subMinutes(35),
+            'reminded_at' => now()->subMinutes(31),
+            'status' => 'pending',
+        ]);
+
+        $mock = Mockery::mock(WebPushService::class);
+        $mock->shouldReceive('sendToUser')
+            ->once()
+            ->withArgs(fn ($user, $title) => $title === 'Still pending');
+        $this->app->instance(WebPushService::class, $mock);
+
+        $this->artisan(ProcessMedicationReminders::class)->assertSuccessful();
+
+        $this->assertNotNull($log->fresh()->escalation_sent_at);
+    }
+
+    public function test_escalation_is_sent_at_most_once(): void
+    {
+        Mail::fake();
+
+        $familyMember = $this->makeFamilyMember();
+        $medication = Medication::create([
+            'family_member_id' => $familyMember->id,
+            'medicine_name' => 'Metformin',
+            'schedule_times' => ['08:00'],
+            'active' => true,
+            'reminder_enabled' => true,
+        ]);
+        MedicationLog::create([
+            'medication_id' => $medication->id,
+            'scheduled_at' => now()->subMinutes(35),
+            'reminded_at' => now()->subMinutes(31),
+            'escalation_sent_at' => now()->subMinutes(5),
+            'status' => 'pending',
+        ]);
+
+        $mock = Mockery::mock(WebPushService::class);
+        $mock->shouldNotReceive('sendToUser');
+        $this->app->instance(WebPushService::class, $mock);
+
+        $this->artisan(ProcessMedicationReminders::class)->assertSuccessful();
     }
 }

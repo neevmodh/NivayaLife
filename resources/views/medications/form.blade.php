@@ -60,7 +60,7 @@
                     <button type="button" @click="if (newTime && !times.includes(newTime)) { times.push(newTime); newTime = ''; }"
                         class="rounded-lg border border-novix-green px-3 py-2 text-xs font-semibold text-novix-green hover:bg-novix-mint/40">Add time</button>
                 </div>
-                <p class="mt-1 text-[11px] text-novix-muted">A reminder email is sent around each time below, if reminders are turned on.</p>
+                <p class="mt-1 text-[11px] text-novix-muted">Add as many times a day as needed — a reminder is sent around each one below, if reminders are turned on.</p>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -89,11 +89,14 @@
                     Currently taking
                 </label>
                 <label class="flex items-center gap-2 text-sm font-medium text-novix-ink dark:text-white">
-                    <input type="checkbox" name="reminder_enabled" value="1" {{ old('reminder_enabled', $medication->reminder_enabled) ? 'checked' : '' }}
+                    <input type="checkbox" name="reminder_enabled" value="1" {{ old('reminder_enabled', $medication->exists ? $medication->reminder_enabled : true) ? 'checked' : '' }}
                         class="h-4 w-4 rounded border-gray-300 text-novix-green focus:ring-novix-green">
-                    Email me reminders
+                    Remind me (email + push)
                 </label>
             </div>
+            <p class="-mt-3 text-[11px] text-novix-muted">
+                Push notifications arrive on this device like an alarm, with "Mark as taken" and "Snooze" buttons — turn them on from Profile &rarr; Notifications.
+            </p>
 
             <div class="flex items-center justify-end gap-3 pt-2">
                 <a href="{{ route('medications.index') }}?member={{ $active->id }}" class="text-sm font-semibold text-novix-muted hover:text-novix-ink dark:hover:text-white">Cancel</a>

@@ -37,7 +37,10 @@ self.addEventListener('fetch', (event) => {
 
 // Medication/vaccination reminders. The payload is plain JSON (no
 // encryption-at-rest concerns beyond what the Push API itself already
-// guarantees) — { title, body, url }.
+// guarantees) — { title, body, url, tag?, requireInteraction?, vibrate?,
+// actions?, actionUrls? }. Medication dose reminders set requireInteraction
+// so the notification behaves like an alarm (stays up until the user acts)
+// rather than a toast that quietly disappears.
 self.addEventListener('push', (event) => {
     let data = { title: 'Novix', body: 'You have a new reminder.', url: '/dashboard' };
     try {
@@ -52,13 +55,27 @@ self.addEventListener('push', (event) => {
             body: data.body,
             icon: '/icons/icon-192.png',
             badge: '/icons/icon-192.png',
-            data: { url: data.url },
+            tag: data.tag,
+            requireInteraction: !!data.requireInteraction,
+            vibrate: data.vibrate,
+            actions: data.actions,
+            data: { url: data.url, actionUrls: data.actionUrls },
         })
     );
 });
 
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
+
+    // A button (e.g. "Mark as taken") was tapped — resolve it against the
+    // signed, no-login-required URL sent with the notification and stop:
+    // this never opens/focuses the app window, it acts in the background.
+    const actionUrl = event.action && event.notification.data?.actionUrls?.[event.action];
+    if (actionUrl) {
+        event.waitUntil(fetch(actionUrl).catch(() => {}));
+        return;
+    }
+
     const targetUrl = event.notification.data?.url || '/dashboard';
 
     event.waitUntil(

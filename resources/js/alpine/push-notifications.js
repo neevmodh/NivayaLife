@@ -11,12 +11,13 @@ function urlBase64ToUint8Array(base64String) {
     return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
 }
 
-export default function pushNotifications({ csrfToken, subscribeUrl, unsubscribeUrl, vapidPublicKey }) {
+export default function pushNotifications({ csrfToken, subscribeUrl, unsubscribeUrl, testUrl, vapidPublicKey }) {
     return {
         supported: 'serviceWorker' in navigator && 'PushManager' in window,
         subscribed: false,
         permissionDenied: false,
         busy: false,
+        testSent: false,
 
         async init() {
             if (!this.supported || !vapidPublicKey) return;
@@ -85,6 +86,24 @@ export default function pushNotifications({ csrfToken, subscribeUrl, unsubscribe
                 }
 
                 this.subscribed = false;
+            } finally {
+                this.busy = false;
+            }
+        },
+
+        async sendTest() {
+            if (this.busy) return;
+            this.busy = true;
+
+            try {
+                const res = await fetch(testUrl, {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, Accept: 'application/json' },
+                });
+                if (res.ok) {
+                    this.testSent = true;
+                    setTimeout(() => (this.testSent = false), 4000);
+                }
             } finally {
                 this.busy = false;
             }

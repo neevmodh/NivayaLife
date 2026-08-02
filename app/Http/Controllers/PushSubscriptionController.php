@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Push\WebPushService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,5 +39,21 @@ class PushSubscriptionController extends Controller
             ->delete();
 
         return response()->json(['status' => 'unsubscribed']);
+    }
+
+    public function test(Request $request, WebPushService $webPush): JsonResponse
+    {
+        if ($request->user()->pushSubscriptions()->doesntExist()) {
+            return response()->json(['status' => 'no_subscription'], 422);
+        }
+
+        $webPush->sendToUser(
+            $request->user(),
+            'Test notification',
+            'Push notifications are working on this device.',
+            '/profile'
+        );
+
+        return response()->json(['status' => 'sent']);
     }
 }

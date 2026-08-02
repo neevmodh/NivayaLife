@@ -26,8 +26,15 @@ class WebPushService
      * several — e.g. phone + desktop). A subscription the push service
      * reports as gone (expired, uninstalled) is deleted so it stops being
      * retried on every future reminder.
+     *
+     * $options supports the same fields the service worker's showNotification
+     * call understands: 'tag' (replaces any earlier notification with the
+     * same tag instead of stacking), 'requireInteraction' (keeps it on
+     * screen — an alarm, not a toast, until the user acts), 'vibrate'
+     * (pattern array), and 'actions' (up to two [{action, title}] buttons,
+     * each resolved against 'actionUrls' by the service worker on click).
      */
-    public function sendToUser(User $user, string $title, string $body, ?string $url = null): void
+    public function sendToUser(User $user, string $title, string $body, ?string $url = null, array $options = []): void
     {
         if (! $this->isConfigured()) {
             return;
@@ -57,6 +64,7 @@ class WebPushService
             'title' => $title,
             'body' => $body,
             'url' => $url ?? '/dashboard',
+            ...$options,
         ]);
 
         foreach ($subscriptions as $subscription) {

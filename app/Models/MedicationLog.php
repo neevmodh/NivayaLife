@@ -15,6 +15,7 @@ class MedicationLog extends Model
         'scheduled_at',
         'taken_at',
         'reminded_at',
+        'escalation_sent_at',
         'status',
     ];
 
@@ -24,6 +25,7 @@ class MedicationLog extends Model
             'scheduled_at' => 'datetime',
             'taken_at' => 'datetime',
             'reminded_at' => 'datetime',
+            'escalation_sent_at' => 'datetime',
         ];
     }
 

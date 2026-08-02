@@ -12,6 +12,7 @@ use App\Http\Controllers\FamilyInviteController;
 use App\Http\Controllers\IdCardController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MedicationController;
+use App\Http\Controllers\MedicationQuickActionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicShareController;
 use App\Http\Controllers\PushSubscriptionController;
@@ -29,6 +30,12 @@ Route::get('/', function () {
 
     return view('welcome');
 });
+
+// Reached from the service worker's notification action buttons, not a
+// logged-in page — signature is the authorization, scoped to one dose log.
+Route::get('/medications/dose/{log}/quick-action/{action}', [MedicationQuickActionController::class, 'handle'])
+    ->name('medications.quick-action')
+    ->middleware('signed');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -124,6 +131,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store'])->name('push-subscriptions.store');
     Route::delete('/push-subscriptions', [PushSubscriptionController::class, 'destroy'])->name('push-subscriptions.destroy');
+    Route::post('/push-subscriptions/test', [PushSubscriptionController::class, 'test'])->name('push-subscriptions.test');
 
     Route::post('/invite/{token}/permission', [InvitationController::class, 'storePermission'])->name('invite.permission');
     Route::post('/invite/{token}/dismiss', [InvitationController::class, 'dismiss'])->name('invite.dismiss');
