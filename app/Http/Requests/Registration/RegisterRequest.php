@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Registration;
 
 use App\Rules\NoHeaderInjection;
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
@@ -11,6 +13,22 @@ class RegisterRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Temporary diagnostic logging — registration is failing for real
+     * users with no visible client-side error, and the server logs don't
+     * otherwise show which field/rule is being rejected. Remove once the
+     * root cause is confirmed.
+     */
+    protected function failedValidation(ValidatorContract $validator): void
+    {
+        Log::warning('Registration validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input' => $this->except(['password', 'password_confirmation']),
+        ]);
+
+        parent::failedValidation($validator);
     }
 
     public function rules(): array
