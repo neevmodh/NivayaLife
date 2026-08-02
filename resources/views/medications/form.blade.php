@@ -10,6 +10,7 @@
         <form method="POST" action="{{ $isEdit ? route('medications.update', $medication) : route('medications.store') }}"
             class="space-y-5 rounded-novix bg-white p-6 shadow-novix-sm dark:bg-white/5"
             x-data="{ times: @js($medication->schedule_times ?? []), newTime: '' }"
+            @submit.prevent="if (newTime && !times.includes(newTime)) { times.push(newTime); newTime = ''; } $nextTick(() => $el.submit())"
         >
             @csrf
             @if($isEdit) @method('PATCH') @endif
