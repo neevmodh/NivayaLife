@@ -99,15 +99,15 @@
             {{-- Optional — nothing in the app requires these to use uploads/AI features; check any you're comfortable with now, or skip and they're never asked again unless you opt in later. --}}
             <div class="space-y-2.5 rounded-xl border border-gray-100 p-4 dark:border-white/10">
                 <label class="flex items-start gap-3 text-sm text-novix-ink/80 dark:text-white/70">
-                    <input type="checkbox" name="consent_account_creation" class="mt-0.5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
+                    <input type="checkbox" name="consent_account_creation" value="1" class="mt-0.5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
                     <span>I agree to the <a href="{{ url('/terms') }}" target="_blank" class="text-novix-green underline">Terms of Service</a>.</span>
                 </label>
                 <label class="flex items-start gap-3 text-sm text-novix-ink/80 dark:text-white/70">
-                    <input type="checkbox" name="consent_upload" class="mt-0.5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
+                    <input type="checkbox" name="consent_upload" value="1" class="mt-0.5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
                     <span>I consent to uploading and storing my family's medical reports per the <a href="{{ url('/privacy') }}" target="_blank" class="text-novix-green underline">Privacy Policy</a>.</span>
                 </label>
                 <label class="flex items-start gap-3 text-sm text-novix-ink/80 dark:text-white/70">
-                    <input type="checkbox" name="consent_ai_processing" class="mt-0.5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
+                    <input type="checkbox" name="consent_ai_processing" value="1" class="mt-0.5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
                     <span>I consent to AI processing of uploaded reports to generate plain-language summaries.</span>
                 </label>
             </div>

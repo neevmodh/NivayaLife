@@ -83,6 +83,38 @@ class RegistrationTest extends TestCase
         );
     }
 
+    /**
+     * A real, unmodified HTML checkbox with no explicit value="" submits
+     * the literal string "on" when checked — not a PHP/JSON boolean. This
+     * previously broke registration for anyone who checked a consent box,
+     * since the request was validated with a strict 'boolean' rule that
+     * rejects "on". Covers the exact string a browser actually sends.
+     */
+    public function test_registration_succeeds_with_raw_checkbox_on_values(): void
+    {
+        $response = $this->post('/register', [
+            'full_name' => 'Test User',
+            'email' => 'checkbox-on@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'phone' => '9876543210',
+            'gender' => 'male',
+            'consent_account_creation' => 'on',
+            'consent_upload' => 'on',
+            'consent_ai_processing' => 'on',
+        ], ['Accept' => 'application/json']);
+
+        $response->assertOk();
+        $response->assertJson(['success' => true]);
+
+        $user = User::where('email', 'checkbox-on@example.com')->first();
+        $this->assertNotNull($user);
+        $this->assertSame(
+            ['account_creation', 'ai_processing', 'upload'],
+            Consent::where('user_id', $user->id)->pluck('consent_type')->sort()->values()->all()
+        );
+    }
+
     public function test_registration_fails_without_the_required_fields(): void
     {
         $response = $this->postJson('/register', [
