@@ -107,6 +107,9 @@
             <x-responsive-nav-link :href="route('family.index')" :active="request()->routeIs('family.*')">Family</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('id-card.show')" :active="request()->routeIs('id-card.show')">Emergency Card</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('assistant')" :active="request()->routeIs('assistant*')">Assistant</x-responsive-nav-link>
+            @if(auth()->user()?->is_admin)
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Admin</x-responsive-nav-link>
+            @endif
         </div>
         <div class="border-t border-gray-200 pb-1 pt-4 dark:border-white/10">
             <div class="px-4">
