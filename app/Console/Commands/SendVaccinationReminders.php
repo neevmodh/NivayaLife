@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\VaccinationDueReminderMail;
 use App\Models\Vaccination;
+use App\Services\Push\WebPushService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,7 +16,7 @@ class SendVaccinationReminders extends Command
 
     private const LOOKAHEAD_DAYS = 7;
 
-    public function handle(): int
+    public function handle(WebPushService $webPush): int
     {
         $today = today();
         $sent = 0;
@@ -26,7 +27,7 @@ class SendVaccinationReminders extends Command
                 $q->whereNull('last_reminded_at')->orWhereDate('last_reminded_at', '<', $today);
             })
             ->with('familyMember')
-            ->chunkById(100, function ($vaccinations) use (&$sent) {
+            ->chunkById(100, function ($vaccinations) use (&$sent, $webPush) {
                 foreach ($vaccinations as $vaccination) {
                     $recipients = $vaccination->familyMember->notifiableUsers();
 
@@ -34,8 +35,17 @@ class SendVaccinationReminders extends Command
                         continue;
                     }
 
+                    $overdue = $vaccination->next_due_date->isPast();
+
                     foreach ($recipients as $user) {
                         Mail::to($user->email)->send(new VaccinationDueReminderMail($vaccination));
+
+                        $webPush->sendToUser(
+                            $user,
+                            $overdue ? 'Vaccination overdue' : 'Vaccination due soon',
+                            "{$vaccination->vaccine_name} for {$vaccination->familyMember->full_name} — due {$vaccination->next_due_date->format('M j, Y')}.",
+                            '/vaccinations'
+                        );
                     }
 
                     $vaccination->update(['last_reminded_at' => now()]);

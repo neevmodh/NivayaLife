@@ -7,6 +7,7 @@
         'emergency' => 'Emergency Contact',
     ];
     if (! $isDependentEdit) {
+        $tabs['notifications'] = 'Notifications';
         $tabs['security'] = 'Account Security';
     }
 @endphp
@@ -58,6 +59,7 @@
             <div x-show="tab === 'health'" x-cloak>@include('profile.tabs.health')</div>
             <div x-show="tab === 'emergency'" x-cloak>@include('profile.tabs.emergency-contact')</div>
             @if(! $isDependentEdit)
+                <div x-show="tab === 'notifications'" x-cloak>@include('profile.tabs.notifications')</div>
                 <div x-show="tab === 'security'" x-cloak>@include('profile.tabs.security')</div>
             @endif
         </div>

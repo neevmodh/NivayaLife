@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\MedicationDoseReminderMail;
 use App\Models\MedicationLog;
+use App\Services\Push\WebPushService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -23,7 +24,7 @@ class ProcessMedicationReminders extends Command
 
     private const MISSED_GRACE_HOURS = 2;
 
-    public function handle(): int
+    public function handle(WebPushService $webPush): int
     {
         $now = now();
         $sent = 0;
@@ -33,7 +34,7 @@ class ProcessMedicationReminders extends Command
             ->whereBetween('scheduled_at', [$now->copy()->subMinutes(self::REMINDER_WINDOW_MINUTES), $now])
             ->whereHas('medication', fn ($q) => $q->where('reminder_enabled', true))
             ->with('medication.familyMember')
-            ->chunkById(100, function ($logs) use (&$sent) {
+            ->chunkById(100, function ($logs) use (&$sent, $webPush) {
                 foreach ($logs as $log) {
                     $recipients = $log->medication->familyMember->notifiableUsers();
 
@@ -43,6 +44,13 @@ class ProcessMedicationReminders extends Command
 
                     foreach ($recipients as $user) {
                         Mail::to($user->email)->send(new MedicationDoseReminderMail($log));
+
+                        $webPush->sendToUser(
+                            $user,
+                            'Medication reminder',
+                            "{$log->medication->medicine_name} ({$log->medication->dosage}) is due for {$log->medication->familyMember->full_name}.",
+                            '/medications'
+                        );
                     }
 
                     $log->update(['reminded_at' => now()]);

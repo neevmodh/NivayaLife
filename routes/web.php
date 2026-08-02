@@ -14,6 +14,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MedicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicShareController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\ReportAiController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportUploadController;
@@ -120,6 +121,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/{familyMember}/emergency-contact', [ProfileController::class, 'updateEmergencyContact'])->name('profile.emergency-contact.member');
     Route::patch('/profile/theme', [ProfileController::class, 'updateTheme'])->name('profile.theme');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store'])->name('push-subscriptions.store');
+    Route::delete('/push-subscriptions', [PushSubscriptionController::class, 'destroy'])->name('push-subscriptions.destroy');
 
     Route::post('/invite/{token}/permission', [InvitationController::class, 'storePermission'])->name('invite.permission');
     Route::post('/invite/{token}/dismiss', [InvitationController::class, 'dismiss'])->name('invite.dismiss');

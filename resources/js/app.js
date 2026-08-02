@@ -23,6 +23,7 @@ import assistantChat from './alpine/assistant-chat';
 import doseTracker from './alpine/dose-tracker';
 import adminChart from './alpine/admin-chart';
 import installPrompt from './alpine/install-prompt';
+import pushNotifications from './alpine/push-notifications';
 
 window.Alpine = Alpine;
 
@@ -47,5 +48,6 @@ Alpine.data('assistantChat', assistantChat);
 Alpine.data('doseTracker', doseTracker);
 Alpine.data('adminChart', adminChart);
 Alpine.data('installPrompt', installPrompt);
+Alpine.data('pushNotifications', pushNotifications);
 
 Alpine.start();

@@ -1,3 +1,6 @@
+@if(config('services.vapid.public_key'))
+    <meta name="vapid-public-key" content="{{ config('services.vapid.public_key') }}">
+@endif
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1E5A45">
 <link rel="icon" href="/icons/icon-192.png">

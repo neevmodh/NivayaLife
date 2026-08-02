@@ -34,3 +34,39 @@ self.addEventListener('fetch', (event) => {
         })
     );
 });
+
+// Medication/vaccination reminders. The payload is plain JSON (no
+// encryption-at-rest concerns beyond what the Push API itself already
+// guarantees) — { title, body, url }.
+self.addEventListener('push', (event) => {
+    let data = { title: 'Novix', body: 'You have a new reminder.', url: '/dashboard' };
+    try {
+        if (event.data) data = { ...data, ...event.data.json() };
+    } catch (e) {
+        // Malformed payload — fall back to the generic notification above
+        // rather than dropping it silently.
+    }
+
+    event.waitUntil(
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: '/icons/icon-192.png',
+            badge: '/icons/icon-192.png',
+            data: { url: data.url },
+        })
+    );
+});
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const targetUrl = event.notification.data?.url || '/dashboard';
+
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+            for (const client of clients) {
+                if (client.url.includes(targetUrl) && 'focus' in client) return client.focus();
+            }
+            if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+        })
+    );
+});
