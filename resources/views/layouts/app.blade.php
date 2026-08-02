@@ -16,6 +16,7 @@
     </head>
     <body class="font-sans antialiased">
         <x-pending-invitation-popup />
+        <x-install-prompt />
 
         <div class="min-h-screen bg-novix-cream dark:bg-novix-ink">
             @include('layouts.navigation')
