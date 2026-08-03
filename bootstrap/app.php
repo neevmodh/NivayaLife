@@ -23,6 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+
+        $middleware->append(\App\Http\Middleware\PreventBackHistoryCaching::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
