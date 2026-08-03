@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allergy;
+use App\Models\ArchivedAccount;
 use App\Models\BmiLog;
 use App\Models\FamilyMember;
 use App\Models\Medication;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -195,6 +198,8 @@ class ProfileController extends Controller
         DB::transaction(function () use ($user) {
             $familyMembers = FamilyMember::withTrashed()->where('primary_account_id', $user->id)->get();
 
+            $this->archiveAccount($user, $familyMembers);
+
             foreach ($familyMembers as $member) {
                 $member->allergies()->delete();
                 $member->chronicConditions()->delete();
@@ -219,6 +224,73 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Writes a full snapshot of everything this account owns into
+     * archived_accounts before any of it is actually deleted below — the
+     * account page tells the user their data is retained for records
+     * rather than truly gone, so this has to run first (and inside the
+     * same transaction the deletion runs in) or that claim would be false.
+     * Uploaded report files are moved, not copied, into a per-user archive
+     * directory — a JSON column can't hold binary data, and the live
+     * report row is about to be force-deleted anyway. This is intentionally
+     * not linked by foreign key to anything live: a later signup with the
+     * same email must never automatically reattach to it.
+     */
+    /** @param  Collection<int, FamilyMember>  $familyMembers */
+    private function archiveAccount(User $user, Collection $familyMembers): void
+    {
+        $snapshot = [];
+        $archivedFiles = [];
+
+        foreach ($familyMembers as $member) {
+            $reports = $member->reports()->withTrashed()->get()->map(function ($report) use (&$archivedFiles, $user) {
+                $data = $report->toArray();
+
+                if ($report->file_path && Storage::disk('local')->exists($report->file_path)) {
+                    $archivedPath = 'archived-reports/'.$user->id.'/'.basename($report->file_path);
+                    Storage::disk('local')->move($report->file_path, $archivedPath);
+
+                    $archivedFiles[] = [
+                        'report_id' => $report->id,
+                        'original_filename' => $report->original_filename,
+                        'archived_path' => $archivedPath,
+                    ];
+                    $data['archived_file_path'] = $archivedPath;
+                }
+
+                return $data;
+            });
+
+            $snapshot[] = [
+                'family_member' => $member->toArray(),
+                'allergies' => $member->allergies()->get()->toArray(),
+                'chronic_conditions' => $member->chronicConditions()->get()->toArray(),
+                'vaccinations' => $member->vaccinations()->get()->toArray(),
+                'health_metrics' => $member->healthMetrics()->get()->toArray(),
+                'bmi_logs' => $member->bmiLogs()->get()->toArray(),
+                'medications' => $member->medications()->with('medicationLogs')->get()->toArray(),
+                'doctors' => $member->doctors()->get()->toArray(),
+                'insurance_policies' => $member->insurancePolicies()->get()->toArray(),
+                'id_card_history' => $member->idCardHistory()->get()->toArray(),
+                'reports' => $reports->toArray(),
+            ];
+        }
+
+        ArchivedAccount::create([
+            'original_user_id' => $user->id,
+            'email' => $user->email,
+            'name' => $user->name,
+            'phone' => $user->phone,
+            'password' => $user->password,
+            'google_id' => $user->google_id,
+            'was_admin' => (bool) $user->is_admin,
+            'original_created_at' => $user->created_at,
+            'data' => $snapshot,
+            'archived_files' => $archivedFiles,
+            'archived_at' => now(),
+        ]);
     }
 
     private function ownedMember(Request $request, ?FamilyMember $familyMember = null): FamilyMember

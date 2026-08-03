@@ -73,7 +73,7 @@
 
     <div class="border-t border-novix-pink-dark/20 pt-8" x-data="{ confirming: false, typed: '' }">
         <h3 class="text-lg font-bold text-novix-pink-dark">Danger zone</h3>
-        <p class="mt-1 text-sm text-novix-muted">Deleting your account permanently removes your profile, reports, and all associated data. This cannot be undone.</p>
+        <p class="mt-1 text-sm text-novix-muted">Deleting your account immediately removes your profile, reports, and data from active use, and signs you out everywhere. A record is retained internally for account recovery and audit purposes. If you sign up again with this email later, it starts as a completely new account — this data is not restored to it.</p>
 
         <button type="button" x-show="!confirming" @click="confirming = true"
             class="mt-4 rounded-xl border border-novix-pink-dark px-6 py-2.5 text-sm font-semibold text-novix-pink-dark hover:bg-novix-pink-dark hover:text-white">
