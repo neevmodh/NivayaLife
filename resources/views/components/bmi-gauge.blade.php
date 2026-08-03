@@ -13,10 +13,31 @@
     @if($editable)
     <div class="mb-5 grid grid-cols-2 gap-3">
         <div>
-            <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Height (cm) *</label>
-            <input type="number" step="0.1" min="30" max="280" name="{{ $heightName }}" x-model.number="heightCm" required
-                @if($dynamicErrors) :class="errorFor('{{ $heightName }}') ? 'border-novix-pink-dark ring-2 ring-novix-pink-dark/20' : 'border-gray-200 focus:border-novix-green'" @endif
-                class="w-full rounded-xl border bg-novix-cream/40 px-4 py-3 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-novix-green' }}">
+            <div class="mb-1.5 flex items-center justify-between">
+                <label class="block text-xs font-semibold text-novix-muted">Height *</label>
+                <select x-model="heightUnit" @change="onUnitChange()"
+                    class="rounded-lg border border-gray-200 bg-transparent px-1.5 py-0.5 text-[11px] font-semibold text-novix-muted focus:outline-none dark:border-white/10">
+                    <option value="cm">cm</option>
+                    <option value="m">m</option>
+                    <option value="ft">ft / in</option>
+                    <option value="in">in</option>
+                </select>
+            </div>
+
+            <template x-if="heightUnit !== 'ft'">
+                <input type="number" :step="heightUnit === 'm' ? 0.01 : 0.1" x-model.number="heightInput" @input="updateHeightFromInput()" required
+                    @if($dynamicErrors) :class="errorFor('{{ $heightName }}') ? 'border-novix-pink-dark ring-2 ring-novix-pink-dark/20' : 'border-gray-200 focus:border-novix-green'" @endif
+                    class="w-full rounded-xl border bg-novix-cream/40 px-4 py-3 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-novix-green' }}">
+            </template>
+            <template x-if="heightUnit === 'ft'">
+                <div class="flex gap-2">
+                    <input type="number" step="1" min="0" x-model.number="feet" @input="updateHeightFromFeetInches()" placeholder="ft" required
+                        class="w-1/2 rounded-xl border border-gray-200 bg-novix-cream/40 px-3 py-3 text-sm text-novix-ink shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+                    <input type="number" step="0.1" min="0" max="11.9" x-model.number="inches" @input="updateHeightFromFeetInches()" placeholder="in" required
+                        class="w-1/2 rounded-xl border border-gray-200 bg-novix-cream/40 px-3 py-3 text-sm text-novix-ink shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+                </div>
+            </template>
+            <input type="hidden" name="{{ $heightName }}" :value="heightCm">
         </div>
         <div>
             <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Weight (kg) *</label>

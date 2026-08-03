@@ -22,10 +22,10 @@ class RegistrationTest extends TestCase
 
     /**
      * Registration is a single form (no wizard, nothing session-backed
-     * across requests): only full name, email, password, phone, and gender
-     * are required. Everything else — date of birth, blood group, photo,
-     * address, health info, emergency contact — is left null and filled in
-     * later from /profile.
+     * across requests): full name, email, password, phone, gender, and
+     * height/weight (for the BMI gauge) are required. Everything else —
+     * date of birth, blood group, photo, address, emergency contact — is
+     * left null and filled in later from /profile.
      */
     public function test_new_users_can_register_with_only_the_required_fields(): void
     {
@@ -36,6 +36,8 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
             'phone' => '9876543210',
             'gender' => 'male',
+            'height_cm' => 175,
+            'weight_kg' => 70,
         ]);
 
         $this->assertAuthenticated();
@@ -49,14 +51,34 @@ class RegistrationTest extends TestCase
         $this->assertNotNull($familyMember);
         $this->assertSame('self', $familyMember->relation);
         $this->assertSame('male', $familyMember->gender);
+        $this->assertSame(175.0, $familyMember->height_cm);
+        $this->assertSame(70.0, $familyMember->weight_kg);
         $this->assertNull($familyMember->date_of_birth);
         $this->assertNull($familyMember->blood_group);
-        $this->assertNull($familyMember->height_cm);
-        $this->assertNull($familyMember->weight_kg);
         $this->assertNull($familyMember->emergency_contact_name);
 
-        $this->assertSame(0, BmiLog::where('family_member_id', $familyMember->id)->count());
+        $bmiLog = BmiLog::where('family_member_id', $familyMember->id)->first();
+        $this->assertNotNull($bmiLog);
+        $this->assertSame(175.0, $bmiLog->height_cm);
+        $this->assertSame(70.0, $bmiLog->weight_kg);
+
         $this->assertSame(0, Consent::where('user_id', $user->id)->count());
+    }
+
+    public function test_registration_fails_without_height_or_weight(): void
+    {
+        $response = $this->postJson('/register', [
+            'full_name' => 'Test User',
+            'email' => 'noheight@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'phone' => '9876543210',
+            'gender' => 'male',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['height_cm', 'weight_kg']);
+        $this->assertGuest();
     }
 
     public function test_checked_consent_boxes_are_recorded(): void
@@ -68,6 +90,8 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
             'phone' => '9876543210',
             'gender' => 'female',
+            'height_cm' => 160,
+            'weight_kg' => 55,
             'consent_account_creation' => true,
             'consent_upload' => true,
             // consent_ai_processing intentionally omitted
@@ -99,6 +123,8 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
             'phone' => '9876543210',
             'gender' => 'male',
+            'height_cm' => 175,
+            'weight_kg' => 70,
             'consent_account_creation' => 'on',
             'consent_upload' => 'on',
             'consent_ai_processing' => 'on',
@@ -122,7 +148,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['email', 'password', 'phone', 'gender']);
+        $response->assertJsonValidationErrors(['email', 'password', 'phone', 'gender', 'height_cm', 'weight_kg']);
         $this->assertGuest();
     }
 }

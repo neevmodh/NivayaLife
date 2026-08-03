@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Registration\RegisterRequest;
 use App\Models\AuditLog;
+use App\Models\BmiLog;
 use App\Models\Consent;
 use App\Models\FamilyMember;
 use App\Models\IdCard;
@@ -18,12 +19,12 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 /**
- * Signup is a single form: full name, email, password, phone, and gender —
- * everything else (photo, address, health info, blood group, date of
- * birth, emergency contact) is optional and filled in later from /profile,
- * which already has its own separately-validated edit forms for each of
- * those. Nothing here writes to the database until the whole form passes
- * validation and the transaction commits.
+ * Signup is a single form: full name, email, password, phone, gender, and
+ * height/weight (for the BMI gauge) — everything else (photo, address,
+ * blood group, date of birth, emergency contact) is optional and filled in
+ * later from /profile, which already has its own separately-validated edit
+ * forms for each of those. Nothing here writes to the database until the
+ * whole form passes validation and the transaction commits.
  */
 class RegisteredUserController extends Controller
 {
@@ -70,8 +71,21 @@ class RegisteredUserController extends Controller
                 'relation' => 'self',
                 'full_name' => $data['full_name'],
                 'gender' => $data['gender'],
+                'height_cm' => $data['height_cm'],
+                'weight_kg' => $data['weight_kg'],
                 'access_type' => 'linked',
                 'status' => 'active',
+            ]);
+
+            // Same record ProfileController::updateHealth() creates on every
+            // save — gives the BMI trend chart a real starting point instead
+            // of an empty history until the first profile edit.
+            BmiLog::create([
+                'family_member_id' => $familyMember->id,
+                'height_cm' => $data['height_cm'],
+                'weight_kg' => $data['weight_kg'],
+                'recorded_date' => now()->toDateString(),
+                'source' => 'manual',
             ]);
 
             foreach (['account_creation', 'upload', 'ai_processing'] as $consentType) {

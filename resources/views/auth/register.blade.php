@@ -36,7 +36,7 @@
         class="rounded-novix bg-white p-5 shadow-novix sm:p-8 dark:bg-white/5"
     >
         <h2 class="text-xl font-bold text-novix-ink dark:text-white">Create your account</h2>
-        <p class="mt-1 text-sm text-novix-muted">Just the basics for now — you can add your photo, address, health info, and more from your profile anytime.</p>
+        <p class="mt-1 text-sm text-novix-muted">Just the basics for now — you can add your photo, address, and more from your profile anytime.</p>
 
         <form x-ref="registerForm" class="mt-6 space-y-4" :class="{ 'animate-novix-shake': shake }" @submit.prevent="submit()">
             @if($google)
@@ -95,6 +95,10 @@
             <x-floating-select name="gender" label="Gender" :required="true" dynamic-errors :options="[
                 'male' => 'Male', 'female' => 'Female', 'other' => 'Other', 'prefer_not_to_say' => 'Prefer not to say',
             ]" />
+
+            <div class="rounded-xl border border-gray-100 p-4 dark:border-white/10">
+                <x-bmi-gauge :size="180" dynamic-errors />
+            </div>
 
             {{-- Optional — nothing in the app requires these to use uploads/AI features; check any you're comfortable with now, or skip and they're never asked again unless you opt in later. --}}
             <div class="space-y-2.5 rounded-xl border border-gray-100 p-4 dark:border-white/10">

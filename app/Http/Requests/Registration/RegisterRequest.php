@@ -21,6 +21,11 @@ class RegisterRequest extends FormRequest
             'full_name' => ['required', 'string', 'min:2', 'max:255'],
             'phone' => ['required', 'digits:10'],
             'gender' => ['required', 'in:male,female,other,prefer_not_to_say'],
+            // Same bounds as FamilyMember::rules()/ProfileController::updateHealth() —
+            // required here (unlike a later profile edit) since the signup
+            // form's BMI gauge always renders both fields.
+            'height_cm' => ['required', 'numeric', 'min:30', 'max:280'],
+            'weight_kg' => ['required', 'numeric', 'min:2', 'max:400'],
             // Optional at signup — nothing in the app gates a feature on
             // these, they're compliance/audit logging only, so a user isn't
             // blocked from creating an account just to check three boxes.
