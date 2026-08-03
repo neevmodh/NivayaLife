@@ -181,10 +181,18 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-            'confirmation' => ['required', Rule::in(['DELETE'])],
-        ], [
+        // A Google-only account's password is a random string nobody knows
+        // (see PasswordController) — requiring it here would make deletion
+        // permanently impossible for those accounts. The active,
+        // already-authenticated session is the identity proof for them
+        // instead; everyone else still has to type their real password.
+        $rules = ['confirmation' => ['required', Rule::in(['DELETE'])]];
+
+        if ($request->user()->has_password) {
+            $rules['password'] = ['required', 'current_password'];
+        }
+
+        $request->validateWithBag('userDeletion', $rules, [
             'confirmation.in' => 'Please type DELETE to confirm.',
         ]);
 

@@ -60,6 +60,7 @@ class RegisteredUserController extends Controller
                 'name' => $data['full_name'],
                 'email' => $google['email'] ?? $data['email'],
                 'password' => $google ? Str::password(32) : Hash::make($data['password']),
+                'has_password' => ! $google,
                 'google_id' => $google['google_id'] ?? null,
                 'phone' => $data['phone'],
                 'email_verified_at' => $google ? now() : null,

@@ -83,4 +83,28 @@ class ProfileTest extends TestCase
 
         $this->assertNotNull($user->fresh());
     }
+
+    /**
+     * A Google-only account's stored password is a random, unusable
+     * string — requiring it here would make deletion permanently
+     * impossible for those accounts. The typed "DELETE" confirmation plus
+     * the already-authenticated session is the identity proof instead.
+     */
+    public function test_a_google_only_account_can_delete_without_a_password(): void
+    {
+        $user = User::factory()->create(['google_id' => '12345', 'has_password' => false]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete('/profile', [
+                'confirmation' => 'DELETE',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+    }
 }

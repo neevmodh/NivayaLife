@@ -24,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'has_password',
         'google_id',
         'avatar',
         'phone',
@@ -59,6 +60,7 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
             'onboarding_dismissed_at' => 'datetime',
             'is_admin' => 'boolean',
+            'has_password' => 'boolean',
         ];
     }
 

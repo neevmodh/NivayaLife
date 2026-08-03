@@ -48,4 +48,30 @@ class PasswordUpdateTest extends TestCase
             ->assertSessionHasErrorsIn('updatePassword', 'current_password')
             ->assertRedirect('/profile');
     }
+
+    /**
+     * A Google-only account's stored password is a random string nobody
+     * knows — current_password can't be required for their first real
+     * password set, since there's nothing correct to type.
+     */
+    public function test_a_google_only_account_can_set_a_password_without_a_current_one(): void
+    {
+        $user = User::factory()->create(['google_id' => '12345', 'has_password' => false]);
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->put('/password', [
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('new-password', $user->password));
+        $this->assertTrue($user->has_password);
+    }
 }

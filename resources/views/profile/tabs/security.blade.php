@@ -2,8 +2,8 @@
     <div>
         <h3 class="text-lg font-bold text-novix-ink dark:text-white">Change password</h3>
         <p class="mt-1 text-sm text-novix-muted">
-            @if($user->google_id && !$user->password)
-                Your account currently signs in via Google only.
+            @if(! $user->has_password)
+                You currently sign in via Google only — set a password below to also be able to log in with one.
             @else
                 Choose a new password for your account.
             @endif
@@ -13,7 +13,9 @@
             @csrf
             @method('put')
 
-            <x-floating-input type="password" name="current_password" label="Current password" :required="true" autocomplete="current-password" :error="$errors->updatePassword->first('current_password')" />
+            @if($user->has_password)
+                <x-floating-input type="password" name="current_password" label="Current password" :required="true" autocomplete="current-password" :error="$errors->updatePassword->first('current_password')" />
+            @endif
             <x-floating-input type="password" name="password" label="New password" :required="true" autocomplete="new-password" :error="$errors->updatePassword->first('password')" />
             <x-floating-input type="password" name="password_confirmation" label="Confirm new password" :required="true" autocomplete="new-password" />
 
@@ -84,7 +86,11 @@
             @csrf
             @method('delete')
 
-            <x-floating-input type="password" name="password" label="Your password" :required="true" :error="$errors->userDeletion->first('password') ?? null" />
+            @if($user->has_password)
+                <x-floating-input type="password" name="password" label="Your password" :required="true" :error="$errors->userDeletion->first('password') ?? null" />
+            @else
+                <p class="text-xs text-novix-muted">You sign in via Google only, so there's no password to confirm — typing DELETE below is enough.</p>
+            @endif
 
             <div>
                 <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Type <strong>DELETE</strong> to confirm</label>
