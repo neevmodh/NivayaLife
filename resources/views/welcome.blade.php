@@ -342,8 +342,12 @@
             </nav>
         </div>
 
-        <div class="pt-6 text-center text-xs text-novix-ink/50 sm:text-left">
+        <div class="flex flex-col items-center justify-between gap-3 pt-6 text-center text-xs text-novix-ink/50 sm:flex-row sm:text-left">
             <p>&copy; {{ date('Y') }} Novix. Not a diagnostic tool — always consult a qualified doctor.</p>
+            <p class="flex gap-4">
+                <a href="{{ url('/terms') }}" class="hover:text-novix-green">Terms of Service</a>
+                <a href="{{ url('/privacy') }}" class="hover:text-novix-green">Privacy Policy</a>
+            </p>
         </div>
     </footer>
 

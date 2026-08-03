@@ -31,6 +31,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/terms', fn () => view('legal.terms'))->name('terms');
+Route::get('/privacy', fn () => view('legal.privacy'))->name('privacy');
+
 // Reached from the service worker's notification action buttons, not a
 // logged-in page — signature is the authorization, scoped to one dose log.
 Route::get('/medications/dose/{log}/quick-action/{action}', [MedicationQuickActionController::class, 'handle'])
