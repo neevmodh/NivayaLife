@@ -503,3 +503,5 @@ Found a vulnerability? Please open a private security advisory rather than a pub
 ## License
 
 Distributed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+<!-- test push: verifying the deploy-approval webhook, 2026-08-04 -->
