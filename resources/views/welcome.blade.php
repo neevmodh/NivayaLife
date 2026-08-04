@@ -100,7 +100,10 @@
         <div class="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-novix-mint/60 blur-3xl"></div>
         <div class="pointer-events-none absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-novix-gold/15 blur-3xl"></div>
 
-        <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-24">
+        {{-- On phones the hero fills the viewport and centres like an app's
+             opening screen (the preview card sits below the fold); on lg the
+             web layout takes over with the two-column grid. --}}
+        <div class="relative mx-auto grid min-h-[calc(100svh-4.75rem)] max-w-7xl content-center items-center gap-12 px-6 py-16 lg:min-h-0 lg:grid-cols-2 lg:content-normal lg:gap-16 lg:px-8 lg:py-24">
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-novix-green shadow-novix-sm">
                     <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
@@ -131,6 +134,11 @@
                         class="rounded-xl border border-novix-green/20 bg-white px-6 py-3 text-sm font-semibold text-novix-green transition hover:bg-novix-mint/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green">
                         See how it works
                     </a>
+                </div>
+
+                {{-- App-style scroll hint — phones only, where the hero fills the screen. --}}
+                <div class="mt-12 flex justify-center lg:hidden" aria-hidden="true">
+                    <svg class="h-5 w-5 animate-bounce text-novix-green/50" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
             </div>
 

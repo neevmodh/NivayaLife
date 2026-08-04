@@ -85,7 +85,7 @@
         </form>
 
         {{-- Compare panel --}}
-        <div x-show="selected.length > 0" x-cloak class="sticky top-2 z-10 mt-4 rounded-novix border-2 border-novix-green bg-white p-4 shadow-novix dark:bg-novix-ink">
+        <div x-show="selected.length > 0" x-cloak class="sticky top-2 z-10 mt-4 rounded-novix border-2 border-novix-green bg-white p-4 shadow-novix dark:bg-novix-night">
             <div class="flex items-center justify-between">
                 <span class="text-sm font-bold text-novix-ink dark:text-white">Comparing <span x-text="selected.length"></span> value(s)</span>
                 <button type="button" @click="clear()" class="text-xs font-semibold text-novix-muted hover:text-novix-ink">Clear</button>

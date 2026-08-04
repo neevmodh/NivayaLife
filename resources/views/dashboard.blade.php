@@ -169,7 +169,7 @@
 
         {{-- Identity card. Carries the member's actual vitals instead of the old
              row of zero-counters, and offers to fill in whatever is missing. --}}
-        <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix" style="animation-delay:40ms">
+        <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix ring-1 ring-novix-gold/40" style="animation-delay:40ms">
             <div class="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-white/5"></div>
             <div class="pointer-events-none absolute -bottom-24 left-1/4 h-52 w-52 rounded-full bg-white/[0.04]"></div>
 
@@ -338,7 +338,7 @@
 
                     @if($latestBmi)
                         <div class="mt-3">
-                            <x-bmi-gauge :height-cm="$latestBmi->height_cm" :weight-kg="$latestBmi->weight_kg" :editable="false" :trend="$trend" :size="150" hole-class="bg-white dark:bg-novix-ink" />
+                            <x-bmi-gauge :height-cm="$latestBmi->height_cm" :weight-kg="$latestBmi->weight_kg" :editable="false" :trend="$trend" :size="150" hole-class="bg-white dark:bg-novix-night" />
                         </div>
                         <p class="mt-2 text-center text-xs text-novix-muted">Last recorded {{ $latestBmi->recorded_date->diffForHumans() }}</p>
                     @else

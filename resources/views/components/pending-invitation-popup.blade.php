@@ -13,7 +13,7 @@
 
 @if($pendingInvite)
     <div x-data="{ open: true }" x-show="open" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
-        <div x-show="open" x-transition class="w-full max-w-md rounded-novix bg-white p-6 text-center shadow-novix dark:bg-novix-ink">
+        <div x-show="open" x-transition class="w-full max-w-md rounded-novix bg-white p-6 text-center shadow-novix dark:bg-novix-night">
             <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">
                 <x-relation-icon :relation="$pendingInvite->familyMember->relation" class="h-7 w-7" />
             </span>

@@ -13,7 +13,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-novix-cream font-sans text-novix-ink antialiased dark:bg-novix-ink dark:text-novix-cream">
+<body class="min-h-screen bg-novix-cream font-sans text-novix-ink antialiased dark:bg-novix-night dark:text-novix-cream">
 
 <x-confetti />
 

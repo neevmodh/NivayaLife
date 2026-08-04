@@ -10,9 +10,9 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-novix-cream font-sans text-novix-ink antialiased dark:bg-novix-ink dark:text-novix-cream">
+<body class="bg-novix-cream font-sans text-novix-ink antialiased dark:bg-novix-night dark:text-novix-cream">
 
-    <header class="border-b border-novix-green/10 bg-novix-cream/90 backdrop-blur dark:bg-novix-ink/90">
+    <header class="border-b border-novix-green/10 bg-novix-cream/90 backdrop-blur dark:bg-novix-night/90">
         <div class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
             <a href="/" class="flex items-center gap-2" aria-label="Nivaya Life home">
                 <x-novix-logo size="sm" />

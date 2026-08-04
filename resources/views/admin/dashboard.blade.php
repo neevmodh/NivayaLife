@@ -15,7 +15,10 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Admin overview</h2>
+            <div>
+                <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Admin overview</h2>
+                <span class="mt-1.5 block h-0.5 w-10 rounded-full bg-novix-gold" aria-hidden="true"></span>
+            </div>
             <div class="flex gap-2">
                 <a href="{{ route('admin.settings.edit') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     Settings
@@ -31,12 +34,12 @@
 
         {{-- Top-line stats --}}
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Users</p>
                 <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($userCount) }}</p>
                 <p class="mt-1 text-xs text-novix-muted">{{ $verifiedUserCount }} verified &middot; {{ $newUsersLast7Days }} new (7d)</p>
             </div>
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Family members</p>
                 <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($familyMemberCount) }}</p>
                 <p class="mt-1 text-xs text-novix-muted">
@@ -45,12 +48,12 @@
                     @endforeach
                 </p>
             </div>
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Reports</p>
                 <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($reportCount) }}</p>
                 <p class="mt-1 text-xs text-novix-muted">{{ $formatBytes($totalStorageBytes) }} stored</p>
             </div>
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Background jobs</p>
                 <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pendingJobCount) }}</p>
                 <p class="mt-1 text-xs {{ $failedJobCount > 0 ? 'text-novix-pink-dark font-semibold' : 'text-novix-muted' }}">
@@ -78,22 +81,22 @@
             <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-novix-muted">Landing page traffic</h3>
 
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Total views</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pageViewsTotal) }}</p>
                     <p class="mt-1 text-xs text-novix-muted">{{ number_format($pageViewsToday) }} today</p>
                 </div>
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Views in range</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pageViewsInRange) }}</p>
                     <p class="mt-1 text-xs text-novix-muted">for the selected period</p>
                 </div>
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Unique visitors</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($uniqueVisitorsInRange) }}</p>
                     <p class="mt-1 text-xs text-novix-muted">by IP, in range</p>
                 </div>
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Visitor → signup</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ $conversionRate !== null ? $conversionRate.'%' : '—' }}</p>
                     <p class="mt-1 text-xs text-novix-muted">signups ÷ views, in range</p>
@@ -101,7 +104,7 @@
             </div>
 
             <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
                     <h3 class="text-sm font-bold text-novix-ink dark:text-white">Views over time</h3>
                     @if(collect($pageViewSeries)->sum('count') === 0)
                         <p class="mt-3 text-sm text-novix-muted">No landing page views recorded yet.</p>
@@ -121,7 +124,7 @@
                     @endif
                 </div>
 
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <h3 class="text-sm font-bold text-novix-ink dark:text-white">Top referrers</h3>
                     <div class="mt-3 space-y-2">
                         @forelse($topReferrers as $host => $count)
@@ -136,7 +139,7 @@
                 </div>
             </div>
 
-            <div class="mt-6 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="mt-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Views by hour of day</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'bar',
@@ -158,20 +161,20 @@
             <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-novix-muted">Sign-ins</h3>
 
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Logins today</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($loginsToday) }}</p>
                 </div>
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Successful (range)</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($successfulLoginsInRange) }}</p>
                     <p class="mt-1 text-xs text-novix-muted">{{ number_format($uniqueUsersLoggedInRange) }} unique users</p>
                 </div>
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Failed (range)</p>
                     <p class="mt-1 text-2xl font-bold {{ $failedLoginsInRange > 0 ? 'text-novix-pink-dark' : 'text-novix-ink dark:text-white' }}">{{ number_format($failedLoginsInRange) }}</p>
                 </div>
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Avg. logins / active user</p>
                     <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ $uniqueUsersLoggedInRange > 0 ? number_format($successfulLoginsInRange / $uniqueUsersLoggedInRange, 1) : '—' }}</p>
                     <p class="mt-1 text-xs text-novix-muted">in the selected period</p>
@@ -179,7 +182,7 @@
             </div>
 
             <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
                     <h3 class="text-sm font-bold text-novix-ink dark:text-white">Logins per day</h3>
                     <div class="mt-2" x-data="adminChart({
                         type: 'bar',
@@ -199,7 +202,7 @@
                     })"></div>
                 </div>
 
-                <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                     <h3 class="text-sm font-bold text-novix-ink dark:text-white">Most active users</h3>
                     <div class="mt-3 space-y-3">
                         @forelse($mostActiveUsers as $entry)
@@ -218,7 +221,7 @@
                 </div>
             </div>
 
-            <div class="mt-6 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="mt-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Successful logins by hour of day</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'bar',
@@ -237,7 +240,7 @@
 
         {{-- Time-series charts --}}
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Signups</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'area',
@@ -253,7 +256,7 @@
                 })"></div>
             </div>
 
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Reports uploaded</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'area',
@@ -272,7 +275,7 @@
 
         {{-- Breakdown donuts/bars --}}
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Reports by type</h3>
                 @if($reportsByType->isEmpty())
                     <p class="mt-3 text-sm text-novix-muted">No reports yet.</p>
@@ -290,7 +293,7 @@
                 @endif
             </div>
 
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">OCR status</h3>
                 @if($reportsByOcrStatus->isEmpty())
                     <p class="mt-3 text-sm text-novix-muted">No reports yet.</p>
@@ -308,7 +311,7 @@
                 @endif
             </div>
 
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">AI jobs</h3>
                 @if($aiJobsByStatus->isEmpty())
                     <p class="mt-3 text-sm text-novix-muted">No AI jobs yet.</p>
@@ -327,7 +330,7 @@
                 @endif
             </div>
 
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Blood groups</h3>
                 @if($bloodGroupDistribution->isEmpty())
                     <p class="mt-3 text-sm text-novix-muted">No data yet.</p>
@@ -347,7 +350,7 @@
         </div>
 
         {{-- Age distribution --}}
-        <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+        <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
             <h3 class="text-sm font-bold text-novix-ink dark:text-white">Age distribution</h3>
             <div class="mt-2" x-data="adminChart({
                 type: 'bar',
@@ -365,7 +368,7 @@
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Recent users --}}
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Recent signups</h3>
                 <div class="mt-3 space-y-3">
                     @forelse($recentUsers as $user)
@@ -384,7 +387,7 @@
             </div>
 
             {{-- Recent activity --}}
-            <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <h3 class="text-sm font-bold text-novix-ink dark:text-white">Recent activity</h3>
                 <div class="mt-3 max-h-72 overflow-y-auto overflow-x-auto">
                     <table class="w-full text-left text-sm">

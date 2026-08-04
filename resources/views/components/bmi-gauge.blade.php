@@ -10,7 +10,7 @@
     // The gauge's centre is a solid disc that has to match whatever sits behind
     // it. On a white card the old cream default showed as a faint off-colour
     // ring, so callers can now pass the surface they're rendering on.
-    'holeClass' => 'bg-novix-cream dark:bg-novix-ink',
+    'holeClass' => 'bg-novix-cream dark:bg-novix-night',
 ])
 
 <div x-data="bmiGauge({ heightCm: @js($heightCm), weightKg: @js($weightKg), editable: @js($editable) })">

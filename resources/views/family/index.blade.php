@@ -187,7 +187,7 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
         @keydown.escape.window="open = false"
     >
-        <div @click.outside="open = false" x-show="open" x-transition class="w-full max-w-md rounded-novix bg-white p-6 shadow-novix dark:bg-novix-ink">
+        <div @click.outside="open = false" x-show="open" x-transition class="w-full max-w-md rounded-novix bg-white p-6 shadow-novix dark:bg-novix-night">
             <h3 class="text-lg font-bold text-novix-ink dark:text-white" x-text="linked ? `Remove ${name} from your family group?` : `Archive ${name}'s profile?`"></h3>
             <p class="mt-2 text-sm text-novix-muted">
                 <span x-show="!linked">This archives their profile — their medical history is kept, not deleted, and you can restore this profile anytime from Account Security in your Profile settings.</span>

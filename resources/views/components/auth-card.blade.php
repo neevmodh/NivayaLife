@@ -16,8 +16,8 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased dark:bg-novix-ink">
-        <div class="min-h-screen bg-novix-cream dark:bg-novix-ink flex items-center justify-center p-4 sm:p-6">
+    <body class="font-sans antialiased dark:bg-novix-night">
+        <div class="min-h-screen bg-novix-cream dark:bg-novix-night flex items-center justify-center p-4 sm:p-6">
             <div class="w-full max-w-4xl bg-white dark:bg-white/5 rounded-novix shadow-novix overflow-hidden grid md:grid-cols-2 relative">
                 <div class="absolute right-4 top-4 z-10 md:right-6 md:top-6">
                     <x-dark-mode-toggle />

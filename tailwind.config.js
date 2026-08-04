@@ -46,6 +46,14 @@ export default {
                     yellow: '#F5C879',
                     blue: '#8FB8E0',
                     ink: '#1F2A24',
+                    // Dark-mode surface. Deliberately a neutral charcoal, not
+                    // a darker green — dark green backgrounds made the whole
+                    // dark theme feel murky. Ink stays as the light-mode text
+                    // color; night is only ever a background.
+                    night: {
+                        DEFAULT: '#12161B',
+                        card: '#1A1F26',
+                    },
                     // Darkened from #6B7A72 (4.19:1 on cream, below WCAG AA's
                     // 4.5:1 for normal text) — this color is used everywhere
                     // for secondary text, so the fix belongs here once rather

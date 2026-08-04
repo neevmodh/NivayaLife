@@ -12,7 +12,7 @@
      bar — same nav, two skins, split entirely by breakpoint rather than a
      second template. --}}
 <nav x-data="{ open: false, switcherOpen: false }"
-    class="sticky top-0 z-30 border-b border-novix-green-dark/40 bg-novix-green sm:border-novix-green/10 sm:bg-white/85 sm:backdrop-blur-md dark:sm:border-white/10 dark:sm:bg-novix-ink/85">
+    class="sticky top-0 z-30 border-b border-novix-green-dark/40 bg-novix-green sm:border-novix-green/10 sm:bg-white/85 sm:backdrop-blur-md dark:sm:border-white/10 dark:sm:bg-novix-night/85">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 justify-between">
             <div class="flex items-center gap-8">
@@ -29,7 +29,7 @@
                             <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                         </button>
                         <div x-show="healthOpen" x-cloak x-transition
-                            class="absolute left-0 z-20 mt-2 w-48 rounded-xl border border-gray-100 bg-white p-1.5 shadow-novix dark:border-white/10 dark:bg-novix-ink">
+                            class="absolute left-0 z-20 mt-2 w-48 rounded-xl border border-gray-100 bg-white p-1.5 shadow-novix dark:border-white/10 dark:bg-novix-night">
                             <a href="{{ route('timeline') }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs('timeline*') ? 'bg-novix-mint/60 text-novix-green dark:bg-white/10 dark:text-novix-mint' : 'text-novix-ink hover:bg-novix-cream dark:text-white dark:hover:bg-white/10' }}">Timeline</a>
                             <a href="{{ route('medications.index') }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs('medications.*') ? 'bg-novix-mint/60 text-novix-green dark:bg-white/10 dark:text-novix-mint' : 'text-novix-ink hover:bg-novix-cream dark:text-white dark:hover:bg-white/10' }}">Medications</a>
                             <a href="{{ route('vaccinations.index') }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs('vaccinations.*') ? 'bg-novix-mint/60 text-novix-green dark:bg-white/10 dark:text-novix-mint' : 'text-novix-ink hover:bg-novix-cream dark:text-white dark:hover:bg-white/10' }}">Vaccinations</a>
@@ -54,7 +54,7 @@
                             {{ Str::of($navActive->full_name)->words(1, '') }}
                         </button>
                         <div x-show="switcherOpen" x-cloak x-transition
-                            class="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-gray-100 bg-white p-2 shadow-novix dark:border-white/10 dark:bg-novix-ink">
+                            class="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-gray-100 bg-white p-2 shadow-novix dark:border-white/10 dark:bg-novix-night">
                             <p class="px-2 py-1 text-xs font-semibold text-novix-muted">Switch family member</p>
                             @foreach($navFamilyMembers as $member)
                                 <form method="POST" action="{{ route('dashboard.switch', $member) }}">
@@ -110,7 +110,7 @@
 
     {{-- Dashboard, Reports, Health and Family live in the bottom tab bar on
          mobile, so this menu only carries what the bar can't fit. --}}
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-novix-green/10 bg-white dark:border-white/10 dark:bg-novix-ink sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-novix-green/10 bg-white dark:border-white/10 dark:bg-novix-night sm:hidden">
         <div class="space-y-1 pb-3 pt-2">
             <x-responsive-nav-link :href="route('timeline')" :active="request()->routeIs('timeline*')">Timeline</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('vaccinations.index')" :active="request()->routeIs('vaccinations.*')">Vaccinations</x-responsive-nav-link>
