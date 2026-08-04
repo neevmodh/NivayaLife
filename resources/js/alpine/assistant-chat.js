@@ -133,6 +133,27 @@ export default function assistantChat({ familyMemberId, sendUrl, csrfToken, init
 
         // ---- dictation ----
 
+        /**
+         * A `network` error rarely means the connection is down.
+         *
+         * Browser dictation streams audio to the vendor's speech service, and
+         * privacy-focused Chromium forks — Brave most commonly — ship without
+         * the key for it. The API is present, so it looks supported, but every
+         * attempt fails with `network` even on a perfect connection. Saying
+         * "check your internet" there sends people chasing the wrong problem.
+         */
+        networkErrorMessage() {
+            if (navigator.onLine === false) {
+                return 'Dictation needs an internet connection — you appear to be offline.';
+            }
+
+            if (navigator.brave || /\bBrave\b/.test(navigator.userAgent)) {
+                return "Brave blocks the speech service dictation relies on, so this won't work here. Chrome, Edge or Safari will — or you can type your question.";
+            }
+
+            return "Your browser couldn't reach its speech service. Some browsers block it — Chrome, Edge or Safari usually work. You can also just type.";
+        },
+
         toggleDictation() {
             this.listening ? this.stopDictation() : this.startDictation();
         },
@@ -174,7 +195,7 @@ export default function assistantChat({ familyMemberId, sendUrl, csrfToken, init
                     'not-allowed': 'Microphone access is blocked. Allow it for this site in your browser settings, then tap the mic again.',
                     'service-not-allowed': 'Your browser blocked microphone access for this site.',
                     'audio-capture': 'No microphone was found. Check that one is connected and enabled.',
-                    network: 'Dictation needs an internet connection.',
+                    network: this.networkErrorMessage(),
                 }[event.error] ?? `Dictation stopped (${event.error}). You can type instead.`;
 
                 this._shouldListen = false;

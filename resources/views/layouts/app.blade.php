@@ -38,6 +38,7 @@
             </main>
 
             <x-bottom-nav />
+            <x-assistant-fab />
         </div>
     </body>
 </html>
