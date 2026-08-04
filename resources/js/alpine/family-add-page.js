@@ -89,7 +89,7 @@ export default function familyAddPage({
                     return;
                 }
 
-                document.dispatchEvent(new CustomEvent('novix:confetti'));
+                window.dispatchEvent(new CustomEvent('novix:confetti'));
                 setTimeout(() => window.location.assign(json.redirect), 1100);
             } catch (e) {
                 this.triggerShake();

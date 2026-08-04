@@ -49,7 +49,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-novix-cream font-sans text-novix-ink antialiased">
+<body class="novix-surface bg-novix-cream font-sans text-novix-ink antialiased">
 
     {{-- ============ HEADER ============ --}}
     <header x-data="{ mobileOpen: false }" class="sticky top-0 z-50 border-b border-novix-green/10 bg-novix-cream/90 backdrop-blur">
@@ -319,6 +319,72 @@
                     "Nivaya Life is a personal health companion. It explains and organizes your records —
                     it does not diagnose, prescribe, or replace your doctor."
                 </p>
+            </div>
+        </div>
+    </section>
+
+    {{-- ============ HEALTH BREAK (interactive) ============ --}}
+    <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="break-heading">
+        <x-confetti />
+        <div class="mx-auto max-w-2xl text-center">
+            <h2 id="break-heading" class="text-3xl font-extrabold text-novix-ink">Take a 10-second health break</h2>
+            <p class="mt-3 text-novix-ink/70">Two little things to try before you scroll on.</p>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+            {{-- Tap-the-heart: a synthesized lub-dub heartbeat on every tap,
+                 and a confetti burst at ten beats. Pure WebAudio — no audio
+                 file, nothing to download, silent until the visitor asks. --}}
+            <div class="flex flex-col items-center justify-center rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 text-center shadow-novix-sm"
+                x-data="{
+                    beats: 0,
+                    bumping: false,
+                    tap() {
+                        this.beats++;
+                        this.bumping = true;
+                        setTimeout(() => this.bumping = false, 200);
+                        try {
+                            const C = window.AudioContext || window.webkitAudioContext;
+                            this._ctx = this._ctx || new C();
+                            const c = this._ctx, t = c.currentTime;
+                            const thump = (at, freq, gain) => {
+                                const o = c.createOscillator(), g = c.createGain();
+                                o.type = 'sine';
+                                o.frequency.setValueAtTime(freq, at);
+                                g.gain.setValueAtTime(0.0001, at);
+                                g.gain.exponentialRampToValueAtTime(gain, at + 0.02);
+                                g.gain.exponentialRampToValueAtTime(0.0001, at + 0.25);
+                                o.connect(g); g.connect(c.destination);
+                                o.start(at); o.stop(at + 0.3);
+                            };
+                            thump(t, 60, 0.5);
+                            thump(t + 0.22, 48, 0.35);
+                        } catch (e) { /* audio blocked — the visual bump still lands */ }
+                        if (this.beats === 10) window.dispatchEvent(new CustomEvent('novix:confetti'));
+                    },
+                }">
+                <button type="button" @click="tap()" aria-label="Tap to hear a heartbeat"
+                    class="group relative flex h-24 w-24 items-center justify-center rounded-full bg-novix-pink/20 transition hover:bg-novix-pink/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-novix-green"
+                    :class="bumping ? 'scale-110' : 'scale-100'" style="transition: transform 0.15s ease">
+                    <svg class="h-12 w-12 text-novix-pink-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 21s-7-4.35-9.5-8.5C.83 9.1 2.3 5.5 6 5c2-.27 3.5 1 4 2 .5-1 2-2.27 4-2 3.7.5 5.17 4.1 3.5 7.5C19 16.65 12 21 12 21Z"/>
+                    </svg>
+                </button>
+                <h3 class="mt-5 font-semibold text-novix-ink">Tap the heart</h3>
+                <p class="mt-1 text-sm text-novix-ink/60">Hear a real lub-dub. Ten beats earns a small celebration.</p>
+                <p class="mt-3 h-5 text-xs font-bold text-novix-gold" x-cloak x-show="beats > 0"
+                    x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
+            </div>
+
+            {{-- Live BMI check — the exact gauge component from inside the app,
+                 so the landing page demos the real product, not a mockup. --}}
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 shadow-novix-sm">
+                <h3 class="text-center font-semibold text-novix-ink">Try a live BMI check</h3>
+                <p class="mt-1 text-center text-sm text-novix-ink/60">This is the same gauge you'll see on your dashboard.</p>
+                <div class="mt-5">
+                    <x-bmi-gauge :size="170" hole-class="bg-white" />
+                </div>
+                <p class="mt-4 text-center text-xs text-novix-ink/50">Stays on this page — nothing is saved or sent anywhere.</p>
             </div>
         </div>
     </section>

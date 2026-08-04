@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-novix-ink antialiased">
-        <div class="flex min-h-screen flex-col items-center bg-novix-cream px-4 pt-10 sm:justify-center sm:pt-0">
+        <div class="novix-surface flex min-h-screen flex-col items-center bg-novix-cream px-4 pt-10 sm:justify-center sm:pt-0">
             <a href="/" aria-label="Nivaya Life home">
                 <x-novix-logo />
             </a>

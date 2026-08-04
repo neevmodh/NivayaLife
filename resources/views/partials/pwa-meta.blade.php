@@ -3,8 +3,10 @@
 @endif
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#14503F">
-<link rel="icon" href="/icons/icon-192.png">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
+{{-- ?v=2 busts the cached pre-rebrand icons browsers hold onto. --}}
+<link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
+<link rel="icon" type="image/png" href="/icons/icon-192.png?v=2" sizes="192x192">
+<link rel="apple-touch-icon" href="/icons/icon-192.png?v=2">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">

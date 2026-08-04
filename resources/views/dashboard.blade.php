@@ -120,7 +120,7 @@
     </x-slot>
 
     @if(session('just_registered'))
-        <div x-data x-init="document.dispatchEvent(new CustomEvent('novix:confetti'))"></div>
+        <div x-data x-init="window.dispatchEvent(new CustomEvent('novix:confetti'))"></div>
         <x-confetti />
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" x-transition
             class="fixed right-6 top-20 z-50 rounded-xl bg-novix-green px-5 py-3 text-sm font-semibold text-white shadow-novix">

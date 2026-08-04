@@ -61,7 +61,7 @@ export default function registerForm({ csrfToken, checkEmailUrl, registerUrl }) 
 
         celebrateAndRedirect(url) {
             this.loading = true;
-            document.dispatchEvent(new CustomEvent('novix:confetti'));
+            window.dispatchEvent(new CustomEvent('novix:confetti'));
             setTimeout(() => window.location.assign(url), 1100);
         },
 

@@ -6,6 +6,23 @@
     display: none !important;
 }
 
+/* The page surface: cream with a whisper of mint falling from the top-right
+   and the faintest gold rising from the bottom-left — depth without ever
+   competing with the cards sitting on it. Dark mode swaps to the neutral
+   charcoal with a soft brand-green aurora instead. */
+.novix-surface {
+    background-color: #FBF6EA;
+    background-image:
+        radial-gradient(60rem 40rem at 110% -10%, rgba(220, 239, 227, 0.6), transparent 60%),
+        radial-gradient(50rem 35rem at -10% 110%, rgba(201, 148, 26, 0.07), transparent 55%);
+}
+.dark .novix-surface {
+    background-color: #12161B;
+    background-image:
+        radial-gradient(60rem 40rem at 110% -10%, rgba(20, 80, 63, 0.28), transparent 60%),
+        radial-gradient(50rem 35rem at -10% 110%, rgba(201, 148, 26, 0.05), transparent 55%);
+}
+
 /* Brand-tinted text selection — small, but it makes the whole site feel
    deliberately put together rather than browser-default. */
 ::selection {
