@@ -28,6 +28,7 @@ class User extends Authenticatable
         'google_id',
         'avatar',
         'phone',
+        'phone_country_code',
         'avatar_path',
         'theme_preference',
         'onboarding_dismissed_at',

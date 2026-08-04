@@ -90,7 +90,7 @@
                 </a>
             @endif
 
-            <x-phone-input name="phone" label="Phone number" dynamic-errors />
+            <x-phone-input name="phone" label="Phone number" with-country-code dynamic-errors />
 
             <x-floating-select name="gender" label="Gender" :required="true" dynamic-errors :options="[
                 'male' => 'Male', 'female' => 'Female', 'other' => 'Other', 'prefer_not_to_say' => 'Prefer not to say',

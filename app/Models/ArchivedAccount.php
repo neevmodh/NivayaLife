@@ -18,6 +18,7 @@ class ArchivedAccount extends Model
         'email',
         'name',
         'phone',
+        'phone_country_code',
         'password',
         'google_id',
         'was_admin',

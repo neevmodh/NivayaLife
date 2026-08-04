@@ -35,6 +35,7 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'phone' => '9876543210',
+            'country_code' => '+91',
             'gender' => 'male',
             'height_cm' => 175,
             'weight_kg' => 70,
@@ -46,6 +47,7 @@ class RegistrationTest extends TestCase
         $user = User::where('email', 'test@example.com')->first();
         $this->assertNotNull($user);
         $this->assertSame('9876543210', $user->phone);
+        $this->assertSame('+91', $user->phone_country_code);
 
         $familyMember = FamilyMember::where('primary_account_id', $user->id)->first();
         $this->assertNotNull($familyMember);
@@ -73,6 +75,7 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'phone' => '9876543210',
+            'country_code' => '+91',
             'gender' => 'male',
         ]);
 
@@ -89,6 +92,7 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'phone' => '9876543210',
+            'country_code' => '+91',
             'gender' => 'female',
             'height_cm' => 160,
             'weight_kg' => 55,
@@ -122,6 +126,7 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'phone' => '9876543210',
+            'country_code' => '+91',
             'gender' => 'male',
             'height_cm' => 175,
             'weight_kg' => 70,
@@ -148,7 +153,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['email', 'password', 'phone', 'gender', 'height_cm', 'weight_kg']);
+        $response->assertJsonValidationErrors(['email', 'password', 'phone', 'country_code', 'gender', 'height_cm', 'weight_kg']);
         $this->assertGuest();
     }
 }

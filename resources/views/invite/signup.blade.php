@@ -30,7 +30,7 @@
             <div class="rounded-xl bg-novix-cream/60 px-4 py-2.5 text-sm text-novix-ink">{{ $invitation->invited_email }}</div>
 
             <x-floating-input name="full_name" label="Your full name" :value="$invitation->familyMember->full_name" :required="true" autocomplete="name" dynamic-errors />
-            <x-phone-input name="phone" label="Phone number" dynamic-errors />
+            <x-phone-input name="phone" label="Phone number" with-country-code dynamic-errors />
 
             <div x-data="passwordStrength()">
                 <div class="relative">

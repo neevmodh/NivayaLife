@@ -20,6 +20,7 @@ class RegisterRequest extends FormRequest
         $rules = [
             'full_name' => ['required', 'string', 'min:2', 'max:255'],
             'phone' => ['required', 'digits:10'],
+            'country_code' => ['required', 'regex:/^\+[1-9]\d{0,3}$/'],
             'gender' => ['required', 'in:male,female,other,prefer_not_to_say'],
             // Same bounds as FamilyMember::rules()/ProfileController::updateHealth() —
             // required here (unlike a later profile edit) since the signup

@@ -63,6 +63,7 @@ class RegisteredUserController extends Controller
                 'has_password' => ! $google,
                 'google_id' => $google['google_id'] ?? null,
                 'phone' => $data['phone'],
+                'phone_country_code' => $data['country_code'],
                 'email_verified_at' => $google ? now() : null,
             ]);
 

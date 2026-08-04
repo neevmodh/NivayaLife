@@ -78,6 +78,7 @@ class InvitationController extends Controller
             'full_name' => ['required', 'string', 'min:2', 'max:255'],
             'password' => ['required', 'confirmed', 'min:8'],
             'phone' => ['required', 'digits:10'],
+            'country_code' => ['required', 'regex:/^\+[1-9]\d{0,3}$/'],
             'photo' => ['required', 'image', 'max:5120'],
         ]);
 
@@ -90,6 +91,7 @@ class InvitationController extends Controller
                 'email' => $invitation->invited_email,
                 'password' => Hash::make($validated['password']),
                 'phone' => $validated['phone'],
+                'phone_country_code' => $validated['country_code'],
                 'avatar_path' => $photoPath,
                 'email_verified_at' => now(),
             ]);

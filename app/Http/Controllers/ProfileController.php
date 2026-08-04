@@ -291,6 +291,7 @@ class ProfileController extends Controller
             'email' => $user->email,
             'name' => $user->name,
             'phone' => $user->phone,
+            'phone_country_code' => $user->phone_country_code,
             'password' => $user->password,
             'google_id' => $user->google_id,
             'was_admin' => (bool) $user->is_admin,

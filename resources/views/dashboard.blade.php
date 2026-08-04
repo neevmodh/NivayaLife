@@ -14,6 +14,9 @@
     $hour = now()->hour;
     $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
     $firstName = Str::of(auth()->user()->name)->words(1, '');
+
+    $nextVaccination = $upcomingVaccinations->first();
+    $nextVaccinationDays = $nextVaccination ? now()->startOfDay()->diffInDays($nextVaccination->next_due_date->startOfDay(), false) : null;
 @endphp
 
 <x-app-layout>
@@ -72,8 +75,34 @@
             </div>
         @endif
 
+        {{-- Family strip — horizontally scrollable, active member highlighted --}}
+        <div class="animate-novix-fade-up -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0" style="animation-delay:0ms">
+            @foreach($familyMembers as $member)
+                <form method="POST" action="{{ route('dashboard.switch', $member) }}" class="group flex snap-start flex-col items-center gap-1.5">
+                    @csrf
+                    <button type="submit" class="relative transition group-hover:-translate-y-0.5" aria-label="Switch to {{ $member->full_name }}">
+                        <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()"
+                            size="h-16 w-16" class="shadow-sm ring-2 ring-offset-2 dark:ring-offset-novix-ink {{ $member->id === $active->id ? 'ring-novix-green' : 'ring-gray-200 group-hover:ring-novix-mint' }}" />
+                        @if($member->id === $active->id)
+                            <span class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-novix-green ring-2 ring-white dark:ring-novix-ink" aria-hidden="true">
+                                <svg class="h-3 w-3 text-white" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                        @endif
+                    </button>
+                    <span class="text-xs font-medium {{ $member->id === $active->id ? 'text-novix-green dark:text-novix-mint' : 'text-novix-ink dark:text-white' }}">{{ Str::of($member->full_name)->words(1, '') }}</span>
+                </form>
+            @endforeach
+
+            <a href="{{ route('family.add') }}" class="group flex snap-start flex-col items-center gap-1.5" aria-label="Add family member">
+                <span class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-novix-green/30 text-novix-green transition group-hover:-translate-y-0.5 group-hover:border-novix-green group-hover:bg-novix-mint/40 dark:text-novix-mint">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+                <span class="text-xs font-medium text-novix-ink dark:text-white">Add</span>
+            </a>
+        </div>
+
         {{-- Hero card --}}
-        <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix" style="animation-delay:0ms">
+        <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix" style="animation-delay:40ms">
             <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/5"></div>
             <div class="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-white/5"></div>
 
@@ -113,10 +142,33 @@
             </div>
         </div>
 
+        {{-- Stat strip — real counts, nothing fabricated --}}
+        <div class="grid animate-novix-fade-up grid-cols-3 gap-4" style="animation-delay:70ms">
+            <div class="rounded-novix bg-white p-4 text-center shadow-novix-sm dark:bg-white/5">
+                <p class="text-2xl font-extrabold text-novix-ink dark:text-white">{{ $recentReports->count() }}</p>
+                <p class="mt-0.5 text-xs font-semibold text-novix-muted">Recent reports</p>
+            </div>
+            <div class="rounded-novix bg-white p-4 text-center shadow-novix-sm dark:bg-white/5">
+                <p class="text-2xl font-extrabold text-novix-ink dark:text-white">{{ $activeMedications->count() }}</p>
+                <p class="mt-0.5 text-xs font-semibold text-novix-muted">Active medications</p>
+            </div>
+            <div class="rounded-novix bg-white p-4 text-center shadow-novix-sm dark:bg-white/5">
+                @if($nextVaccinationDays !== null)
+                    <p class="text-2xl font-extrabold {{ $nextVaccinationDays < 0 ? 'text-novix-pink-dark' : 'text-novix-ink dark:text-white' }}">
+                        {{ $nextVaccinationDays < 0 ? 'Overdue' : $nextVaccinationDays }}
+                    </p>
+                    <p class="mt-0.5 text-xs font-semibold text-novix-muted">{{ $nextVaccinationDays >= 0 ? 'Days to next dose' : 'Vaccination overdue' }}</p>
+                @else
+                    <p class="text-2xl font-extrabold text-novix-ink dark:text-white">—</p>
+                    <p class="mt-0.5 text-xs font-semibold text-novix-muted">No doses tracked</p>
+                @endif
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
             {{-- BMI gauge --}}
-            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:60ms">
+            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:100ms">
                 <div class="flex items-center gap-2.5">
                     <span class="flex h-8 w-8 items-center justify-center rounded-full bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint" aria-hidden="true">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -146,105 +198,77 @@
                     Quick actions
                 </h3>
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    <a href="{{ route('reports.upload') }}" class="animate-novix-fade-up group flex flex-col items-center gap-2 rounded-novix bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5" style="animation-delay:120ms">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-novix-mint text-novix-green transition group-hover:scale-110 dark:bg-novix-green/20 dark:text-novix-mint" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0-12 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <a href="{{ route('reports.upload') }}" class="animate-novix-fade-up group flex flex-col items-center gap-3 rounded-novix bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-1 hover:shadow-novix dark:bg-white/5" style="animation-delay:140ms">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-novix-green to-novix-green-light text-white shadow-sm transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0-12 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                         <span class="text-xs font-semibold text-novix-ink dark:text-white">Upload Report</span>
                     </a>
-                    <a href="{{ route('timeline') }}" class="animate-novix-fade-up group flex flex-col items-center gap-2 rounded-novix bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5" style="animation-delay:150ms">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-novix-blue/20 text-novix-blue transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                    <a href="{{ route('timeline') }}" class="animate-novix-fade-up group flex flex-col items-center gap-3 rounded-novix bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-1 hover:shadow-novix dark:bg-white/5" style="animation-delay:170ms">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-novix-blue to-sky-500 text-white shadow-sm transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
                         <span class="text-xs font-semibold text-novix-ink dark:text-white">View Timeline</span>
                     </a>
-                    <a href="{{ route('id-card.show') }}" class="animate-novix-fade-up group flex flex-col items-center gap-2 rounded-novix border-2 border-novix-pink-dark/20 bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-0.5 hover:border-novix-pink-dark/40 hover:shadow-novix dark:bg-white/5" style="animation-delay:180ms">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-novix-pink/25 text-novix-pink-dark transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><path d="M13 10h5M13 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                    <a href="{{ route('id-card.show') }}" class="animate-novix-fade-up group flex flex-col items-center gap-3 rounded-novix border-2 border-novix-pink-dark/20 bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-1 hover:border-novix-pink-dark/40 hover:shadow-novix dark:bg-white/5" style="animation-delay:200ms">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-novix-pink-dark to-novix-pink text-white shadow-sm transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><path d="M13 10h5M13 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
                         <span class="text-xs font-semibold text-novix-ink dark:text-white">Emergency Card</span>
                     </a>
-                    <a href="{{ route('shares.history') }}" class="animate-novix-fade-up group flex flex-col items-center gap-2 rounded-novix bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5" style="animation-delay:210ms">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-novix-yellow/30 text-novix-yellow transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 .09 4.26L8.9 11.7a3 3 0 1 0 0 4.6l6.19 3.44A3 3 0 1 0 15 17.7l-6.19-3.44a3 3 0 0 0 0-.52L15 10.3c.52.44 1.19.7 1.91.7A3 3 0 0 0 18 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
+                    <a href="{{ route('shares.history') }}" class="animate-novix-fade-up group flex flex-col items-center gap-3 rounded-novix bg-white p-5 text-center shadow-novix-sm transition hover:-translate-y-1 hover:shadow-novix dark:bg-white/5" style="animation-delay:230ms">
+                        <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-novix-yellow to-amber-400 text-white shadow-sm transition group-hover:scale-110" aria-hidden="true"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 .09 4.26L8.9 11.7a3 3 0 1 0 0 4.6l6.19 3.44A3 3 0 1 0 15 17.7l-6.19-3.44a3 3 0 0 0 0-.52L15 10.3c.52.44 1.19.7 1.91.7A3 3 0 0 0 18 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
                         <span class="text-xs font-semibold text-novix-ink dark:text-white">Share Report</span>
                     </a>
                 </div>
 
-                {{-- Family overview --}}
+                {{-- Recent reports — timeline style --}}
                 <div class="mb-3 mt-6 flex items-center justify-between">
-                    <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
-                        <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 20h4v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        Family
-                    </h3>
-                    <a href="{{ route('family.index') }}" class="text-xs font-semibold text-novix-green hover:underline">Manage family</a>
-                </div>
-                <div class="animate-novix-fade-up flex flex-wrap gap-4 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:240ms">
-                    @foreach($familyMembers as $member)
-                        <form method="POST" action="{{ route('dashboard.switch', $member) }}" class="group flex flex-col items-center gap-1.5">
-                            @csrf
-                            <button type="submit" class="relative transition group-hover:-translate-y-0.5" aria-label="Switch to {{ $member->full_name }}">
-                                <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()"
-                                    size="h-14 w-14" class="ring-2 ring-offset-2 dark:ring-offset-novix-ink {{ $member->id === $active->id ? 'ring-novix-green' : 'ring-gray-200 group-hover:ring-novix-mint' }}" />
-                                @if($member->id === $active->id)
-                                    <span class="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-novix-green ring-2 ring-white dark:ring-novix-ink" aria-hidden="true">
-                                        <svg class="h-2.5 w-2.5 text-white" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </span>
-                                @endif
-                            </button>
-                            <span class="text-xs font-medium text-novix-ink dark:text-white">{{ Str::of($member->full_name)->words(1, '') }}</span>
-                        </form>
-                    @endforeach
-
-                    <a href="{{ route('family.add') }}" class="group flex flex-col items-center gap-1.5" aria-label="Add family member">
-                        <span class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-dashed border-novix-green/30 text-novix-green transition group-hover:-translate-y-0.5 group-hover:border-novix-green group-hover:bg-novix-mint/40 dark:text-novix-mint">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                        </span>
-                        <span class="text-xs font-medium text-novix-ink dark:text-white">Add</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-
-            {{-- Recent reports --}}
-            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:300ms">
-                <div class="flex items-center justify-between">
                     <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
                         <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3h10a1 1 0 0 1 1 1v16l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8h6M9 12h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
                         Recent reports
                     </h3>
                     <a href="{{ route('reports.upload') }}" class="text-xs font-semibold text-novix-green hover:underline">Upload new</a>
                 </div>
-
-                @if($recentReports->isEmpty())
-                    <div class="mt-4 flex flex-col items-center gap-2 rounded-xl bg-novix-cream/60 py-8 text-center dark:bg-white/5">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-novix-muted shadow-sm dark:bg-white/10" aria-hidden="true">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M7 3h10a1 1 0 0 1 1 1v16l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                        </span>
-                        <p class="text-sm text-novix-muted">No reports yet — upload your first one.</p>
-                        <a href="{{ route('reports.upload') }}" class="text-xs font-semibold text-novix-green hover:underline">Upload a report</a>
-                    </div>
-                @else
-                    <ul class="mt-3 divide-y divide-gray-100 dark:divide-white/10">
-                        @foreach($recentReports as $report)
-                            @php
-                                $badge = $ocrBadge[$report->ocr_status] ?? $ocrBadge['pending'];
-                            @endphp
-                            <li>
-                                <a href="{{ route('reports.show', $report) }}" class="flex items-center gap-3 rounded-lg px-2 py-3 transition hover:bg-novix-cream/60 dark:hover:bg-white/5">
-                                    <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-lg dark:bg-white/10">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
-                                    <div class="min-w-0 flex-1">
-                                        <p class="truncate text-sm font-medium text-novix-ink dark:text-white">{{ Str::headline($report->type) }}</p>
-                                        <p class="text-xs text-novix-muted">{{ $report->report_date?->format('M j, Y') ?? $report->uploaded_at?->format('M j, Y') }}</p>
+                <div class="animate-novix-fade-up rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:260ms">
+                    @if($recentReports->isEmpty())
+                        <div class="flex flex-col items-center gap-2 py-8 text-center">
+                            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-novix-cream text-novix-muted dark:bg-white/10" aria-hidden="true">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M7 3h10a1 1 0 0 1 1 1v16l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                            </span>
+                            <p class="text-sm text-novix-muted">No reports yet — upload your first one.</p>
+                            <a href="{{ route('reports.upload') }}" class="text-xs font-semibold text-novix-green hover:underline">Upload a report</a>
+                        </div>
+                    @else
+                        <ul class="relative">
+                            @foreach($recentReports as $report)
+                                @php
+                                    $badge = $ocrBadge[$report->ocr_status] ?? $ocrBadge['pending'];
+                                    $isLast = $loop->last;
+                                @endphp
+                                <li class="relative flex gap-3 pb-5 pl-1 last:pb-0">
+                                    @unless($isLast)
+                                        <span class="absolute left-[19px] top-8 h-full w-px bg-gray-100 dark:bg-white/10" aria-hidden="true"></span>
+                                    @endunless
+                                    <span class="relative z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-base ring-4 ring-white dark:bg-white/10 dark:ring-novix-ink">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
+                                    <a href="{{ route('reports.show', $report) }}" class="-mt-0.5 min-w-0 flex-1 rounded-lg px-2 py-1.5 transition hover:bg-novix-cream/60 dark:hover:bg-white/5">
+                                        <div class="flex items-start justify-between gap-2">
+                                            <div class="min-w-0">
+                                                <p class="truncate text-sm font-medium text-novix-ink dark:text-white">{{ Str::headline($report->type) }}</p>
+                                                <p class="text-xs text-novix-muted">{{ $report->report_date?->format('M j, Y') ?? $report->uploaded_at?->format('M j, Y') }}</p>
+                                            </div>
+                                            <span class="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $badge['class'] }}">{{ $badge['label'] }}</span>
+                                        </div>
                                         @if($report->ai_summary)
-                                            <p class="mt-0.5 truncate text-xs text-novix-muted">{{ Str::limit(Str::of($report->ai_summary)->before("\n\n"), 90) }}</p>
+                                            <p class="mt-1 truncate text-xs text-novix-muted">{{ Str::limit(Str::of($report->ai_summary)->before("\n\n"), 90) }}</p>
                                         @endif
-                                    </div>
-                                    <span class="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $badge['class'] }}">{{ $badge['label'] }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
             </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
             {{-- Upcoming medications --}}
-            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:340ms"
+            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:300ms"
                 x-data="doseTracker({ csrfToken: @js(csrf_token()), initialStatuses: @js($doseStatuses) })">
                 <div class="flex items-center justify-between">
                     <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
@@ -290,7 +314,7 @@
             </div>
 
             {{-- Vaccinations --}}
-            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:380ms">
+            <div class="animate-novix-fade-up rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5" style="animation-delay:340ms">
                 <div class="flex items-center justify-between">
                     <h3 class="flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
                         <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 8 8 19l-5-5M14 3l7 7-3 3-7-7 3-3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>

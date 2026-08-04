@@ -99,6 +99,7 @@ class AccountArchivingTest extends TestCase
             'password' => 'newpassword',
             'password_confirmation' => 'newpassword',
             'phone' => '9876543210',
+            'country_code' => '+91',
             'gender' => 'female',
             'height_cm' => 165,
             'weight_kg' => 60,
