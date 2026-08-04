@@ -24,6 +24,7 @@ import doseTracker from './alpine/dose-tracker';
 import adminChart from './alpine/admin-chart';
 import installPrompt from './alpine/install-prompt';
 import pushNotifications from './alpine/push-notifications';
+import initScrollEffects from './scroll-reveal';
 
 window.Alpine = Alpine;
 
@@ -51,3 +52,5 @@ Alpine.data('installPrompt', installPrompt);
 Alpine.data('pushNotifications', pushNotifications);
 
 Alpine.start();
+
+initScrollEffects();

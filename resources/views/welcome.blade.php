@@ -212,7 +212,7 @@
     {{-- ============ PROBLEM ============ --}}
     <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8" aria-labelledby="problem-heading">
         <div class="mx-auto max-w-2xl text-center">
-            <h2 id="problem-heading" class="text-3xl font-extrabold text-novix-ink">Paper records don't work anymore</h2>
+            <h2 data-reveal id="problem-heading" class="text-3xl font-extrabold text-novix-ink">Paper records don't work anymore</h2>
             <p class="mt-3 text-novix-ink/70">Every family runs into the same problems managing health records the old way.</p>
         </div>
 
@@ -223,7 +223,7 @@
                 ['icon' => 'M17 20h4v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'title' => 'Managing the whole family manually', 'body' => 'Parents, kids, grandparents — everyone\'s reports pile up in different places, with no single view of who has what.'],
                 ['icon' => 'M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', 'title' => 'Repeating tests you\'ve already done', 'body' => 'When an old report can\'t be found in time, the easiest fix is often just redoing the test — more cost, more waiting.'],
             ] as $problem)
-                <div class="rounded-novix bg-white p-6 shadow-novix-sm">
+                <div class="rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
                     <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-mint text-novix-green" aria-hidden="true">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $problem['icon'] }}"/></svg>
                     </span>
@@ -238,7 +238,7 @@
     <section id="how-it-works" class="scroll-mt-20 py-20" aria-labelledby="how-heading">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl text-center">
-                <h2 id="how-heading" class="text-3xl font-extrabold text-novix-ink">How Nivaya Life works</h2>
+                <h2 data-reveal id="how-heading" class="text-3xl font-extrabold text-novix-ink">How Nivaya Life works</h2>
                 <p class="mt-3 text-novix-ink/70">Four steps from a drawer full of paper to a health record everyone can actually use.</p>
             </div>
 
@@ -249,7 +249,7 @@
                     ['step' => '3', 'title' => 'AI organizes and explains them', 'body' => 'Nivaya Life sorts each report into the right category and explains what it means in plain language.'],
                     ['step' => '4', 'title' => 'Share a summary with your doctor', 'body' => 'Generate a secure link or a clean summary you can hand to any doctor in one tap.'],
                 ] as $step)
-                    <li class="relative rounded-novix bg-white p-6 shadow-novix-sm">
+                    <li class="relative rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
                         <span class="text-4xl font-extrabold text-novix-gold/60" aria-hidden="true">{{ $step['step'] }}</span>
                         <h3 class="mt-3 font-semibold text-novix-ink">{{ $step['title'] }}</h3>
                         <p class="mt-1.5 text-sm text-novix-ink/70">{{ $step['body'] }}</p>
@@ -262,7 +262,7 @@
     {{-- ============ FEATURES ============ --}}
     <section id="features" class="scroll-mt-20 mx-auto max-w-7xl px-6 py-20 lg:px-8" aria-labelledby="features-heading">
         <div class="mx-auto max-w-2xl text-center">
-            <h2 id="features-heading" class="text-3xl font-extrabold text-novix-ink">Everything your family's health needs</h2>
+            <h2 data-reveal id="features-heading" class="text-3xl font-extrabold text-novix-ink">Everything your family's health needs</h2>
             <p class="mt-3 text-novix-ink/70">Built to replace the folder of paperwork every family accumulates.</p>
         </div>
 
@@ -279,8 +279,8 @@
                 ['icon' => 'M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-4-5.66V5a2 2 0 1 0-4 0v.34C7.67 6.17 6 8.39 6 11v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9', 'title' => 'Medicine Reminders', 'body' => 'Scheduled reminders for every medication, for every family member, so doses don\'t get missed.'],
                 ['icon' => 'M3 12h18M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9ZM3 12a9 9 0 0 1 9-9M21 12a9 9 0 0 1-9 9', 'title' => 'Multilingual Support', 'body' => 'Report explanations available in multiple languages, so every family member can actually understand them.'],
             ] as $feature)
-                <div class="rounded-novix bg-white p-6 shadow-novix-sm transition hover:shadow-novix">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-green text-white" aria-hidden="true">
+                <div class="group rounded-novix border-t-2 border-transparent bg-white p-6 shadow-novix-sm transition hover:-translate-y-1 hover:border-novix-gold/60 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 55 }}ms">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-green text-white transition group-hover:scale-110" aria-hidden="true">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $feature['icon'] }}"/></svg>
                     </span>
                     <h3 class="mt-4 font-semibold text-novix-ink">{{ $feature['title'] }}</h3>
@@ -290,11 +290,112 @@
         </div>
     </section>
 
+    {{-- ============ MULTILINGUAL DEMO ============ --}}
+    <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="lang-heading">
+        <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <h2 id="lang-heading" class="text-3xl font-extrabold text-novix-ink">Read in the language you think in</h2>
+            <p class="mt-3 text-novix-ink/70">
+                The same report, explained plainly — switch languages and watch it change.
+            </p>
+        </div>
+
+        <div class="mx-auto mt-10 max-w-2xl overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix"
+            data-reveal
+            x-data="{
+                lang: 'en',
+                langs: {
+                    en: { label: 'English', text: 'Your haemoglobin is in the normal range. Vitamin D is a little low — worth discussing supplements with your doctor.' },
+                    hi: { label: 'हिंदी', text: 'आपका हीमोग्लोबिन सामान्य सीमा में है। विटामिन डी थोड़ा कम है — अपने डॉक्टर से सप्लीमेंट के बारे में बात करें।' },
+                    gu: { label: 'ગુજરાતી', text: 'તમારું હીમોગ્લોબિન સામાન્ય શ્રેણીમાં છે. વિટામિન ડી થોડું ઓછું છે — તમારા ડૉક્ટર સાથે સપ્લિમેન્ટ વિશે વાત કરો.' },
+                },
+            }">
+            <div class="flex items-center justify-between gap-3 border-b border-novix-green/10 px-5 py-4">
+                <div class="flex min-w-0 items-center gap-2.5">
+                    <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-base" aria-hidden="true">🩸</span>
+                    <div class="min-w-0">
+                        <p class="truncate text-sm font-semibold text-novix-ink">Blood Test &middot; AI summary</p>
+                        <p class="text-xs text-novix-muted">Sample report</p>
+                    </div>
+                </div>
+                <div class="flex flex-shrink-0 gap-1 rounded-full bg-novix-cream p-1" role="group" aria-label="Summary language">
+                    <template x-for="(meta, code) in langs" :key="code">
+                        <button type="button" @click="lang = code"
+                            class="rounded-full px-3 py-1 text-xs font-bold transition"
+                            :class="lang === code ? 'bg-novix-green text-white shadow-novix-sm' : 'text-novix-muted hover:text-novix-green'"
+                            :aria-pressed="(lang === code).toString()"
+                            x-text="meta.label"></button>
+                    </template>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="min-h-[3.5rem] text-[15px] leading-relaxed text-novix-ink" x-text="langs[lang].text"></p>
+                <p class="mt-4 border-t border-novix-green/10 pt-3 text-xs text-novix-ink/50">
+                    Illustrative example. Nivaya Life explains reports — it never diagnoses.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {{-- ============ PAPER VS NIVAYA ============ --}}
+    <section class="mx-auto max-w-5xl px-6 pb-20 lg:px-8" aria-labelledby="compare-heading">
+        <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <h2 id="compare-heading" class="text-3xl font-extrabold text-novix-ink">The difference in practice</h2>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+            <div class="rounded-novix border border-novix-ink/10 bg-white/60 p-7" data-reveal>
+                <h3 class="flex items-center gap-2 font-bold text-novix-ink/70">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-novix-ink/5 text-novix-ink/50" aria-hidden="true">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M9 13h6m-6 4h4m1-15H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                    </span>
+                    With paper
+                </h3>
+                <ul class="mt-4 space-y-3 text-sm text-novix-ink/60">
+                    @foreach ([
+                        'Hunting through folders before every appointment',
+                        'Reports fading, tearing, or going missing',
+                        'Medical terms you have to look up yourself',
+                        'Repeating a test because the old one cannot be found',
+                        'Nothing at hand in an emergency',
+                    ] as $line)
+                        <li class="flex gap-2.5">
+                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-novix-ink/25" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                            {{ $line }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-7 shadow-novix" data-reveal style="transition-delay:120ms">
+                <h3 class="flex items-center gap-2 font-bold text-novix-green">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-novix-mint text-novix-green" aria-hidden="true">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                    </span>
+                    With Nivaya Life
+                </h3>
+                <ul class="mt-4 space-y-3 text-sm text-novix-ink/80">
+                    @foreach ([
+                        'Every report for every family member, in one place',
+                        'Stored securely online — nothing to lose or damage',
+                        'Plain-language explanations in your own language',
+                        'Search your whole history in seconds',
+                        'An emergency card ready before you need it',
+                    ] as $line)
+                        <li class="flex gap-2.5">
+                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            {{ $line }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </section>
+
     {{-- ============ TRUST & PRIVACY ============ --}}
     <section id="privacy" class="scroll-mt-20 py-20" aria-labelledby="privacy-heading">
         <div class="mx-auto max-w-5xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl text-center">
-                <h2 id="privacy-heading" class="text-3xl font-extrabold text-novix-ink">Your data, protected and controlled by you</h2>
+                <h2 data-reveal id="privacy-heading" class="text-3xl font-extrabold text-novix-ink">Your data, protected and controlled by you</h2>
                 <p class="mt-3 text-novix-ink/70">Nivaya Life is built to earn trust with real families managing real medical information.</p>
             </div>
 
@@ -304,7 +405,7 @@
                     ['icon' => 'M8.7 10.7 15.3 7.3M8.7 13.3l6.6 3.4M18 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm0 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM8 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z', 'title' => 'You control sharing', 'body' => 'Share a report for a set time window — you decide who sees what, and for how long. Revoke access anytime.'],
                     ['icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a4 4 0 1 1 5.657 0A4 4 0 0 1 12 18a4 4 0 0 1-2.828-1.464Z', 'title' => 'AI explains, it doesn\'t diagnose', 'body' => 'Nivaya Life\'s AI reads and organizes your reports and explains them in plain language. It never makes a diagnosis or prescribes treatment.'],
                 ] as $item)
-                    <div class="rounded-novix bg-white p-6 shadow-novix-sm">
+                    <div class="rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
                         <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-mint text-novix-green" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $item['icon'] }}"/></svg>
                         </span>
@@ -326,65 +427,80 @@
     {{-- ============ HEALTH BREAK (interactive) ============ --}}
     <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="break-heading">
         <x-confetti />
-        <div class="mx-auto max-w-2xl text-center">
+        <div class="mx-auto max-w-2xl text-center" data-reveal>
             <h2 id="break-heading" class="text-3xl font-extrabold text-novix-ink">Take a 10-second health break</h2>
-            <p class="mt-3 text-novix-ink/70">Two little things to try before you scroll on.</p>
+            <p class="mt-3 text-novix-ink/70">Try the real thing before you sign up for anything.</p>
         </div>
 
-        <div class="mt-10 grid gap-6 md:grid-cols-2">
-            {{-- Tap-the-heart: a synthesized lub-dub heartbeat on every tap,
-                 and a confetti burst at ten beats. Pure WebAudio — no audio
-                 file, nothing to download, silent until the visitor asks. --}}
-            <div class="flex flex-col items-center justify-center rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 text-center shadow-novix-sm"
-                x-data="{
-                    beats: 0,
-                    bumping: false,
-                    tap() {
-                        this.beats++;
-                        this.bumping = true;
-                        setTimeout(() => this.bumping = false, 200);
-                        try {
-                            const C = window.AudioContext || window.webkitAudioContext;
-                            this._ctx = this._ctx || new C();
-                            const c = this._ctx, t = c.currentTime;
-                            const thump = (at, freq, gain) => {
-                                const o = c.createOscillator(), g = c.createGain();
-                                o.type = 'sine';
-                                o.frequency.setValueAtTime(freq, at);
-                                g.gain.setValueAtTime(0.0001, at);
-                                g.gain.exponentialRampToValueAtTime(gain, at + 0.02);
-                                g.gain.exponentialRampToValueAtTime(0.0001, at + 0.25);
-                                o.connect(g); g.connect(c.destination);
-                                o.start(at); o.stop(at + 0.3);
-                            };
-                            thump(t, 60, 0.5);
-                            thump(t + 0.22, 48, 0.35);
-                        } catch (e) { /* audio blocked — the visual bump still lands */ }
-                        if (this.beats === 10) window.dispatchEvent(new CustomEvent('novix:confetti'));
-                    },
-                }">
-                <button type="button" @click="tap()" aria-label="Tap to hear a heartbeat"
-                    class="group relative flex h-24 w-24 items-center justify-center rounded-full bg-novix-pink/20 transition hover:bg-novix-pink/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-novix-green"
-                    :class="bumping ? 'scale-110' : 'scale-100'" style="transition: transform 0.15s ease">
-                    <svg class="h-12 w-12 text-novix-pink-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12 21s-7-4.35-9.5-8.5C.83 9.1 2.3 5.5 6 5c2-.27 3.5 1 4 2 .5-1 2-2.27 4-2 3.7.5 5.17 4.1 3.5 7.5C19 16.65 12 21 12 21Z"/>
-                    </svg>
-                </button>
-                <h3 class="mt-5 font-semibold text-novix-ink">Tap the heart</h3>
-                <p class="mt-1 text-sm text-novix-ink/60">Hear a real lub-dub. Ten beats earns a small celebration.</p>
-                <p class="mt-3 h-5 text-xs font-bold text-novix-gold" x-cloak x-show="beats > 0"
-                    x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
-            </div>
-
-            {{-- Live BMI check — the exact gauge component from inside the app,
-                 so the landing page demos the real product, not a mockup. --}}
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 shadow-novix-sm">
-                <h3 class="text-center font-semibold text-novix-ink">Try a live BMI check</h3>
-                <p class="mt-1 text-center text-sm text-novix-ink/60">This is the same gauge you'll see on your dashboard.</p>
-                <div class="mt-5">
-                    <x-bmi-gauge :size="170" hole-class="bg-white" />
+        {{-- Live BMI check leads: it is the actual gauge component from inside
+             the app, so the strongest demo gets the most prominent slot. --}}
+        <div class="mt-10 overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix-sm" data-reveal>
+            <div class="grid items-center gap-8 p-8 md:grid-cols-2 md:p-10">
+                <div class="order-2 md:order-1">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-novix-mint px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-novix-green">
+                        <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
+                        Live demo
+                    </span>
+                    <h3 class="mt-3 text-2xl font-extrabold text-novix-ink">Check your BMI right now</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-novix-ink/70">
+                        Enter a height and weight and the needle moves instantly. This is the very
+                        same gauge that sits on your dashboard and tracks every reading over time
+                        once you have an account.
+                    </p>
+                    <p class="mt-4 flex items-start gap-2 text-xs text-novix-ink/50">
+                        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 1 0-8 0v4h8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                        Runs entirely in your browser — nothing is saved, sent, or shared.
+                    </p>
                 </div>
-                <p class="mt-4 text-center text-xs text-novix-ink/50">Stays on this page — nothing is saved or sent anywhere.</p>
+                <div class="order-1 md:order-2">
+                    <x-bmi-gauge :size="190" hole-class="bg-white" />
+                </div>
+            </div>
+        </div>
+
+        {{-- Tap-the-heart: a synthesized lub-dub on every tap, confetti at ten.
+             Pure WebAudio — no audio file, and silent until the visitor asks. --}}
+        <div class="mt-6 flex flex-col items-center gap-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 text-center shadow-novix-sm sm:flex-row sm:text-left"
+            data-reveal
+            x-data="{
+                beats: 0,
+                bumping: false,
+                tap() {
+                    this.beats++;
+                    this.bumping = true;
+                    setTimeout(() => this.bumping = false, 200);
+                    try {
+                        const C = window.AudioContext || window.webkitAudioContext;
+                        this._ctx = this._ctx || new C();
+                        const c = this._ctx, t = c.currentTime;
+                        const thump = (at, freq, gain) => {
+                            const o = c.createOscillator(), g = c.createGain();
+                            o.type = 'sine';
+                            o.frequency.setValueAtTime(freq, at);
+                            g.gain.setValueAtTime(0.0001, at);
+                            g.gain.exponentialRampToValueAtTime(gain, at + 0.02);
+                            g.gain.exponentialRampToValueAtTime(0.0001, at + 0.25);
+                            o.connect(g); g.connect(c.destination);
+                            o.start(at); o.stop(at + 0.3);
+                        };
+                        thump(t, 60, 0.5);
+                        thump(t + 0.22, 48, 0.35);
+                    } catch (e) { /* audio blocked — the visual bump still lands */ }
+                    if (this.beats === 10) window.dispatchEvent(new CustomEvent('novix:confetti'));
+                },
+            }">
+            <button type="button" @click="tap()" aria-label="Tap to hear a heartbeat"
+                class="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-novix-pink/20 transition hover:bg-novix-pink/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-novix-green"
+                :class="bumping ? 'scale-110' : 'scale-100'" style="transition: transform 0.15s ease">
+                <svg class="h-10 w-10 text-novix-pink-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 21s-7-4.35-9.5-8.5C.83 9.1 2.3 5.5 6 5c2-.27 3.5 1 4 2 .5-1 2-2.27 4-2 3.7.5 5.17 4.1 3.5 7.5C19 16.65 12 21 12 21Z"/>
+                </svg>
+            </button>
+            <div class="min-w-0">
+                <h3 class="font-semibold text-novix-ink">Tap the heart</h3>
+                <p class="mt-1 text-sm text-novix-ink/60">Hear a real lub-dub — sound on. Ten beats earns a small celebration.</p>
+                <p class="mt-2 h-5 text-xs font-bold text-novix-gold" x-cloak x-show="beats > 0"
+                    x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
             </div>
         </div>
     </section>
@@ -392,7 +508,7 @@
     {{-- ============ FAQ ============ --}}
     <section id="faq" class="scroll-mt-20 mx-auto max-w-3xl px-6 py-20 lg:px-8" aria-labelledby="faq-heading">
         <div class="text-center">
-            <h2 id="faq-heading" class="text-3xl font-extrabold text-novix-ink">Frequently asked questions</h2>
+            <h2 data-reveal id="faq-heading" class="text-3xl font-extrabold text-novix-ink">Frequently asked questions</h2>
         </div>
 
         <div class="mt-10 divide-y divide-novix-green/10 rounded-novix border border-novix-green/10 bg-white px-6 shadow-novix-sm">
@@ -423,16 +539,17 @@
 
     {{-- ============ FINAL CTA ============ --}}
     <section class="px-6 pb-20 lg:px-8">
-        <div class="relative mx-auto max-w-4xl overflow-hidden rounded-novix bg-novix-green px-8 py-14 text-center shadow-novix sm:px-16">
+        <div class="novix-sheen relative mx-auto max-w-4xl overflow-hidden rounded-novix bg-novix-green px-8 py-14 text-center shadow-novix ring-1 ring-novix-gold/30 sm:px-16" data-reveal>
             <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-novix-gold/10" aria-hidden="true"></div>
             <div class="pointer-events-none absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-white/5" aria-hidden="true"></div>
             <h2 class="relative text-3xl font-extrabold text-white">Ready to leave the paper behind?</h2>
-            <p class="mx-auto mt-3 max-w-md text-white/80">
+            <p class="relative mx-auto mt-3 max-w-md text-white/80">
                 Create your family's secure health record today — free to get started.
             </p>
             <a href="{{ route('register') }}"
-                class="mt-8 inline-block rounded-xl bg-white px-8 py-3 text-sm font-semibold text-novix-green shadow-novix-sm transition hover:bg-novix-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                class="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-novix-green shadow-novix-sm transition hover:-translate-y-0.5 hover:bg-novix-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 Get Started
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
         </div>
     </section>
@@ -462,6 +579,36 @@
             </p>
         </div>
     </footer>
+
+    {{-- Thumb-reachable signup bar, phones only. It stays out of the way until
+         the hero has scrolled past, so it never covers the opening screen. --}}
+    <div x-data="{ shown: false }"
+        @scroll.window="shown = window.scrollY > window.innerHeight * 0.9"
+        x-show="shown" x-cloak
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-y-full"
+        x-transition:enter-end="translate-y-0"
+        class="fixed inset-x-0 bottom-0 z-40 border-t border-novix-green/10 bg-novix-cream/95 px-4 py-3 backdrop-blur md:hidden"
+        style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));">
+        <div class="flex items-center gap-3">
+            <a href="{{ route('register') }}" class="flex-1 rounded-xl bg-novix-green py-3 text-center text-sm font-bold text-white shadow-novix-sm">
+                Get Started — free
+            </a>
+            <a href="{{ route('login') }}" class="rounded-xl border border-novix-green/20 bg-white px-4 py-3 text-sm font-semibold text-novix-green">
+                Log in
+            </a>
+        </div>
+    </div>
+
+    {{-- Back to top, desktop only — the mobile bar owns that corner. --}}
+    <button type="button" x-data="{ shown: false }"
+        @scroll.window="shown = window.scrollY > 900"
+        x-show="shown" x-cloak x-transition
+        @click="window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })"
+        aria-label="Back to top"
+        class="fixed bottom-6 right-6 z-40 hidden h-11 w-11 items-center justify-center rounded-full bg-white text-novix-green shadow-novix ring-1 ring-novix-green/10 transition hover:-translate-y-0.5 hover:bg-novix-mint md:flex">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 15 6-6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
 
 </body>
 </html>
