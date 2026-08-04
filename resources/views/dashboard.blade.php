@@ -12,8 +12,17 @@
         'failed' => ['label' => 'Failed', 'class' => 'bg-novix-pink/30 text-novix-pink-dark'],
     ];
 
+    // Server-rendered fallback only. The real greeting is computed from the
+    // visitor's own clock (see the x-data below) — the server sits in a single
+    // fixed timezone, so it can't know whether it's morning where they are.
     $hour = now()->hour;
-    $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+    $greeting = match (true) {
+        $hour < 5 => 'Good night',
+        $hour < 12 => 'Good morning',
+        $hour < 17 => 'Good afternoon',
+        $hour < 22 => 'Good evening',
+        default => 'Good night',
+    };
     $firstName = Str::of(auth()->user()->name)->words(1, '');
     $isSelf = $active->full_name === auth()->user()->name;
 
@@ -84,8 +93,21 @@
          stacked blocks saying roughly the same thing about who you're viewing. --}}
     <x-slot name="header">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-                <h2 class="text-2xl font-bold leading-tight tracking-tight text-novix-ink dark:text-white">{{ $greeting }}, {{ $firstName }} 👋</h2>
+            <div x-data="{
+                greeting: @js($greeting),
+                init() {
+                    // Recomputed from the browser's clock, so the greeting is
+                    // right wherever the person actually is — and midnight
+                    // reads as night rather than morning.
+                    const h = new Date().getHours();
+                    this.greeting = h < 5 ? 'Good night'
+                        : h < 12 ? 'Good morning'
+                        : h < 17 ? 'Good afternoon'
+                        : h < 22 ? 'Good evening'
+                        : 'Good night';
+                },
+            }">
+                <h2 class="text-2xl font-bold leading-tight tracking-tight text-novix-ink dark:text-white"><span x-text="greeting">{{ $greeting }}</span>, {{ $firstName }} 👋</h2>
                 <p class="mt-1 text-sm text-novix-muted">
                     {{ $isSelf ? "Here's what's happening with your health today." : "You're viewing {$active->full_name}'s records." }}
                 </p>
@@ -171,6 +193,12 @@
              row of zero-counters, and offers to fill in whatever is missing. --}}
         <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix ring-1 ring-novix-gold/40" style="animation-delay:40ms">
             <div class="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-white/5"></div>
+            {{-- Brand mark watermark, corner of the identity card. --}}
+            <svg class="pointer-events-none absolute right-5 top-5 h-12 w-12 opacity-[0.18]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6.5 18.5v-13l9 13" stroke="#FFFFFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17.5 18.5V9.4" stroke="#C9941A" stroke-width="2.7" stroke-linecap="round"/>
+                <circle cx="17.5" cy="5.4" r="1.85" fill="#C9941A"/>
+            </svg>
             <div class="pointer-events-none absolute -bottom-24 left-1/4 h-52 w-52 rounded-full bg-white/[0.04]"></div>
 
             <div class="relative p-5 text-white sm:p-6">
@@ -182,6 +210,7 @@
 
                     <div class="min-w-0 flex-1">
                         <h1 class="truncate text-xl font-bold tracking-tight sm:text-2xl">{{ $active->full_name }}</h1>
+                        <span class="sr-only">Nivaya Life health record</span>
                         <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/65">
                             <span class="font-mono tracking-tight text-novix-gold-light">{{ $active->unique_health_id }}</span>
                             <span aria-hidden="true">&middot;</span>

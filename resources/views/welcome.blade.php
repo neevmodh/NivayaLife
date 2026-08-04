@@ -105,6 +105,10 @@
              web layout takes over with the two-column grid. --}}
         <div class="relative mx-auto grid min-h-[calc(100svh-4.75rem)] max-w-7xl content-center items-center gap-12 px-6 py-16 lg:min-h-0 lg:grid-cols-2 lg:content-normal lg:gap-16 lg:px-8 lg:py-24">
             <div>
+                {{-- The mark leads the hero, so the brand registers before the headline. --}}
+                <img src="/icons/icon-192.png?v=2" alt="" width="56" height="56"
+                    class="mb-5 h-14 w-14 rounded-2xl shadow-novix-sm" aria-hidden="true">
+
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-novix-green shadow-novix-sm">
                     <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
                     100% digital, zero paper

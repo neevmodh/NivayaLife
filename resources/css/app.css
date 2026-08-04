@@ -34,6 +34,28 @@
     color: #ffffff;
 }
 
+/* Dark-mode legibility safety net.
+ *
+ * The brand text colours are tuned for cream: on the dark surface, muted
+ * (#5A6960) lands at 3.1:1 and ink (#1F2A24) at 1.2:1 — both well under
+ * WCAG AA's 4.5:1, which is why body copy was hard to read at night. These
+ * lift them to 7.4:1 and 15.5:1.
+ *
+ * :where() keeps the selector at zero specificity, so any element that
+ * already carries an explicit dark:text-* utility keeps its own colour and
+ * this only fills the gaps.
+ */
+.dark :where(.text-novix-muted) { color: #9BA8A2; }
+.dark :where(.text-novix-ink) { color: #E9EEEB; }
+.dark :where(.text-novix-green) { color: #5FBFA3; }
+.dark :where(.text-novix-ink\/70) { color: rgba(233, 238, 235, 0.72); }
+.dark :where(.text-novix-ink\/60) { color: rgba(233, 238, 235, 0.62); }
+.dark :where(.text-novix-ink\/50) { color: rgba(233, 238, 235, 0.52); }
+.dark :where(.text-novix-ink\/80) { color: rgba(233, 238, 235, 0.82); }
+/* Hairline borders and dividers disappear against the dark surface. */
+.dark :where(.border-gray-100, .border-gray-200) { border-color: rgba(255, 255, 255, 0.10); }
+.dark :where(.divide-gray-100) > :not([hidden]) ~ :not([hidden]) { border-color: rgba(255, 255, 255, 0.10); }
+
 /* Scroll-reveal: elements wait just below their resting place until they
    scroll into view (see resources/js/scroll-reveal.js). Staggering is done
    with an inline transition-delay on the element itself. */

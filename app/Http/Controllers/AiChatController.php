@@ -7,6 +7,7 @@ use App\Models\ChatMessage;
 use App\Models\FamilyMember;
 use App\Services\Ai\AiClient;
 use App\Services\Assistant\AssistantContextBuilder;
+use App\Services\Assistant\AssistantSafety;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -35,7 +36,7 @@ class AiChatController extends Controller
         ]);
     }
 
-    public function send(Request $request, AiClient $ai, AssistantContextBuilder $contextBuilder): JsonResponse
+    public function send(Request $request, AiClient $ai, AssistantContextBuilder $contextBuilder, AssistantSafety $safety): JsonResponse
     {
         $user = $request->user();
 
@@ -60,6 +61,25 @@ class AiChatController extends Controller
             'role' => 'user',
             'content' => $validated['message'],
         ]);
+
+        // Red-flag symptoms and self-harm are answered identically every time,
+        // before the model is reached — this is not a judgement call we want a
+        // language model making. See AssistantSafety.
+        if ($notice = $safety->emergencyNoticeFor($validated['message'])) {
+            $reply = ChatMessage::create([
+                'family_member_id' => $active->id,
+                'asked_by_user_id' => $user->id,
+                'role' => 'assistant',
+                'content' => $notice,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'reply' => $reply->content,
+                'urgent' => true,
+                'created_at' => $reply->created_at->toIso8601String(),
+            ]);
+        }
 
         if (! $ai->hasAvailableCredential()) {
             $reply = ChatMessage::create([
