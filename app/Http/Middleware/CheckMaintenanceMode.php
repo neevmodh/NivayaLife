@@ -12,15 +12,14 @@ use Symfony\Component\HttpFoundation\Response;
  * Global (not the route-scoped 'admin' alias) so it also covers logged-out
  * visitors. Always lets through: admins (so the toggle-flipper isn't locked
  * out themselves), the /up health check (Railway's healthcheckPath — blocking
- * it would make Railway think the deploy itself failed), the GitHub webhook
- * (an external service, not a browser visitor), and auth routes — an admin
- * who isn't currently logged in still needs to reach /login to prove they're
- * an admin in the first place.
+ * it would make Railway think the deploy itself failed), and auth routes —
+ * an admin who isn't currently logged in still needs to reach /login to
+ * prove they're an admin in the first place.
  */
 class CheckMaintenanceMode
 {
     private const BYPASS_ROUTE_PATTERNS = [
-        'admin.*', 'webhooks.github', 'login', 'logout', 'register*',
+        'admin.*', 'login', 'logout', 'register*',
         'auth.google.*', 'password.*', 'verification.*',
     ];
 

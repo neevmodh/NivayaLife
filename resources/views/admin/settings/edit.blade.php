@@ -13,12 +13,18 @@
             <div class="mb-4 rounded-xl bg-novix-mint px-4 py-3 text-sm font-semibold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ session('admin_status') }}</div>
         @endif
 
+        <div class="mb-4 rounded-xl px-4 py-3 text-sm font-semibold {{ $setting->maintenance_mode ? 'bg-novix-yellow/30 text-novix-ink dark:bg-novix-yellow/20 dark:text-novix-yellow' : 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint' }}">
+            Currently: {{ $setting->maintenance_mode ? 'Under construction — visitors see the maintenance page' : 'Live — site is open to everyone' }}
+        </div>
+
         <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6 rounded-novix bg-white p-6 shadow-novix-sm dark:bg-white/5">
             @csrf
             @method('PUT')
 
             <div>
                 <label class="flex items-center gap-3">
+                    {{-- Hidden fallback so an unchecked box still submits maintenance_mode=0 explicitly --}}
+                    <input type="hidden" name="maintenance_mode" value="0">
                     <input type="checkbox" name="maintenance_mode" value="1" @checked($setting->maintenance_mode)
                         class="h-5 w-5 rounded border-gray-300 text-novix-green focus:ring-novix-green">
                     <span class="text-sm font-semibold text-novix-ink dark:text-white">Under construction / maintenance mode</span>

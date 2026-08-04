@@ -31,12 +31,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // route names for its bypass list — the global stack runs before
         // routing, where the route is never yet resolved.
         $middleware->web(append: [\App\Http\Middleware\CheckMaintenanceMode::class]);
-
-        // GitHub signs the webhook payload itself (see GithubWebhookController);
-        // it can't carry a Laravel session token, so it's exempt from CSRF.
-        $middleware->validateCsrfTokens(except: [
-            'webhooks/github',
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

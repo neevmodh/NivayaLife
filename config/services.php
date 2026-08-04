@@ -83,22 +83,4 @@ return [
         'private_key' => env('VAPID_PRIVATE_KEY'),
     ],
 
-    // Deploy approval gate (see App\Services\Railway\RailwayClient) — the
-    // admin-approve action calls Railway's environmentTriggersDeploy
-    // mutation with these IDs. Autodeploy for this service+branch must be
-    // disabled in the Railway dashboard first (Settings → Source); that
-    // toggle has no public API.
-    'railway' => [
-        'api_token' => env('RAILWAY_API_TOKEN'),
-        'project_id' => env('RAILWAY_PROJECT_ID'),
-        'service_id' => env('RAILWAY_SERVICE_ID'),
-        'environment_id' => env('RAILWAY_ENVIRONMENT_ID'),
-    ],
-
-    // Verifies the X-Hub-Signature-256 header on incoming GitHub push
-    // webhooks (see App\Http\Controllers\GithubWebhookController).
-    'github' => [
-        'webhook_secret' => env('GITHUB_WEBHOOK_SECRET'),
-    ],
-
 ];
