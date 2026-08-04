@@ -25,6 +25,18 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->append(\App\Http\Middleware\PreventBackHistoryCaching::class);
+
+        // Appended to the 'web' group specifically (not the true global
+        // stack via append()) because it needs $request->route() to resolve
+        // route names for its bypass list — the global stack runs before
+        // routing, where the route is never yet resolved.
+        $middleware->web(append: [\App\Http\Middleware\CheckMaintenanceMode::class]);
+
+        // GitHub signs the webhook payload itself (see GithubWebhookController);
+        // it can't carry a Laravel session token, so it's exempt from CSRF.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/github',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

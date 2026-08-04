@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminDeploymentController;
 use App\Http\Controllers\Admin\AdminRecordController;
+use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyCardController;
@@ -9,6 +11,7 @@ use App\Http\Controllers\FamilyAddController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FamilyDependentController;
 use App\Http\Controllers\FamilyInviteController;
+use App\Http\Controllers\GithubWebhookController;
 use App\Http\Controllers\IdCardController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MedicationController;
@@ -33,6 +36,10 @@ Route::get('/', function () {
 
 Route::get('/terms', fn () => view('legal.terms'))->name('terms');
 Route::get('/privacy', fn () => view('legal.privacy'))->name('privacy');
+
+// GitHub push webhook — unauthenticated, verified via HMAC signature instead
+// (see GithubWebhookController). Feeds the deploy approval queue in /admin.
+Route::post('/webhooks/github', [GithubWebhookController::class, 'handle'])->name('webhooks.github');
 
 // Reached from the service worker's notification action buttons, not a
 // logged-in page — signature is the authorization, scoped to one dose log.
@@ -170,6 +177,13 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::delete('/tables/{table}/{id}', [AdminRecordController::class, 'destroy'])->name('tables.destroy');
     Route::get('/tables/{table}/export', [AdminDashboardController::class, 'export'])->name('tables.export');
     Route::get('/tables/{table}', [AdminDashboardController::class, 'table'])->name('tables.show');
+
+    Route::get('/deployments', [AdminDeploymentController::class, 'index'])->name('deployments.index');
+    Route::post('/deployments/{deployment}/approve', [AdminDeploymentController::class, 'approve'])->name('deployments.approve');
+    Route::post('/deployments/{deployment}/reject', [AdminDeploymentController::class, 'reject'])->name('deployments.reject');
+
+    Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
+    Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';
