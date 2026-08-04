@@ -106,7 +106,16 @@
             </template>
         </div>
 
-        <p x-cloak x-show="speechError" x-text="speechError" class="mt-2 text-xs text-novix-pink-dark"></p>
+        {{-- Unmistakable confirmation that the mic is actually open. --}}
+        <div x-cloak x-show="listening" class="mt-2 flex items-center gap-2 rounded-xl bg-novix-pink/15 px-3 py-2">
+            <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-novix-pink-dark/60"></span>
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-novix-pink-dark"></span>
+            </span>
+            <span class="text-xs font-semibold text-novix-pink-dark">Listening… speak now, then tap the mic to stop.</span>
+        </div>
+
+        <p x-cloak x-show="speechError" x-text="speechError" class="mt-2 text-xs text-novix-pink-dark" role="status"></p>
 
         <form @submit.prevent="send()" class="mt-3 flex gap-2">
             <div class="relative flex-1">
@@ -114,12 +123,16 @@
                     :placeholder="listening ? 'Listening…' : 'Ask a question…'"
                     class="w-full rounded-xl border border-gray-200 py-3 pl-4 pr-12 text-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 disabled:opacity-60 dark:border-white/10 dark:bg-white/5 dark:text-white">
 
-                <button type="button" x-cloak x-show="speechSupported" @click="toggleDictation()"
-                    class="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg transition active:scale-90"
+                {{-- Always rendered. When the browser can't dictate it stays
+                     visible but disabled, because a control that silently
+                     vanishes gives nobody a way to work out why. --}}
+                <button type="button" @click="toggleDictation()" :disabled="!speechSupported"
+                    class="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg transition active:scale-90 disabled:cursor-not-allowed disabled:opacity-40"
                     :class="listening ? 'bg-novix-pink-dark text-white' : 'text-novix-muted hover:bg-novix-cream hover:text-novix-green dark:hover:bg-white/10'"
-                    :aria-label="listening ? 'Stop dictation' : 'Dictate your question'"
-                    :aria-pressed="listening.toString()">
-                    <span x-show="listening" class="absolute inline-flex h-full w-full animate-ping rounded-lg bg-novix-pink-dark/40" aria-hidden="true"></span>
+                    :aria-label="!speechSupported ? 'Dictation unavailable in this browser' : (listening ? 'Stop dictation' : 'Dictate your question')"
+                    :aria-pressed="listening.toString()"
+                    :title="!speechSupported ? 'Dictation needs Chrome, Edge or Safari' : (listening ? 'Stop dictation' : 'Dictate your question')">
+                    <span x-cloak x-show="listening" class="absolute inline-flex h-full w-full animate-ping rounded-lg bg-novix-pink-dark/40" aria-hidden="true"></span>
                     <svg class="relative h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
                         <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>

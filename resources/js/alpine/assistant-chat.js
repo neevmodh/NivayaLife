@@ -35,6 +35,9 @@ export default function assistantChat({ familyMemberId, sendUrl, csrfToken, init
         speechError: '',
         _recognition: null,
         _finalTranscript: '',
+        // Tracks whether the *user* still wants to dictate, as opposed to
+        // whether the recognizer happens to be running — see onend below.
+        _shouldListen: false,
 
         init() {
             this.scrollToBottom();
@@ -42,6 +45,14 @@ export default function assistantChat({ familyMemberId, sendUrl, csrfToken, init
             const SpeechRecognition =
                 window.SpeechRecognition || window.webkitSpeechRecognition;
             this.speechSupported = Boolean(SpeechRecognition);
+
+            // Say why dictation is unavailable rather than hiding the control
+            // and leaving no way to tell what went wrong.
+            if (!this.speechSupported) {
+                this.speechError = window.isSecureContext === false
+                    ? 'Dictation needs a secure (https) connection.'
+                    : 'This browser does not support dictation — Chrome, Edge or Safari do.';
+            }
 
             try {
                 const saved = localStorage.getItem(STORAGE_KEY);
@@ -155,32 +166,58 @@ export default function assistantChat({ familyMemberId, sendUrl, csrfToken, init
             };
 
             recognition.onerror = (event) => {
+                // A pause in speech is normal, not a failure — it fires
+                // constantly on mobile. Everything else stops dictation.
+                if (event.error === 'no-speech' || event.error === 'aborted') return;
+
                 this.speechError = {
-                    'not-allowed': 'Microphone access was blocked. Allow it in your browser settings to dictate.',
-                    'service-not-allowed': 'Microphone access was blocked by your browser.',
-                    'no-speech': "I didn't catch anything — try again a little closer to the mic.",
-                    network: 'Speech recognition needs a network connection.',
-                }[event.error] ?? 'Dictation stopped unexpectedly. You can type instead.';
+                    'not-allowed': 'Microphone access is blocked. Allow it for this site in your browser settings, then tap the mic again.',
+                    'service-not-allowed': 'Your browser blocked microphone access for this site.',
+                    'audio-capture': 'No microphone was found. Check that one is connected and enabled.',
+                    network: 'Dictation needs an internet connection.',
+                }[event.error] ?? `Dictation stopped (${event.error}). You can type instead.`;
+
+                this._shouldListen = false;
                 this.listening = false;
             };
 
+            // Mobile browsers ignore `continuous` and end the session after a
+            // single utterance, which made dictation look broken after one
+            // sentence. Restart automatically as long as the user has not
+            // pressed stop, so speech keeps flowing until they say so.
             recognition.onend = () => {
-                this.listening = false;
                 this.input = this._finalTranscript.trim();
+
+                if (!this._shouldListen) {
+                    this.listening = false;
+                    return;
+                }
+
+                try {
+                    recognition.start();
+                } catch (e) {
+                    this._shouldListen = false;
+                    this.listening = false;
+                }
             };
 
             this._recognition = recognition;
+            this._shouldListen = true;
             this.listening = true;
 
             try {
                 recognition.start();
             } catch (e) {
+                this._shouldListen = false;
                 this.listening = false;
                 this.speechError = 'Could not start dictation. You can type instead.';
             }
         },
 
         stopDictation() {
+            // Cleared first so the onend handler above knows this was
+            // deliberate and does not restart the recognizer.
+            this._shouldListen = false;
             try {
                 this._recognition?.stop();
             } catch (e) {
