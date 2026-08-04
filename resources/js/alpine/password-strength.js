@@ -24,7 +24,7 @@ export default function passwordStrength() {
         },
 
         get color() {
-            return ['#E8615A', '#E8615A', '#F5C879', '#2E7A5D', '#1E5A45'][this.score];
+            return ['#E8615A', '#E8615A', '#F5C879', '#2A6B55', '#14503F'][this.score];
         },
 
         get widthPercent() {

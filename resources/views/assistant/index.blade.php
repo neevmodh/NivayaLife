@@ -22,14 +22,14 @@
         })"
     >
         <div class="mb-3 rounded-novix bg-novix-mint/40 p-3 text-xs text-novix-ink dark:bg-novix-green/10 dark:text-white/80">
-            This assistant answers using {{ $active->full_name }}'s records in Novix and can explain how to use the app &mdash; it isn't a substitute for professional medical advice.
+            This assistant answers using {{ $active->full_name }}'s records in Nivaya Life and can explain how to use the app &mdash; it isn't a substitute for professional medical advice.
         </div>
 
         <div x-ref="scrollArea" class="flex-1 space-y-4 overflow-y-auto rounded-novix bg-white p-4 shadow-novix-sm dark:bg-white/5">
             <template x-if="messages.length === 0">
                 <div class="flex h-full flex-col items-center justify-center gap-4 py-10 text-center">
                     <span class="flex h-12 w-12 items-center justify-center rounded-full bg-novix-mint text-2xl dark:bg-novix-green/20" aria-hidden="true">&#129302;</span>
-                    <p class="text-sm text-novix-muted">Ask me anything about {{ $active->full_name }}'s health records, or how to use Novix.</p>
+                    <p class="text-sm text-novix-muted">Ask me anything about {{ $active->full_name }}'s health records, or how to use Nivaya Life.</p>
                     <div class="flex flex-wrap justify-center gap-2">
                         @foreach($starterPrompts as $prompt)
                             <button type="button" @click="ask(@js($prompt))" class="rounded-full border border-gray-200 px-3 py-1.5 text-xs font-medium text-novix-ink hover:border-novix-green/40 hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">

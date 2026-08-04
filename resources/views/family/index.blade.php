@@ -10,7 +10,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Family</h2>
-                <p class="mt-1 text-sm text-novix-muted">Everyone linked to your Novix account.</p>
+                <p class="mt-1 text-sm text-novix-muted">Everyone linked to your Nivaya Life account.</p>
             </div>
             <a href="{{ route('family.add') }}"
                 class="flex items-center gap-2 rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark">

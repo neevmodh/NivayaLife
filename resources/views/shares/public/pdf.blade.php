@@ -5,7 +5,7 @@
 <style>
     @page { margin: 28px 34px; }
     body { font-family: DejaVu Sans, sans-serif; color: #1F2A24; font-size: 11px; }
-    .header { background: #1E5A45; color: #fff; padding: 14px 18px; border-radius: 8px; }
+    .header { background: #14503F; color: #fff; padding: 14px 18px; border-radius: 8px; }
     .header .brand { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #B7E4CF; }
     .header .name { font-size: 17px; font-weight: bold; margin-top: 3px; }
     .header .meta { font-size: 10px; color: #DDF3E6; margin-top: 3px; }
@@ -22,7 +22,7 @@
 <body>
 
 <div class="header">
-    <div class="brand">Novix &middot; Shared Health Report</div>
+    <div class="brand">Nivaya Life &middot; Shared Health Report</div>
     <div class="name">{{ $familyMember->full_name }}</div>
     <div class="meta">
         {{ $familyMember->age() !== null ? $familyMember->age().' years' : '' }}
@@ -64,7 +64,7 @@
 @endforeach
 
 <div class="footer">
-    Generated {{ now()->format('M j, Y, g:i a') }} via Novix &middot; Shared link expires {{ $share->expires_at->format('M j, Y g:i A') }}
+    Generated {{ now()->format('M j, Y, g:i a') }} via Nivaya Life &middot; Shared link expires {{ $share->expires_at->format('M j, Y g:i A') }}
 </div>
 
 </body>

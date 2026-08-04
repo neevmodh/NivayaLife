@@ -5,7 +5,7 @@
 <style>
     @page { margin: 30px 36px; }
     body { font-family: DejaVu Sans, sans-serif; color: #1F2A24; font-size: 11px; }
-    .header { background: #1E5A45; color: #fff; padding: 14px 18px; border-radius: 8px; }
+    .header { background: #14503F; color: #fff; padding: 14px 18px; border-radius: 8px; }
     .header .brand { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #B7E4CF; }
     .header .title { font-size: 17px; font-weight: bold; margin-top: 3px; }
     .header .range { font-size: 10px; color: #DDF3E6; margin-top: 3px; }
@@ -21,7 +21,7 @@
 <body>
 
 <div class="header">
-    <div class="brand">Novix &middot; Health Summary</div>
+    <div class="brand">Nivaya Life &middot; Health Summary</div>
     <div class="title">{{ $active->full_name }}</div>
     <div class="range">{{ $active->age() !== null ? $active->age().' years' : '' }} &middot; Blood group {{ $active->blood_group ?? '—' }} &middot; {{ $rangeLabel }}</div>
 </div>
@@ -102,7 +102,7 @@
 </div>
 
 <div class="footer">
-    Generated {{ now()->format('M j, Y, g:i a') }} via Novix. This summary is compiled from the patient's own records and is not a substitute for clinical judgment.
+    Generated {{ now()->format('M j, Y, g:i a') }} via Nivaya Life. This summary is compiled from the patient's own records and is not a substitute for clinical judgment.
 </div>
 
 </body>

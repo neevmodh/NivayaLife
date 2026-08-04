@@ -3,7 +3,7 @@
         <img src="/icons/icon-192.png" alt="" class="h-12 w-12 flex-shrink-0 rounded-xl">
 
         <div class="min-w-0 flex-1">
-            <p class="text-sm font-bold text-novix-ink dark:text-white">Install Novix</p>
+            <p class="text-sm font-bold text-novix-ink dark:text-white">Install Nivaya Life</p>
             <p class="text-xs text-novix-muted">Add it to your home screen for quick, full-screen access.</p>
         </div>
 

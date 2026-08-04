@@ -26,7 +26,7 @@
                 {{ $publicUrl }}
             </div>
 
-            <div class="mt-4 flex flex-wrap justify-center gap-3" x-data="{ ...copyLink({ url: @js($publicUrl) }), ...shareActions({ url: @js($publicUrl), title: @js('Health report shared via Novix') }) }">
+            <div class="mt-4 flex flex-wrap justify-center gap-3" x-data="{ ...copyLink({ url: @js($publicUrl) }), ...shareActions({ url: @js($publicUrl), title: @js('Health report shared via Nivaya Life') }) }">
                 <button type="button" @click="copy()" class="rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-novix-green-dark">
                     <span x-show="!copied">Copy link</span>
                     <span x-show="copied">Copied!</span>

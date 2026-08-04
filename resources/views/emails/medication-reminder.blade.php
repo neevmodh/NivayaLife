@@ -12,14 +12,14 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background-color:#ffffff; border-radius:24px; overflow:hidden; box-shadow: 0 12px 32px -12px rgba(30,90,69,0.18);">
 
                     <tr>
-                        <td style="background-color:#1E5A45; padding:32px 40px;">
+                        <td style="background-color:#14503F; padding:32px 40px;">
                             <span style="font-size:20px; font-weight:800; color:#ffffff; letter-spacing:-0.02em;">Novix</span>
                         </td>
                     </tr>
 
                     <tr>
                         <td style="padding:40px;">
-                            <p style="margin:0 0 4px; font-size:13px; font-weight:700; color:#1E5A45; text-transform:uppercase; letter-spacing:0.06em;">Medication reminder</p>
+                            <p style="margin:0 0 4px; font-size:13px; font-weight:700; color:#14503F; text-transform:uppercase; letter-spacing:0.06em;">Medication reminder</p>
                             <h1 style="margin:0 0 16px; font-size:24px; font-weight:800; color:#1F2A24; line-height:1.3;">
                                 Time for {{ $familyMemberName }} to take {{ $medicineName }}
                             </h1>
@@ -29,7 +29,7 @@
 
                             <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                                 <tr>
-                                    <td style="border-radius:14px; background-color:#1E5A45;">
+                                    <td style="border-radius:14px; background-color:#14503F;">
                                         <a href="{{ $dashboardUrl }}" target="_blank"
                                             style="display:inline-block; padding:14px 32px; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:14px;">
                                             Open Novix

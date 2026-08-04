@@ -1,6 +1,6 @@
 const ZONES = {
     underweight: '#8FB8E0',
-    normal: '#1E5A45',
+    normal: '#14503F',
     overweight: '#F5C879',
     obese: '#E8615A',
 };

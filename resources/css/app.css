@@ -5,3 +5,26 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* Brand-tinted text selection — small, but it makes the whole site feel
+   deliberately put together rather than browser-default. */
+::selection {
+    background-color: rgba(201, 148, 26, 0.28);
+    color: #14503F;
+}
+.dark ::selection {
+    background-color: rgba(201, 148, 26, 0.4);
+    color: #ffffff;
+}
+
+/* Respect users who ask the OS for less motion: the fade/slide entrance
+   animations and shake become instant instead of animated. */
+@media (prefers-reduced-motion: reduce) {
+    .animate-novix-fade-up,
+    .animate-novix-shake {
+        animation: none !important;
+    }
+    html {
+        scroll-behavior: auto !important;
+    }
+}

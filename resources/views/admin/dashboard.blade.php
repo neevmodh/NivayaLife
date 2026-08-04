@@ -9,7 +9,7 @@
 
     $ranges = ['7' => '7 days', '30' => '30 days', '90' => '90 days', '365' => '1 year', 'all' => 'All time'];
 
-    $novixPalette = ['#1E5A45', '#8FB8E0', '#F4A9A0', '#F5C879', '#2E7A5D', '#E8615A'];
+    $novixPalette = ['#14503F', '#8FB8E0', '#F4A9A0', '#F5C879', '#2A6B55', '#E8615A'];
 @endphp
 
 <x-app-layout>

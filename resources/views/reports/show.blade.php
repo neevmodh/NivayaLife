@@ -199,7 +199,7 @@
                             series: [{ name: @js($metricLabels[$history['metric_type']] ?? Str::headline($history['metric_type'])), data: @js(collect($history['points'])->map(fn ($p) => ['x' => $p['date'], 'y' => $p['value']])) }],
                             options: {
                                 height: 200,
-                                colors: ['#1E5A45'],
+                                colors: ['#14503F'],
                                 stroke: { curve: 'smooth', width: 2 },
                                 dataLabels: { enabled: false },
                                 xaxis: { type: 'datetime', labels: { format: 'MMM d' } },

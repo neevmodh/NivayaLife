@@ -2,13 +2,13 @@
     <meta name="vapid-public-key" content="{{ config('services.vapid.public_key') }}">
 @endif
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1E5A45">
+<meta name="theme-color" content="#14503F">
 <link rel="icon" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Novix">
+<meta name="apple-mobile-web-app-title" content="Nivaya Life">
 
 <script>
     if ('serviceWorker' in navigator) {

@@ -7,6 +7,10 @@
     'dynamicErrors' => false,
     'trend' => null, // 'up' | 'down' | 'stable' | null
     'size' => 220,
+    // The gauge's centre is a solid disc that has to match whatever sits behind
+    // it. On a white card the old cream default showed as a faint off-colour
+    // ring, so callers can now pass the surface they're rendering on.
+    'holeClass' => 'bg-novix-cream dark:bg-novix-ink',
 ])
 
 <div x-data="bmiGauge({ heightCm: @js($heightCm), weightKg: @js($weightKg), editable: @js($editable) })">
@@ -50,8 +54,8 @@
 
     <div class="relative mx-auto" style="width: {{ $size }}px; height: {{ $size * 0.53 }}px;">
         <div class="absolute inset-x-0 top-0 overflow-hidden" style="height: {{ $size * 0.5 }}px;">
-            <div class="absolute rounded-full" style="width:{{ $size }}px; height:{{ $size }}px; left:0; top:0; background: conic-gradient(from 270deg, #8FB8E0 0deg 43.71deg, #1E5A45 43.71deg 77.14deg, #F5C879 77.14deg 102.86deg, #E8615A 102.86deg 180deg, transparent 180deg 360deg);"></div>
-            <div class="absolute rounded-full bg-novix-cream dark:bg-novix-ink" style="width:{{ $size * 0.68 }}px; height:{{ $size * 0.68 }}px; left:{{ $size * 0.16 }}px; top:{{ $size * 0.16 }}px;"></div>
+            <div class="absolute rounded-full" style="width:{{ $size }}px; height:{{ $size }}px; left:0; top:0; background: conic-gradient(from 270deg, #8FB8E0 0deg 43.71deg, #14503F 43.71deg 77.14deg, #F5C879 77.14deg 102.86deg, #E8615A 102.86deg 180deg, transparent 180deg 360deg);"></div>
+            <div class="absolute rounded-full {{ $holeClass }}" style="width:{{ $size * 0.68 }}px; height:{{ $size * 0.68 }}px; left:{{ $size * 0.16 }}px; top:{{ $size * 0.16 }}px;"></div>
         </div>
         <div class="absolute bottom-2 left-1/2 origin-bottom rounded-full bg-novix-ink transition-transform duration-700 ease-out dark:bg-white"
             style="width:3px; height:{{ $size * 0.39 }}px;"
@@ -61,7 +65,7 @@
 
     <div class="mt-2 text-center">
         <div class="flex items-center justify-center gap-2">
-            <span class="text-3xl font-extrabold text-novix-ink" x-text="bmi > 0 ? bmi : '--'"></span>
+            <span class="text-3xl font-extrabold text-novix-ink dark:text-white" x-text="bmi > 0 ? bmi : '--'"></span>
             @if($trend)
                 @if($trend === 'up')
                     <span class="text-lg text-novix-pink-dark" title="Up from previous reading">&#8593;</span>

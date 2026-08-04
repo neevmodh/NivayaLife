@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Shared Health Report — Novix</title>
+    <title>Shared Health Report — Nivaya Life</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -16,7 +16,7 @@
     <div class="overflow-hidden rounded-novix bg-novix-green shadow-novix">
         <div class="flex items-center justify-between px-6 py-4 text-white">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-widest text-white/70">Shared via Novix</p>
+                <p class="text-xs font-semibold uppercase tracking-widest text-white/70">Shared via Nivaya Life</p>
                 <h1 class="mt-1 text-lg font-bold">{{ $familyMember->full_name }}</h1>
                 <p class="text-sm text-white/80">
                     {{ $familyMember->age() !== null ? $familyMember->age().' years' : '' }}

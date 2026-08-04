@@ -32,7 +32,7 @@
                 </span>
                 <div>
                     <h3 class="text-base font-bold text-novix-ink dark:text-white">They have their own email</h3>
-                    <p class="mt-1 text-sm text-novix-muted">They'll get their own Novix account and choose what to share with you.</p>
+                    <p class="mt-1 text-sm text-novix-muted">They'll get their own Nivaya Life account and choose what to share with you.</p>
                 </div>
             </button>
 

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Accept your invite — Novix</title>
+    <title>Accept your invite — Nivaya Life</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -22,7 +22,7 @@
             <x-relation-icon :relation="$invitation->familyMember->relation" class="h-3.5 w-3.5" />
             Invited as {{ Str::headline($invitation->familyMember->relation) }}
         </span>
-        <h1 class="mt-4 text-2xl font-bold text-novix-ink">Join {{ $invitation->primaryAccount->name }}'s family on Novix</h1>
+        <h1 class="mt-4 text-2xl font-bold text-novix-ink">Join {{ $invitation->primaryAccount->name }}'s family on Nivaya Life</h1>
         <p class="mt-1 text-sm text-novix-muted">Create your own login — you'll choose exactly what to share.</p>
 
         <form @submit.prevent="submit($event)" class="mt-6 space-y-4">

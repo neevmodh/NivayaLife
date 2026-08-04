@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <style>
     @page { margin: 0; }
-    body { font-family: DejaVu Sans, sans-serif; color: #fff; font-size: 7px; line-height: 1.15; margin: 0; padding: 6pt 9pt; background: #1E5A45; }
+    body { font-family: DejaVu Sans, sans-serif; color: #fff; font-size: 7px; line-height: 1.15; margin: 0; padding: 6pt 9pt; background: #14503F; }
     div, span, td { line-height: 1.15; }
     .card { width: 222pt; }
     .brand { font-size: 6px; letter-spacing: 1px; text-transform: uppercase; color: #B7E4CF; }
@@ -29,7 +29,7 @@
     <table class="layout">
         <tr>
             <td class="info-cell">
-                <div class="brand">Novix &middot; Emergency</div>
+                <div class="brand">Nivaya Life &middot; Emergency</div>
                 <div class="name">{{ $member->full_name }}</div>
                 <div class="meta">
                     {{ $member->age() ?? '—' }}{{ $member->age() !== null ? ' yrs' : '' }}

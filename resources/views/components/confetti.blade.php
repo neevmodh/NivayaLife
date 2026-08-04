@@ -1,7 +1,7 @@
 <div
     x-data="{
         pieces: [],
-        colors: ['#1E5A45', '#2E7A5D', '#F5C879', '#F4A9A0', '#8FB8E0', '#E8615A'],
+        colors: ['#14503F', '#2A6B55', '#F5C879', '#F4A9A0', '#8FB8E0', '#E8615A'],
         burst() {
             this.pieces = Array.from({ length: 60 }, (_, i) => ({
                 id: i,

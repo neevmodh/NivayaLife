@@ -21,7 +21,7 @@
                 {{ $pendingInvite->primaryAccount->name }} invited you to join their family
             </h3>
             <p class="mt-1 text-sm text-novix-muted">
-                As their {{ Str::headline($pendingInvite->familyMember->relation) }} on Novix. You'll choose exactly what to share with them.
+                As their {{ Str::headline($pendingInvite->familyMember->relation) }} on Nivaya Life. You'll choose exactly what to share with them.
             </p>
 
             <div class="mt-6 flex justify-center gap-3">

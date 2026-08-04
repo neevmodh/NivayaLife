@@ -1,11 +1,11 @@
 {
-  "name": "Novix",
-  "short_name": "Novix",
+  "name": "Nivaya Life",
+  "short_name": "Nivaya",
   "description": "Family health records, reports, and reminders.",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#FBF6EA",
-  "theme_color": "#1E5A45",
+  "theme_color": "#14503F",
   "orientation": "portrait",
   "icons": [
     {

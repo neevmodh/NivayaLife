@@ -1,5 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -15,14 +16,27 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            spacing: {
+                // 18px — the icon size that sits between Tailwind's 4 (16px) and
+                // 5 (20px), used for the small inline icons in buttons.
+                4.5: '1.125rem',
+            },
             colors: {
                 novix: {
                     cream: '#FBF6EA',
                     card: '#FFFFFF',
+                    // Brand palette sampled from the Nivaya Life logo
+                    // (deep forest green #14503F ground, gold #C9941A mark) —
+                    // every button, badge, and header pulls from these
+                    // tokens, so a change here cascades across the whole app.
                     green: {
-                        DEFAULT: '#1E5A45',
-                        dark: '#123D2F',
-                        light: '#2E7A5D',
+                        DEFAULT: '#14503F',
+                        dark: '#0C3A2D',
+                        light: '#2A6B55',
+                    },
+                    gold: {
+                        DEFAULT: '#C9941A',
+                        light: '#E1C37E',
                     },
                     mint: '#DCEFE3',
                     pink: {
@@ -40,8 +54,8 @@ export default {
                 },
             },
             boxShadow: {
-                novix: '0 12px 32px -12px rgba(30, 90, 69, 0.18)',
-                'novix-sm': '0 4px 14px -4px rgba(30, 90, 69, 0.12)',
+                novix: '0 12px 32px -12px rgba(20, 80, 63, 0.22)',
+                'novix-sm': '0 4px 14px -4px rgba(20, 80, 63, 0.14)',
             },
             borderRadius: {
                 novix: '1.5rem',
@@ -64,5 +78,13 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms,
+        // `standalone:` targets the installed PWA specifically (Add to Home
+        // Screen / desktop install), letting the app skin differ from plain
+        // browser visits — e.g. keeping the bottom tab bar at every width.
+        plugin(({ addVariant }) => {
+            addVariant('standalone', '@media (display-mode: standalone)');
+        }),
+    ],
 };

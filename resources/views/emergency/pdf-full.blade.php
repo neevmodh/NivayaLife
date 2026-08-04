@@ -5,13 +5,13 @@
 <style>
     @page { margin: 28px 34px; }
     body { font-family: DejaVu Sans, sans-serif; color: #1F2A24; font-size: 12px; }
-    .header { background: #1E5A45; color: #fff; padding: 16px 20px; border-radius: 10px; }
+    .header { background: #14503F; color: #fff; padding: 16px 20px; border-radius: 10px; }
     .header .brand { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #B7E4CF; }
     .header .title { font-size: 20px; font-weight: bold; margin-top: 4px; }
     .identity { width: 100%; margin-top: 16px; }
     .identity td { vertical-align: top; }
     .photo { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; }
-    .photo-placeholder { width: 90px; height: 90px; border-radius: 12px; background: #DDF3E6; color: #1E5A45; font-size: 32px; font-weight: bold; text-align: center; line-height: 90px; }
+    .photo-placeholder { width: 90px; height: 90px; border-radius: 12px; background: #DDF3E6; color: #14503F; font-size: 32px; font-weight: bold; text-align: center; line-height: 90px; }
     .name { font-size: 18px; font-weight: bold; }
     .meta { color: #6B7A72; font-size: 12px; margin-top: 3px; }
     .blood-box { background: #FBE3E1; border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
@@ -35,7 +35,7 @@
 <body>
 
 <div class="header">
-    <div class="brand">Novix &middot; Emergency Medical Card</div>
+    <div class="brand">Nivaya Life &middot; Emergency Medical Card</div>
     <div class="title">{{ $member->full_name }}</div>
 </div>
 

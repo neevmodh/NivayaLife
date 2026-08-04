@@ -7,11 +7,16 @@
     $navActive = $navFamilyMembers->firstWhere('id', session('active_family_member_id')) ?? $navFamilyMembers->firstWhere('relation', 'self') ?? $navFamilyMembers->first();
 @endphp
 
-<nav x-data="{ open: false, switcherOpen: false }" class="border-b border-novix-green/10 bg-white dark:border-white/10 dark:bg-white/5">
+{{-- Mobile gets a solid brand-green header (matching the installed-app
+     reference designs); sm: and up reverts to the light, blurred desktop
+     bar — same nav, two skins, split entirely by breakpoint rather than a
+     second template. --}}
+<nav x-data="{ open: false, switcherOpen: false }"
+    class="sticky top-0 z-30 border-b border-novix-green-dark/40 bg-novix-green sm:border-novix-green/10 sm:bg-white/85 sm:backdrop-blur-md dark:sm:border-white/10 dark:sm:bg-novix-ink/85">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 justify-between">
             <div class="flex items-center gap-8">
-                <a href="{{ route('dashboard') }}"><x-novix-logo size="sm" /></a>
+                <a href="{{ route('dashboard') }}"><x-novix-logo size="sm" dark="responsive" /></a>
 
                 <div class="hidden gap-6 text-sm font-medium sm:flex">
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'text-novix-green' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">Dashboard</a>
@@ -86,8 +91,14 @@
                 </x-dropdown>
             </div>
 
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" :aria-expanded="open" aria-label="Toggle navigation menu" class="inline-flex items-center justify-center rounded-md p-2 text-novix-muted hover:bg-novix-cream hover:text-novix-ink">
+            <div class="-me-2 flex items-center gap-1 sm:hidden">
+                <x-dark-mode-toggle persist-url="{{ route('profile.theme') }}" />
+                @if($navActive)
+                    <a href="{{ route('family.index') }}" aria-label="Family members">
+                        <x-avatar :photo-path="$navActive->photo_path" :full-name="$navActive->full_name" :gender="$navActive->gender" :age="$navActive->age()" size="h-8 w-8" class="ring-2 ring-white/40" />
+                    </a>
+                @endif
+                <button @click="open = ! open" :aria-expanded="open" aria-label="Toggle navigation menu" class="inline-flex items-center justify-center rounded-md p-2 text-white/90 hover:bg-white/10 hover:text-white">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -97,16 +108,14 @@
         </div>
     </div>
 
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    {{-- Dashboard, Reports, Health and Family live in the bottom tab bar on
+         mobile, so this menu only carries what the bar can't fit. --}}
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-novix-green/10 bg-white dark:border-white/10 dark:bg-novix-ink sm:hidden">
         <div class="space-y-1 pb-3 pt-2">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">Reports</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('timeline')" :active="request()->routeIs('timeline*')">Timeline</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('medications.index')" :active="request()->routeIs('medications.*')">Medications</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('vaccinations.index')" :active="request()->routeIs('vaccinations.*')">Vaccinations</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('family.index')" :active="request()->routeIs('family.*')">Family</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('id-card.show')" :active="request()->routeIs('id-card.show')">Emergency Card</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('assistant')" :active="request()->routeIs('assistant*')">Assistant</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('shares.history')" :active="request()->routeIs('shares.*')">Shared reports</x-responsive-nav-link>
             @if(auth()->user()?->is_admin)
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">Admin</x-responsive-nav-link>
             @endif

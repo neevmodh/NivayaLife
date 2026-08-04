@@ -38,7 +38,7 @@
                 <label for="maintenance_message" class="block text-sm font-semibold text-novix-ink dark:text-white">Maintenance message (optional)</label>
                 <textarea id="maintenance_message" name="maintenance_message" rows="3"
                     class="mt-2 w-full rounded-xl border-gray-300 text-sm focus:border-novix-green focus:ring-novix-green dark:border-white/10 dark:bg-white/5 dark:text-white"
-                    placeholder="Novix is undergoing scheduled maintenance. Please check back shortly.">{{ old('maintenance_message', $setting->maintenance_message) }}</textarea>
+                    placeholder="Nivaya Life is undergoing scheduled maintenance. Please check back shortly.">{{ old('maintenance_message', $setting->maintenance_message) }}</textarea>
                 @error('maintenance_message')
                     <p class="mt-1 text-xs text-novix-pink-dark">{{ $message }}</p>
                 @enderror

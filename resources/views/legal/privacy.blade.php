@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Privacy Policy — Novix</title>
+    <title>Privacy Policy — Nivaya Life</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 
     <header class="border-b border-novix-green/10 bg-novix-cream/90 backdrop-blur dark:bg-novix-ink/90">
         <div class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-            <a href="/" class="flex items-center gap-2" aria-label="Novix home">
+            <a href="/" class="flex items-center gap-2" aria-label="Nivaya Life home">
                 <x-novix-logo size="sm" />
             </a>
             <a href="{{ url('/terms') }}" class="text-sm font-medium text-novix-green hover:underline">Terms of Service</a>
@@ -29,7 +29,7 @@
 
             <section>
                 <h2 class="text-lg font-bold text-novix-ink dark:text-white">1. What this covers</h2>
-                <p class="mt-2">This policy explains what information Novix collects, how it's used, who it's shared with, and the choices you have — including around your health data, which we treat with particular care.</p>
+                <p class="mt-2">This policy explains what information Nivaya Life collects, how it's used, who it's shared with, and the choices you have — including around your health data, which we treat with particular care.</p>
             </section>
 
             <section>
@@ -95,7 +95,7 @@
 
             <section>
                 <h2 class="text-lg font-bold text-novix-ink dark:text-white">11. Children's information</h2>
-                <p class="mt-2">Novix accounts are intended for adults. A parent or guardian may add a child as a family member/dependent under their own account; children do not register their own accounts.</p>
+                <p class="mt-2">Nivaya Life accounts are intended for adults. A parent or guardian may add a child as a family member/dependent under their own account; children do not register their own accounts.</p>
             </section>
 
             <section>
@@ -110,7 +110,7 @@
 
         </div>
 
-        <a href="/" class="mt-12 inline-block text-sm font-semibold text-novix-green hover:underline">&larr; Back to Novix</a>
+        <a href="/" class="mt-12 inline-block text-sm font-semibold text-novix-green hover:underline">&larr; Back to Nivaya Life</a>
     </main>
 
 </body>

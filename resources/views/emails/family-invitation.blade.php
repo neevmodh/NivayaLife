@@ -13,7 +13,7 @@
 
                     {{-- Header --}}
                     <tr>
-                        <td style="background-color:#1E5A45; padding:32px 40px;">
+                        <td style="background-color:#14503F; padding:32px 40px;">
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td>
@@ -27,7 +27,7 @@
                     {{-- Body --}}
                     <tr>
                         <td style="padding:40px;">
-                            <p style="margin:0 0 4px; font-size:13px; font-weight:700; color:#1E5A45; text-transform:uppercase; letter-spacing:0.06em;">Family invitation</p>
+                            <p style="margin:0 0 4px; font-size:13px; font-weight:700; color:#14503F; text-transform:uppercase; letter-spacing:0.06em;">Family invitation</p>
                             <h1 style="margin:0 0 16px; font-size:24px; font-weight:800; color:#1F2A24; line-height:1.3;">
                                 {{ $inviterName }} added you as their {{ str_replace('_', ' ', $relation) }} on Novix
                             </h1>
@@ -39,7 +39,7 @@
 
                             <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
                                 <tr>
-                                    <td style="border-radius:14px; background-color:#1E5A45;">
+                                    <td style="border-radius:14px; background-color:#14503F;">
                                         <a href="{{ $acceptUrl }}" target="_blank"
                                             style="display:inline-block; padding:14px 32px; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:14px;">
                                             Accept invitation
@@ -51,7 +51,7 @@
                             <p style="margin:0 0 8px; font-size:13px; color:#6B7A72; text-align:center;">
                                 Or copy and paste this link into your browser:
                             </p>
-                            <p style="margin:0 0 24px; font-size:13px; color:#1E5A45; text-align:center; word-break:break-all;">
+                            <p style="margin:0 0 24px; font-size:13px; color:#14503F; text-align:center; word-break:break-all;">
                                 {{ $acceptUrl }}
                             </p>
 

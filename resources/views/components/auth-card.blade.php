@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Novix') }}</title>
+        <title>{{ config('app.name', 'Nivaya Life') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -33,10 +33,10 @@
 
                     <div class="relative">
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">
-                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                            <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
                             No more paper
                         </span>
-                        <h2 class="mt-4 text-3xl font-bold leading-tight">Welcome to Novix</h2>
+                        <h2 class="mt-4 text-3xl font-bold leading-tight">Welcome to Nivaya Life</h2>
                         <p class="mt-3 text-white/80 text-sm leading-relaxed">
                             One secure place for your family's health records — organized online and explained
                             in plain language.
@@ -64,7 +64,7 @@
                         </ul>
                     </div>
 
-                    <p class="relative text-xs text-white/50">&copy; {{ date('Y') }} Novix</p>
+                    <p class="relative text-xs text-white/50">&copy; {{ date('Y') }} Nivaya Life</p>
                 </div>
 
                 <div class="p-8 sm:p-10 flex flex-col justify-center">
