@@ -8,12 +8,39 @@
     ];
     $isImage = str_starts_with($report->mime_type ?? '', 'image/');
     $isPdf = ($report->mime_type ?? '') === 'application/pdf';
+
+    $reportTypeIcons = [
+        'blood_test' => '&#129656;', 'prescription' => '&#128138;', 'xray' => '&#129460;',
+        'sonography' => '&#128266;', 'mri_ct' => '&#129504;', 'insurance' => '&#128737;', 'bill' => '&#129534;',
+        'ecg' => '&#128147;', 'dental' => '&#129463;', 'discharge_summary' => '&#127973;',
+        'pathology' => '&#129514;', 'eye_care' => '&#128065;', 'other' => '&#128196;',
+    ];
+    $ocrBadge = [
+        'pending' => ['label' => 'Queued', 'class' => 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60'],
+        'processing' => ['label' => 'Reading…', 'class' => 'bg-novix-yellow/30 text-amber-700 dark:text-novix-yellow'],
+        'completed' => ['label' => 'Ready', 'class' => 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint'],
+        'failed' => ['label' => 'Failed', 'class' => 'bg-novix-pink/30 text-novix-pink-dark'],
+    ];
+    $badge = $ocrBadge[$report->ocr_status] ?? $ocrBadge['pending'];
 @endphp
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">{{ $report->typeLabel() }}</h2>
-        <p class="mt-1 text-sm text-novix-muted">{{ $report->familyMember->full_name }}</p>
+        <div class="flex items-center gap-3.5">
+            <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-novix-sm dark:bg-white/10" aria-hidden="true">
+                {!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}
+            </span>
+            <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                    <h2 class="text-xl font-bold leading-tight text-novix-ink dark:text-white">{{ $report->typeLabel() }}</h2>
+                    <span class="rounded-full px-2.5 py-0.5 text-[11px] font-bold {{ $badge['class'] }}">{{ $badge['label'] }}</span>
+                </div>
+                <p class="mt-0.5 truncate text-sm text-novix-muted">
+                    {{ $report->familyMember->full_name }}
+                    @if($report->report_date) &middot; {{ $report->report_date->format('M j, Y') }} @endif
+                </p>
+            </div>
+        </div>
     </x-slot>
 
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8"
@@ -43,10 +70,18 @@
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Back to reports
             </a>
-            <a href="{{ route('shares.create') }}?report={{ $report->id }}" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"><path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 .09 4.26L8.9 11.7a3 3 0 1 0 0 4.6l6.19 3.44A3 3 0 1 0 15 17.7l-6.19-3.44a3 3 0 0 0 0-.52L15 10.3c.52.44 1.19.7 1.91.7A3 3 0 0 0 18 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-                Share
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('reports.file', $report) }}" target="_blank"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-novix-ink transition hover:-translate-y-0.5 hover:bg-novix-cream active:translate-y-0 dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v12m0-12 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 12 12)"/></svg>
+                    Original
+                </a>
+                <a href="{{ route('shares.create') }}?report={{ $report->id }}"
+                    class="inline-flex items-center gap-1.5 rounded-lg bg-novix-green px-3 py-1.5 text-xs font-semibold text-white shadow-novix-sm transition hover:-translate-y-0.5 hover:bg-novix-green-dark active:translate-y-0 active:scale-95">
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"><path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 .09 4.26L8.9 11.7a3 3 0 1 0 0 4.6l6.19 3.44A3 3 0 1 0 15 17.7l-6.19-3.44a3 3 0 0 0 0-.52L15 10.3c.52.44 1.19.7 1.91.7A3 3 0 0 0 18 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                    Share
+                </a>
+            </div>
         </div>
 
         {{-- Live processing status --}}

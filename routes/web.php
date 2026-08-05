@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAiUsageController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminRecordController;
 use App\Http\Controllers\Admin\SiteSettingController;
@@ -173,6 +174,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::delete('/tables/{table}/{id}', [AdminRecordController::class, 'destroy'])->name('tables.destroy');
     Route::get('/tables/{table}/export', [AdminDashboardController::class, 'export'])->name('tables.export');
     Route::get('/tables/{table}', [AdminDashboardController::class, 'table'])->name('tables.show');
+
+    Route::get('/ai-usage', [AdminAiUsageController::class, 'index'])->name('ai-usage');
 
     Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');

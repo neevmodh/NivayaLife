@@ -48,6 +48,10 @@ return [
         'key_2' => env('GEMINI_API_KEY_2'),
         'key_3' => env('GEMINI_API_KEY_3'),
         'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
+        // Used only to estimate spend on the admin AI usage page. Rates
+        // change and vary by model, so keep these in step with the provider.
+        'input_cost_per_million' => env('GEMINI_INPUT_COST_PER_MILLION', 0.10),
+        'output_cost_per_million' => env('GEMINI_OUTPUT_COST_PER_MILLION', 0.40),
     ],
 
     // Last resort in the AiClient fallback chain, after every Gemini key.
