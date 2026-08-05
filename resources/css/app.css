@@ -110,6 +110,65 @@
     opacity: 1;
 }
 
+/* ---------------------------------------------------------------
+   Landing-page motion. Everything below is used only on the marketing
+   page, where a little movement earns attention; the app itself stays
+   still so it never competes with someone's actual health data.
+   --------------------------------------------------------------- */
+
+/* Hero ornaments drifting, at different speeds so they never look paired. */
+@keyframes novix-float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -18px, 0); }
+}
+.novix-float { animation: novix-float 7s ease-in-out infinite; }
+.novix-float-slow { animation: novix-float 11s ease-in-out infinite; }
+
+/* The scan line that sweeps a report while the AI "reads" it. */
+@keyframes novix-scan {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+.novix-scanline {
+    animation: novix-scan 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Caret for the summary that types itself out. */
+@keyframes novix-caret {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+.novix-caret::after {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background: currentColor;
+    animation: novix-caret 1s step-end infinite;
+}
+
+/* Emergency card flip. */
+.novix-flip { perspective: 1200px; }
+.novix-flip-inner {
+    position: relative;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+.novix-flip.is-flipped .novix-flip-inner { transform: rotateY(180deg); }
+.novix-flip-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.novix-flip-back {
+    position: absolute;
+    inset: 0;
+    transform: rotateY(180deg);
+}
+
 /* A slow gold sheen that travels across the final call to action. */
 @keyframes novix-sheen {
     0% { transform: translateX(-120%) skewX(-18deg); }
@@ -131,8 +190,16 @@
     .animate-novix-fade-up,
     .animate-novix-shake,
     .animate-bounce,
-    .novix-sheen::after {
+    .animate-ping,
+    .novix-sheen::after,
+    .novix-float,
+    .novix-float-slow,
+    .novix-scanline,
+    .novix-caret::after {
         animation: none !important;
+    }
+    .novix-flip-inner {
+        transition: none !important;
     }
     [data-reveal] {
         opacity: 1 !important;

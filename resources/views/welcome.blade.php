@@ -97,8 +97,8 @@
 
     {{-- ============ HERO ============ --}}
     <section class="relative overflow-hidden">
-        <div class="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-novix-mint/60 blur-3xl"></div>
-        <div class="pointer-events-none absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-novix-gold/15 blur-3xl"></div>
+        <div class="novix-float pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-novix-mint/60 blur-3xl"></div>
+        <div class="novix-float-slow pointer-events-none absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-novix-gold/15 blur-3xl"></div>
 
         {{-- On phones the hero fills the viewport and centres like an app's
              opening screen (the preview card sits below the fold); on lg the
@@ -454,6 +454,157 @@
         </div>
     </section>
 
+    {{-- ============ LIVE AI DEMO ============ --}}
+    <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="demo-heading">
+        <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <h2 id="demo-heading" class="text-3xl font-extrabold text-novix-ink">Watch it read a report</h2>
+            <p class="mt-3 text-novix-ink/70">
+                Press play on a sample lab report and see what you would get back.
+            </p>
+        </div>
+
+        <div class="mt-10 overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix" data-reveal
+            x-data="{
+                state: 'idle',
+                typed: '',
+                timers: [],
+                summary: 'Haemoglobin is 13.2 g/dL, within the normal range. Vitamin D is low at 18 ng/mL against a 30-100 reference. Everything else on this panel is unremarkable. Worth raising the vitamin D with your doctor.',
+                rows: [
+                    { name: 'Haemoglobin', value: '13.2', unit: 'g/dL', range: '12.0-15.5', flag: 'normal' },
+                    { name: 'Vitamin D (25-OH)', value: '18', unit: 'ng/mL', range: '30-100', flag: 'low' },
+                    { name: 'Total Cholesterol', value: '172', unit: 'mg/dL', range: '<200', flag: 'normal' },
+                    { name: 'HbA1c', value: '5.4', unit: '%', range: '4.0-5.6', flag: 'normal' },
+                ],
+                reset() {
+                    this.timers.forEach(clearTimeout);
+                    this.timers = [];
+                    this.typed = '';
+                    this.state = 'idle';
+                },
+                play() {
+                    this.reset();
+                    this.state = 'scanning';
+                    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                    // Reduced motion still gets the result, just without the show.
+                    if (reduce) {
+                        this.state = 'done';
+                        this.typed = this.summary;
+                        return;
+                    }
+
+                    this.timers.push(setTimeout(() => {
+                        this.state = 'typing';
+                        let i = 0;
+                        const tick = () => {
+                            i += 2;
+                            this.typed = this.summary.slice(0, i);
+                            if (i < this.summary.length) {
+                                this.timers.push(setTimeout(tick, 18));
+                            } else {
+                                this.state = 'done';
+                            }
+                        };
+                        tick();
+                    }, 3800));
+                },
+            }">
+            <div class="grid gap-0 md:grid-cols-2">
+                {{-- The document being read --}}
+                <div class="relative overflow-hidden border-b border-novix-green/10 bg-novix-cream/50 p-6 md:border-b-0 md:border-r">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-novix-muted">Sample lab report</p>
+                        <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-novix-muted shadow-sm">PDF</span>
+                    </div>
+
+                    <div class="relative mt-4 overflow-hidden rounded-xl bg-white p-4 shadow-sm">
+                        {{-- The sweep only exists while the AI is "reading". --}}
+                        <template x-if="state === 'scanning'">
+                            <div class="pointer-events-none absolute inset-x-0 top-0 z-10">
+                                <div class="novix-scanline absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-novix-green/20 to-transparent"></div>
+                                <div class="novix-scanline absolute inset-x-0 h-0.5 bg-novix-green/70"></div>
+                            </div>
+                        </template>
+
+                        <p class="text-[10px] font-bold text-novix-ink">HAEMATOLOGY &amp; BIOCHEMISTRY</p>
+                        <p class="text-[9px] text-novix-muted">Sample Diagnostics · 12 Mar 2026</p>
+                        <div class="mt-3 space-y-1.5">
+                            <template x-for="(row, idx) in rows" :key="row.name">
+                                <div class="flex items-center justify-between gap-2 border-b border-dashed border-gray-100 pb-1.5 text-[10px] last:border-0">
+                                    <span class="min-w-0 flex-1 truncate text-novix-ink" x-text="row.name"></span>
+                                    <span class="font-mono font-bold"
+                                        :class="state !== 'idle' && row.flag === 'low' ? 'text-novix-pink-dark' : 'text-novix-ink'">
+                                        <span x-text="row.value"></span><span class="font-normal text-novix-muted" x-text="' ' + row.unit"></span>
+                                    </span>
+                                    <span class="w-16 text-right font-mono text-[9px] text-novix-muted" x-text="row.range"></span>
+                                    {{-- The flag only appears once it has been read. --}}
+                                    <span class="w-3 text-right">
+                                        <template x-if="state !== 'idle' && row.flag === 'low'">
+                                            <span class="text-novix-pink-dark" aria-hidden="true">&#9660;</span>
+                                        </template>
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <button type="button" @click="state === 'idle' ? play() : reset()"
+                        class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-novix-green py-2.5 text-sm font-bold text-white shadow-novix-sm transition hover:bg-novix-green-dark active:scale-95">
+                        <template x-if="state === 'idle'">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg>
+                        </template>
+                        <template x-if="state !== 'idle'">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.3 5.6M4 20v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </template>
+                        <span x-text="state === 'idle' ? 'Read this report' : 'Start again'"></span>
+                    </button>
+                </div>
+
+                {{-- What comes back --}}
+                <div class="flex flex-col p-6">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-novix-muted">What you get back</p>
+
+                    <div class="mt-4 flex-1">
+                        <template x-if="state === 'idle'">
+                            <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-novix-green/25 text-center">
+                                <svg class="h-7 w-7 text-novix-green/40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v2.2M8.5 6.2h7a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="10" cy="11.5" r="1.1" fill="currentColor"/><circle cx="14" cy="11.5" r="1.1" fill="currentColor"/></svg>
+                                <p class="text-xs text-novix-muted">Press <span class="font-semibold text-novix-green">Read this report</span></p>
+                            </div>
+                        </template>
+
+                        <template x-if="state === 'scanning'">
+                            <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-3 text-center">
+                                <div class="flex gap-1.5">
+                                    <span class="h-2 w-2 animate-bounce rounded-full bg-novix-green [animation-delay:-0.3s]"></span>
+                                    <span class="h-2 w-2 animate-bounce rounded-full bg-novix-green [animation-delay:-0.15s]"></span>
+                                    <span class="h-2 w-2 animate-bounce rounded-full bg-novix-green"></span>
+                                </div>
+                                <p class="text-xs font-semibold text-novix-green">Reading the document…</p>
+                            </div>
+                        </template>
+
+                        <template x-if="state === 'typing' || state === 'done'">
+                            <div>
+                                <div class="rounded-xl bg-novix-green/5 p-4">
+                                    <p class="text-sm leading-relaxed text-novix-ink" :class="state === 'typing' ? 'novix-caret' : ''" x-text="typed"></p>
+                                </div>
+                                <div x-cloak x-show="state === 'done'" x-transition class="mt-3 flex flex-wrap gap-2">
+                                    <span class="rounded-full bg-novix-pink/20 px-2.5 py-1 text-[11px] font-bold text-novix-pink-dark">1 value flagged low</span>
+                                    <span class="rounded-full bg-novix-mint px-2.5 py-1 text-[11px] font-bold text-novix-green">3 in range</span>
+                                    <span class="rounded-full bg-novix-gold/20 px-2.5 py-1 text-[11px] font-bold text-amber-700">Filed automatically</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <p class="mt-4 border-t border-novix-green/10 pt-3 text-[11px] leading-relaxed text-novix-ink/50">
+                        Illustrative sample, not a real patient. Nivaya Life explains and organizes reports — it never diagnoses.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- ============ HEALTH BREAK (interactive) ============ --}}
     <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="break-heading">
         <x-confetti />
@@ -488,10 +639,69 @@
             </div>
         </div>
 
+        {{-- Emergency card, flippable. It is the feature people understand
+             fastest once they see the QR on the back. --}}
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-6 shadow-novix-sm" data-reveal>
+                <h3 class="font-semibold text-novix-ink">Your emergency card</h3>
+                <p class="mt-1 text-sm leading-relaxed text-novix-ink/60">
+                    Blood group, allergies and who to call — on one card a paramedic can read
+                    without unlocking your phone. Tap it to see the back.
+                </p>
+
+                <div class="novix-flip mt-5" x-data="{ flipped: false }" :class="flipped ? 'is-flipped' : ''">
+                    <button type="button" @click="flipped = !flipped" class="novix-flip-inner block w-full text-left"
+                        :aria-pressed="flipped.toString()" aria-label="Flip the emergency card">
+
+                        {{-- Front --}}
+                        <div class="novix-flip-face overflow-hidden rounded-2xl bg-gradient-to-br from-novix-green to-novix-green-dark p-5 text-white shadow-novix ring-1 ring-novix-gold/40">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-white/60">Emergency card</p>
+                                    <p class="mt-1 text-lg font-bold">Aarav Shah</p>
+                                    <p class="font-mono text-[10px] text-novix-gold-light">NVX-8FK2M</p>
+                                </div>
+                                <svg class="h-8 w-8 opacity-30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M6.5 18.5v-13l9 13" stroke="#FFFFFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M17.5 18.5V9.4" stroke="#C9941A" stroke-width="2.7" stroke-linecap="round"/>
+                                    <circle cx="17.5" cy="5.4" r="1.85" fill="#C9941A"/>
+                                </svg>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-2">
+                                <div class="rounded-xl bg-white/10 px-3 py-2">
+                                    <p class="text-[9px] font-semibold uppercase tracking-wider text-white/60">Blood group</p>
+                                    <p class="text-xl font-extrabold">O+</p>
+                                </div>
+                                <div class="rounded-xl bg-novix-pink-dark px-3 py-2">
+                                    <p class="text-[9px] font-semibold uppercase tracking-wider text-white/80">Severe allergy</p>
+                                    <p class="text-base font-extrabold leading-tight">Penicillin</p>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-center text-[10px] text-white/50">Tap to flip</p>
+                        </div>
+
+                        {{-- Back --}}
+                        <div class="novix-flip-face novix-flip-back flex flex-col items-center justify-center rounded-2xl bg-white p-5 shadow-novix ring-1 ring-novix-green/15">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-novix-muted">Scan for full card</p>
+                            {{-- A drawn stand-in, not a working code. --}}
+                            <div class="mt-3 grid grid-cols-7 gap-1" aria-hidden="true">
+                                @foreach([1,1,1,0,1,1,1, 1,0,1,0,1,0,1, 1,1,1,0,1,1,1, 0,0,0,1,0,0,0, 1,1,0,1,0,1,1, 1,0,1,0,1,0,1, 1,1,1,0,1,1,1] as $cell)
+                                    <span class="h-2.5 w-2.5 rounded-[2px] {{ $cell ? 'bg-novix-green' : 'bg-novix-cream' }}"></span>
+                                @endforeach
+                            </div>
+                            <p class="mt-3 text-center text-[11px] leading-relaxed text-novix-ink/60">
+                                Works without an account, and without unlocking the phone.
+                            </p>
+                            <p class="mt-2 text-[10px] text-novix-muted">Tap to flip back</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
         {{-- Tap-the-heart: a synthesized lub-dub on every tap, confetti at ten.
              Pure WebAudio — no audio file, and silent until the visitor asks. --}}
-        <div class="mt-6 flex flex-col items-center gap-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 text-center shadow-novix-sm sm:flex-row sm:text-left"
-            data-reveal
+            <div class="flex flex-col items-center justify-center gap-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 text-center shadow-novix-sm"
+                data-reveal
             x-data="{
                 beats: 0,
                 bumping: false,
@@ -529,8 +739,9 @@
             <div class="min-w-0">
                 <h3 class="font-semibold text-novix-ink">Tap the heart</h3>
                 <p class="mt-1 text-sm text-novix-ink/60">Hear a real lub-dub — sound on. Ten beats earns a small celebration.</p>
-                <p class="mt-2 h-5 text-xs font-bold text-novix-gold" x-cloak x-show="beats > 0"
-                    x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
+                    <p class="mt-2 h-5 text-xs font-bold text-novix-gold" x-cloak x-show="beats > 0"
+                        x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
+                </div>
             </div>
         </div>
     </section>
