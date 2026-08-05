@@ -123,7 +123,7 @@
                                 'border-novix-green bg-white shadow-novix-sm dark:bg-white/10' => $member->id === $active->id,
                                 'border-transparent bg-white/60 hover:border-novix-green/30 hover:bg-white dark:bg-white/5' => $member->id !== $active->id,
                             ])>
-                            <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
+                            <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
                             <span @class([
                                 'whitespace-nowrap text-sm font-semibold',
                                 'text-novix-green dark:text-novix-mint' => $member->id === $active->id,
@@ -204,7 +204,7 @@
             <div class="relative p-5 text-white sm:p-6">
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-4">
                     <div class="relative flex-shrink-0">
-                        <x-avatar :photo-path="$active->photo_path" :full-name="$active->full_name" :gender="$active->gender" :age="$active->age()"
+                        <x-avatar :photo-path="$active->photo_path" :preset="$active->avatar_preset ?? null" :full-name="$active->full_name" :gender="$active->gender" :age="$active->age()"
                             size="h-16 w-16" color-class="bg-white/10 text-white" class="border-2 border-white/25" />
                     </div>
 

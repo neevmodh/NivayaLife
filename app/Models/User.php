@@ -128,13 +128,28 @@ class User extends Authenticatable
      */
     public function ensureLinkedFamilyMember(): FamilyMember
     {
-        return $this->linkedFamilyMember ?? FamilyMember::create([
-            'primary_account_id' => $this->id,
-            'linked_user_id' => $this->id,
-            'relation' => 'self',
-            'full_name' => $this->name,
-            'access_type' => 'linked',
-            'status' => 'active',
-        ]);
+        if ($this->relationLoaded('linkedFamilyMember') && $this->linkedFamilyMember !== null) {
+            return $this->linkedFamilyMember;
+        }
+
+        // firstOrCreate rather than a `?? create()` on the relation: reading
+        // the relation caches a null on this instance, so a second call in the
+        // same request would try to insert again and trip the unique index on
+        // linked_user_id. Keyed on linked_user_id, which is exactly that index.
+        $member = FamilyMember::firstOrCreate(
+            ['linked_user_id' => $this->id],
+            [
+                'primary_account_id' => $this->id,
+                'relation' => 'self',
+                'full_name' => $this->name,
+                'access_type' => 'linked',
+                'status' => 'active',
+            ]
+        );
+
+        // Keep the cached relation in step with what we just wrote.
+        $this->setRelation('linkedFamilyMember', $member);
+
+        return $member;
     }
 }

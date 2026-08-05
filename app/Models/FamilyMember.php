@@ -26,6 +26,7 @@ class FamilyMember extends Model
         'height_cm',
         'weight_kg',
         'photo_path',
+        'avatar_preset',
         'address_line1',
         'address_line2',
         'city',

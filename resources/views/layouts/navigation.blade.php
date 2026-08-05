@@ -50,7 +50,7 @@
                     <div class="relative">
                         <button @click="switcherOpen = !switcherOpen" @click.outside="switcherOpen = false"
                             class="flex items-center gap-2 rounded-full border border-gray-200 py-1 pl-1 pr-3 text-sm font-medium text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
-                            <x-avatar :photo-path="$navActive->photo_path" :full-name="$navActive->full_name" :gender="$navActive->gender" :age="$navActive->age()" size="h-7 w-7" />
+                            <x-avatar :photo-path="$navActive->photo_path" :preset="$navActive->avatar_preset ?? null" :full-name="$navActive->full_name" :gender="$navActive->gender" :age="$navActive->age()" size="h-7 w-7" />
                             {{ Str::of($navActive->full_name)->words(1, '') }}
                         </button>
                         <div x-show="switcherOpen" x-cloak x-transition
@@ -60,7 +60,7 @@
                                 <form method="POST" action="{{ route('dashboard.switch', $member) }}">
                                     @csrf
                                     <button type="submit" class="flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm hover:bg-novix-cream dark:hover:bg-white/10 {{ $navActive->id === $member->id ? 'bg-novix-mint/60 dark:bg-white/10' : '' }}">
-                                        <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
+                                        <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
                                         <span>
                                             <span class="block font-medium text-novix-ink dark:text-white">{{ $member->full_name }}</span>
                                             <span class="block text-xs capitalize text-novix-muted">{{ $member->relation }}</span>
@@ -71,6 +71,8 @@
                         </div>
                     </div>
                 @endif
+
+                <x-notification-bell />
 
                 <x-dark-mode-toggle persist-url="{{ route('profile.theme') }}" />
 
@@ -92,10 +94,11 @@
             </div>
 
             <div class="-me-2 flex items-center gap-1 sm:hidden">
+                <x-notification-bell />
                 <x-dark-mode-toggle persist-url="{{ route('profile.theme') }}" />
                 @if($navActive)
                     <a href="{{ route('family.index') }}" aria-label="Family members">
-                        <x-avatar :photo-path="$navActive->photo_path" :full-name="$navActive->full_name" :gender="$navActive->gender" :age="$navActive->age()" size="h-8 w-8" class="ring-2 ring-white/40" />
+                        <x-avatar :photo-path="$navActive->photo_path" :preset="$navActive->avatar_preset ?? null" :full-name="$navActive->full_name" :gender="$navActive->gender" :age="$navActive->age()" size="h-8 w-8" class="ring-2 ring-white/40" />
                     </a>
                 @endif
                 <button @click="open = ! open" :aria-expanded="open" aria-label="Toggle navigation menu" class="inline-flex items-center justify-center rounded-md p-2 text-white/90 hover:bg-white/10 hover:text-white">

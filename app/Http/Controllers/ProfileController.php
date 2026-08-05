@@ -8,6 +8,7 @@ use App\Models\BmiLog;
 use App\Models\FamilyMember;
 use App\Models\Medication;
 use App\Models\User;
+use App\Support\AvatarPresets;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -86,6 +87,24 @@ class ProfileController extends Controller
         }
 
         return response()->json(['success' => true, 'photo_url' => Storage::url($path)]);
+    }
+
+    /**
+     * Picks one of the illustrated avatars, or clears it with an empty value.
+     * A stored photo is left untouched and keeps winning in the component —
+     * clearing the photo is a separate, more deliberate action.
+     */
+    public function updateAvatarPreset(Request $request, ?FamilyMember $familyMember = null): JsonResponse
+    {
+        $member = $this->ownedMember($request, $familyMember);
+
+        $validated = $request->validate([
+            'avatar_preset' => ['nullable', 'string', Rule::in(AvatarPresets::keys())],
+        ]);
+
+        $member->update(['avatar_preset' => $validated['avatar_preset'] ?? null]);
+
+        return response()->json(['success' => true, 'avatar_preset' => $member->avatar_preset]);
     }
 
     public function updateAddress(Request $request, ?FamilyMember $familyMember = null): JsonResponse

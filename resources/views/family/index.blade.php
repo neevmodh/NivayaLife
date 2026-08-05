@@ -54,7 +54,7 @@
                         @php($reciprocal = $isReciprocal($member))
                         <div class="rounded-novix bg-white p-5 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5 {{ $reciprocal ? 'border border-novix-blue/20' : '' }}">
                             <div class="flex items-start gap-3">
-                                <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-12 w-12" />
+                                <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-12 w-12" />
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-sm font-bold text-novix-ink dark:text-white">{{ $member->full_name }}</p>
                                     <p class="flex items-center gap-1 text-xs text-novix-muted">

@@ -124,6 +124,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/{familyMember}/basic-info', [ProfileController::class, 'updateBasicInfo'])->name('profile.basic-info.member');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
     Route::post('/profile/{familyMember}/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.member');
+    Route::post('/profile/avatar-preset', [ProfileController::class, 'updateAvatarPreset'])->name('profile.avatar-preset');
+    Route::post('/profile/{familyMember}/avatar-preset', [ProfileController::class, 'updateAvatarPreset'])->name('profile.avatar-preset.member');
     Route::post('/profile/address', [ProfileController::class, 'updateAddress'])->name('profile.address');
     Route::post('/profile/{familyMember}/address', [ProfileController::class, 'updateAddress'])->name('profile.address.member');
     Route::post('/profile/health', [ProfileController::class, 'updateHealth'])->name('profile.health');

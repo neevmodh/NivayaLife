@@ -17,7 +17,7 @@
 
         <div class="overflow-hidden rounded-novix bg-novix-green shadow-novix">
             <div class="flex flex-col items-center gap-6 p-6 text-white sm:flex-row sm:p-8">
-                <x-avatar :photo-path="$member->photo_path" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()"
+                <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()"
                     size="h-20 w-20" color-class="bg-white/10 text-white" class="flex-shrink-0 border-4 border-white/25" />
                 <div class="text-center sm:text-left">
                     <h1 class="text-xl font-bold">{{ $member->full_name }}</h1>
