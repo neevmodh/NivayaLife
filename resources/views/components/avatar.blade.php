@@ -23,17 +23,29 @@
     <img src="{{ Storage::url($photoPath) }}" {{ $attributes->merge(['class' => "{$size} {$rounded} object-cover"]) }} alt="{{ $fullName }}">
 
 @elseif($presetData)
+    @php
+        $headY = $presetData['headY'] ?? 22;
+        $headR = $presetData['headR'] ?? 9;
+        $eyeY = $headY - 0.5;
+        $mouthY = $headY + 3.6;
+    @endphp
     <span {{ $attributes->merge(['class' => "{$size} {$rounded} overflow-hidden flex items-center justify-center"]) }}
         role="img" aria-label="{{ $fullName }}">
         <svg viewBox="0 0 48 48" class="h-full w-full" aria-hidden="true">
             <rect width="48" height="48" fill="{{ $presetData['bg'] }}"/>
-            {{-- Shoulders, then head, then hair on top. --}}
-            <path d="M8 48c0-8.5 7.2-13 16-13s16 4.5 16 13Z" fill="{{ $presetData['cloth'] }}"/>
-            <circle cx="24" cy="22" r="9" fill="{{ $presetData['skin'] }}"/>
-            <circle cx="20.8" cy="21.5" r="1.15" fill="#2C2016"/>
-            <circle cx="27.2" cy="21.5" r="1.15" fill="#2C2016"/>
-            <path d="M21.6 25.6c1.4 1.2 3.4 1.2 4.8 0" stroke="#2C2016" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-            {!! $presetData['hair'] !!}
+            {{-- Long hair and headwear sit behind the head, then shoulders,
+                 the face, and finally hair and accessories on top. --}}
+            {!! $presetData['hairBack'] ?? '' !!}
+            <path d="M7.5 48c0-9 7.4-13.6 16.5-13.6S40.5 39 40.5 48Z" fill="{{ $presetData['cloth'] }}"/>
+            <path d="M21 30h6v6h-6z" fill="{{ $presetData['skin'] }}"/>
+            <circle cx="24" cy="{{ $headY }}" r="{{ $headR }}" fill="{{ $presetData['skin'] }}"/>
+            <ellipse cx="{{ 24 - $headR }}" cy="{{ $headY + 1 }}" rx="1.5" ry="2" fill="{{ $presetData['skin'] }}"/>
+            <ellipse cx="{{ 24 + $headR }}" cy="{{ $headY + 1 }}" rx="1.5" ry="2" fill="{{ $presetData['skin'] }}"/>
+            <circle cx="20.8" cy="{{ $eyeY }}" r="1.15" fill="#2C2016"/>
+            <circle cx="27.2" cy="{{ $eyeY }}" r="1.15" fill="#2C2016"/>
+            <path d="M21.6 {{ $mouthY }}c1.4 1.2 3.4 1.2 4.8 0" stroke="#2C2016" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+            {!! $presetData['hair'] ?? '' !!}
+            {!! $presetData['extras'] ?? '' !!}
         </svg>
     </span>
 

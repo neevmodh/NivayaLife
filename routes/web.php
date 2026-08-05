@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAiUsageController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminRecordController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\DashboardController;
@@ -176,6 +177,13 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/tables/{table}', [AdminDashboardController::class, 'table'])->name('tables.show');
 
     Route::get('/ai-usage', [AdminAiUsageController::class, 'index'])->name('ai-usage');
+
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+
+    Route::get('/failed-jobs', [AdminUserController::class, 'failedJobs'])->name('failed-jobs');
+    Route::post('/failed-jobs/{uuid}/retry', [AdminUserController::class, 'retryFailedJob'])->name('failed-jobs.retry');
+    Route::delete('/failed-jobs/{uuid}', [AdminUserController::class, 'deleteFailedJob'])->name('failed-jobs.delete');
 
     Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');

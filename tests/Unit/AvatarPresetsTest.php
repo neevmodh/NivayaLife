@@ -7,15 +7,21 @@ use PHPUnit\Framework\TestCase;
 
 class AvatarPresetsTest extends TestCase
 {
-    public function test_there_are_ten_presets(): void
+    public function test_the_set_spans_every_age_group(): void
     {
-        $this->assertCount(10, AvatarPresets::all());
+        $groups = AvatarPresets::grouped();
+
+        $this->assertSame(['Children', 'Adults', 'Older'], array_keys($groups));
+        foreach ($groups as $group => $presets) {
+            $this->assertGreaterThanOrEqual(2, count($presets), "{$group} needs a real choice, not one option");
+        }
+        $this->assertGreaterThanOrEqual(10, count(AvatarPresets::all()));
     }
 
     public function test_every_preset_is_fully_defined(): void
     {
         foreach (AvatarPresets::all() as $key => $preset) {
-            foreach (['label', 'bg', 'skin', 'cloth', 'hair'] as $field) {
+            foreach (['label', 'group', 'bg', 'skin', 'cloth'] as $field) {
                 $this->assertArrayHasKey($field, $preset, "Preset {$key} is missing {$field}");
                 $this->assertNotSame('', $preset[$field], "Preset {$key} has an empty {$field}");
             }
@@ -24,7 +30,7 @@ class AvatarPresetsTest extends TestCase
 
     public function test_unknown_presets_are_rejected(): void
     {
-        $this->assertTrue(AvatarPresets::has('a1'));
+        $this->assertTrue(AvatarPresets::has('baby'));
         $this->assertFalse(AvatarPresets::has('nope'));
         $this->assertFalse(AvatarPresets::has(null));
     }

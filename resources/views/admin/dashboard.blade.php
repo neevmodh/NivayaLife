@@ -20,6 +20,9 @@
                 <span class="mt-1.5 block h-0.5 w-10 rounded-full bg-novix-gold" aria-hidden="true"></span>
             </div>
             <div class="flex flex-wrap gap-2">
+                <a href="{{ route('admin.users.index') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                    Users
+                </a>
                 <a href="{{ route('admin.ai-usage') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     AI usage
                 </a>
@@ -59,8 +62,10 @@
             <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Background jobs</p>
                 <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pendingJobCount) }}</p>
+                {{-- Links through rather than being a dead number: the whole
+                     point of knowing something failed is being able to act. --}}
                 <p class="mt-1 text-xs {{ $failedJobCount > 0 ? 'text-novix-pink-dark font-semibold' : 'text-novix-muted' }}">
-                    {{ $failedJobCount }} failed
+                    <a href="{{ route('admin.failed-jobs') }}" class="hover:underline">{{ $failedJobCount }} failed</a>
                 </p>
             </div>
         </div>
