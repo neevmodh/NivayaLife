@@ -114,13 +114,13 @@
                     100% digital, zero paper
                 </span>
 
-                <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-novix-ink sm:text-5xl">
+                <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-novix-ink sm:text-5xl lg:text-6xl">
                     No more paper.<br>
                     No more confusion.<br>
                     Just your family's health,<br>
-                    <span class="relative inline-block text-novix-green italic">
+                    <span class="relative inline-block novix-text-gold italic">
                         organized online.
-                        <svg class="absolute -bottom-2 left-0 w-full text-novix-gold" viewBox="0 0 200 9" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7c50-5 148-5 196-2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                        <svg class="absolute -bottom-2 left-0 w-full text-novix-gold/70" viewBox="0 0 200 9" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7c50-5 148-5 196-2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
                     </span>
                 </h1>
 
@@ -213,6 +213,32 @@
         </div>
     </section>
 
+    {{-- ============ CAPABILITY BAND ============ --}}
+    {{-- Sits directly under the hero on desktop: the four things the product
+         actually does, stated plainly, before any argument is made. --}}
+    <section class="relative px-6 lg:px-8" aria-label="What Nivaya Life does">
+        <div class="mx-auto max-w-7xl">
+            <div class="novix-rule-gold" aria-hidden="true"></div>
+            <div class="grid gap-px overflow-hidden bg-novix-green/10 py-px sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ([
+                    ['n' => '10', 'suffix' => '+', 'label' => 'Report types recognized', 'sub' => 'Blood work to X-rays, sorted automatically'],
+                    ['n' => '3', 'suffix' => '', 'label' => 'Languages explained in', 'sub' => 'English, Hindi and Gujarati'],
+                    ['n' => '1', 'suffix' => '', 'label' => 'Account for the family', 'sub' => 'Parents, partner, children, grandparents'],
+                    ['n' => '0', 'suffix' => '', 'label' => 'Paper to keep', 'sub' => 'Photograph it once and let it go'],
+                ] as $stat)
+                    <div class="bg-novix-cream px-6 py-8 text-center" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
+                        <p class="text-4xl font-extrabold tracking-tight text-novix-green">
+                            <span data-count-to="{{ $stat['n'] }}" data-count-suffix="{{ $stat['suffix'] }}">0</span>
+                        </p>
+                        <p class="mt-2 text-sm font-bold text-novix-ink">{{ $stat['label'] }}</p>
+                        <p class="mt-1 text-xs leading-relaxed text-novix-ink/60">{{ $stat['sub'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+            <div class="novix-rule-gold" aria-hidden="true"></div>
+        </div>
+    </section>
+
     {{-- ============ PROBLEM ============ --}}
     <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8" aria-labelledby="problem-heading">
         <div class="mx-auto max-w-2xl text-center">
@@ -283,7 +309,7 @@
                 ['icon' => 'M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-4-5.66V5a2 2 0 1 0-4 0v.34C7.67 6.17 6 8.39 6 11v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9', 'title' => 'Medicine Reminders', 'body' => 'Scheduled reminders for every medication, for every family member, so doses don\'t get missed.'],
                 ['icon' => 'M3 12h18M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9ZM3 12a9 9 0 0 1 9-9M21 12a9 9 0 0 1-9 9', 'title' => 'Multilingual Support', 'body' => 'Report explanations available in multiple languages, so every family member can actually understand them.'],
             ] as $feature)
-                <div class="group rounded-novix border-t-2 border-transparent bg-white p-6 shadow-novix-sm transition hover:-translate-y-1 hover:border-novix-gold/60 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 55 }}ms">
+                <div class="novix-gold-edge group rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-1 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 55 }}ms">
                     <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-green text-white transition group-hover:scale-110" aria-hidden="true">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $feature['icon'] }}"/></svg>
                     </span>
@@ -509,6 +535,8 @@
         </div>
     </section>
 
+    <div class="mx-auto max-w-3xl px-6 lg:px-8"><div class="novix-rule-gold" aria-hidden="true"></div></div>
+
     {{-- ============ FAQ ============ --}}
     <section id="faq" class="scroll-mt-20 mx-auto max-w-3xl px-6 py-20 lg:px-8" aria-labelledby="faq-heading">
         <div class="text-center">
@@ -543,6 +571,7 @@
 
     {{-- ============ FINAL CTA ============ --}}
     <section class="px-6 pb-20 lg:px-8">
+        <div class="mx-auto mb-16 max-w-4xl novix-rule-gold" aria-hidden="true"></div>
         <div class="novix-sheen relative mx-auto max-w-4xl overflow-hidden rounded-novix bg-novix-green px-8 py-14 text-center shadow-novix ring-1 ring-novix-gold/30 sm:px-16" data-reveal>
             <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-novix-gold/10" aria-hidden="true"></div>
             <div class="pointer-events-none absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-white/5" aria-hidden="true"></div>

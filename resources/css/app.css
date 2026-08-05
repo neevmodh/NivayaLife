@@ -72,6 +72,44 @@
     transform: none;
 }
 
+/* Gold as a structural accent, not just a highlight colour.
+   A hairline that fades in from nothing at both ends — used to separate
+   major sections without the hard line of a border. */
+.novix-rule-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 148, 26, 0.55), transparent);
+}
+
+/* Gold gradient text for the one phrase per page that should carry weight. */
+.novix-text-gold {
+    background: linear-gradient(100deg, #C9941A 0%, #E1C37E 45%, #C9941A 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* A card whose gold edge only appears on hover — restrained until touched. */
+.novix-gold-edge {
+    position: relative;
+}
+.novix-gold-edge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, rgba(201, 148, 26, 0.7), transparent 45%, rgba(201, 148, 26, 0.35));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.novix-gold-edge:hover::before {
+    opacity: 1;
+}
+
 /* A slow gold sheen that travels across the final call to action. */
 @keyframes novix-sheen {
     0% { transform: translateX(-120%) skewX(-18deg); }

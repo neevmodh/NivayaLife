@@ -60,6 +60,7 @@
         ];
     }
 
+    $readyReportCount = $recentReports->where('ocr_status', 'completed')->count();
     $processingReports = $recentReports->whereIn('ocr_status', ['pending', 'processing']);
     if ($processingReports->isNotEmpty()) {
         $attention[] = [
@@ -240,20 +241,50 @@
             </div>
         </div>
 
-        {{-- Needs attention — renders only when something actually needs it. --}}
+        {{-- Needs attention — renders only when something actually needs it.
+             On wide screens the items sit side by side instead of stacking
+             into a tall column that pushes the real content off-screen. --}}
         @if(count($attention))
-            <div class="animate-novix-fade-up overflow-hidden rounded-novix bg-white shadow-novix-sm dark:bg-white/5" style="animation-delay:60ms">
-                <ul class="divide-y divide-gray-100 dark:divide-white/10">
+            <div class="animate-novix-fade-up overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix-sm dark:bg-white/5" style="animation-delay:60ms">
+                <ul class="divide-y divide-gray-100 dark:divide-white/10 lg:flex lg:divide-x lg:divide-y-0">
                     @foreach($attention as $item)
-                        <li class="flex items-center gap-3 px-5 py-3.5">
-                            <span class="h-2 w-2 flex-shrink-0 rounded-full {{ $attentionTones[$item['tone']] }}" aria-hidden="true"></span>
+                        <li class="flex flex-1 items-center gap-3 px-5 py-3.5">
+                            <span class="relative flex h-2.5 w-2.5 flex-shrink-0" aria-hidden="true">
+                                @if($item['tone'] === 'urgent')
+                                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full {{ $attentionTones[$item['tone']] }} opacity-60"></span>
+                                @endif
+                                <span class="relative inline-flex h-2.5 w-2.5 rounded-full {{ $attentionTones[$item['tone']] }}"></span>
+                            </span>
                             <p class="min-w-0 flex-1 text-sm font-medium text-novix-ink dark:text-white">{{ $item['text'] }}</p>
-                            <a href="{{ $item['url'] }}" class="flex-shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold text-novix-green transition hover:bg-novix-mint/50 dark:text-novix-mint dark:hover:bg-white/10">{{ $item['label'] }}</a>
+                            <a href="{{ $item['url'] }}" class="flex-shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold text-novix-green transition hover:bg-novix-mint/50 active:scale-95 dark:text-novix-mint dark:hover:bg-white/10">{{ $item['label'] }}</a>
                         </li>
                     @endforeach
                 </ul>
             </div>
         @endif
+
+        {{-- Desktop-only stat rail. On a phone these numbers are already one
+             swipe away in the cards below, so it would only add scrolling. --}}
+        <div class="hidden animate-novix-fade-up gap-4 lg:grid lg:grid-cols-4" style="animation-delay:80ms">
+            @php
+                $railStats = [
+                    ['value' => $recentReports->count(), 'label' => 'Recent reports', 'sub' => $readyReportCount.' explained', 'url' => route('reports.index')],
+                    ['value' => $activeMedications->count(), 'label' => 'Active medications', 'sub' => $pendingDoseCount > 0 ? $pendingDoseCount.' dose'.($pendingDoseCount === 1 ? '' : 's').' left today' : 'All taken today', 'url' => route('medications.index').'?member='.$active->id],
+                    ['value' => $upcomingVaccinations->count(), 'label' => 'Vaccinations tracked', 'sub' => $nextVaccinationDays === null ? 'None scheduled' : ($nextVaccinationDays < 0 ? 'One overdue' : 'Next in '.$nextVaccinationDays.' days'), 'url' => route('vaccinations.index').'?member='.$active->id],
+                    ['value' => $familyMembers->count(), 'label' => 'Family members', 'sub' => 'One account, one history', 'url' => route('family.index')],
+                ];
+            @endphp
+            @foreach($railStats as $stat)
+                <a href="{{ $stat['url'] }}" class="novix-gold-edge group rounded-novix bg-white p-5 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5">
+                    <p class="text-3xl font-extrabold tracking-tight text-novix-ink dark:text-white">{{ $stat['value'] }}</p>
+                    <p class="mt-1 text-sm font-bold text-novix-ink dark:text-white">{{ $stat['label'] }}</p>
+                    <p class="mt-0.5 flex items-center gap-1 text-xs text-novix-muted">
+                        {{ $stat['sub'] }}
+                        <svg class="h-3 w-3 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </p>
+                </a>
+            @endforeach
+        </div>
 
         {{-- Main grid: what's happening on the left, tools and vitals on the right. --}}
         <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
