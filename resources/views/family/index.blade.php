@@ -13,7 +13,7 @@
                 <p class="mt-1 text-sm text-novix-muted">Everyone linked to your Nivaya Life account.</p>
             </div>
             <a href="{{ route('family.add') }}"
-                class="flex items-center gap-2 rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark">
+                class="flex items-center gap-2 rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:-translate-y-0.5 hover:bg-novix-green-dark active:translate-y-0 active:scale-95">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 Add Family Member
             </a>
@@ -40,21 +40,32 @@
 
         {{-- Active --}}
         <section>
-            <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
-                <span class="h-2 w-2 rounded-full bg-novix-green"></span>
-                Active ({{ $active->count() }})
-            </h3>
+            <div class="mb-4 flex items-center gap-3">
+                <h3 class="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-novix-muted">
+                    <span class="h-2 w-2 rounded-full bg-novix-green"></span>
+                    Active
+                </h3>
+                <span class="rounded-full bg-novix-mint px-2 py-0.5 text-[11px] font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ $active->count() }}</span>
+                <span class="h-px flex-1 bg-gray-100 dark:bg-white/10" aria-hidden="true"></span>
+            </div>
 
             @if($active->isEmpty())
-                <p class="text-sm text-novix-muted">No active family members yet.</p>
+                <div class="rounded-novix bg-white shadow-novix-sm dark:bg-white/5">
+                    <x-empty-state
+                        title="No family members yet"
+                        hint="Add a parent, partner or child and their records live alongside yours."
+                        action-label="Add a family member"
+                        :action-url="route('family.add')"
+                        class="py-12" />
+                </div>
             @else
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($active as $member)
                         @php($badge = $accessBadge($member))
                         @php($reciprocal = $isReciprocal($member))
-                        <div class="rounded-novix bg-white p-5 shadow-novix-sm transition hover:shadow-novix dark:bg-white/5 {{ $reciprocal ? 'border border-novix-blue/20' : '' }}">
-                            <div class="flex items-start gap-3">
-                                <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-12 w-12" />
+                        <div class="novix-gold-edge group rounded-novix bg-white p-5 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5 {{ $reciprocal ? 'border border-novix-blue/20' : '' }}">
+                            <div class="flex items-start gap-3.5">
+                                <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-16 w-16" class="flex-shrink-0 shadow-sm transition group-hover:scale-105" />
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-sm font-bold text-novix-ink dark:text-white">{{ $member->full_name }}</p>
                                     <p class="flex items-center gap-1 text-xs text-novix-muted">

@@ -1,6 +1,15 @@
 @php
     $typeIcons = ['report' => '&#128196;', 'medication' => '&#128138;', 'vaccination' => '&#128137;', 'metric' => '&#128200;'];
     $years = $grouped->keys()->sortDesc()->values();
+
+    // Each kind of event gets its own colour, so a year's worth of history is
+    // scannable by shape and colour before any of it is read.
+    $typeTone = [
+        'report' => 'bg-novix-green',
+        'medication' => 'bg-novix-blue',
+        'vaccination' => 'bg-novix-gold',
+        'metric' => 'bg-novix-pink-dark',
+    ];
 @endphp
 
 <x-app-layout>
@@ -118,8 +127,12 @@
         {{-- Feed --}}
         <div class="mt-6 space-y-6">
             @if($entryCount === 0)
-                <div class="rounded-novix bg-white p-10 text-center shadow-novix-sm dark:bg-white/5">
-                    <p class="text-sm text-novix-muted">Nothing found for these filters.</p>
+                <div class="rounded-novix bg-white shadow-novix-sm dark:bg-white/5">
+                    <x-empty-state
+                        title="Nothing in this range"
+                        hint="Try widening the dates or clearing the search — everything uploaded shows up here in order."
+                        icon="clock"
+                        class="py-14" />
                 </div>
             @endif
 
@@ -129,16 +142,19 @@
                     <button type="button" @click="open = !open" class="flex w-full items-center gap-2 text-left">
                         <svg class="h-4 w-4 text-novix-muted transition-transform" :class="open ? 'rotate-90' : ''" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <h3 class="text-lg font-bold text-novix-ink dark:text-white">{{ $year }}</h3>
-                        <span class="text-xs text-novix-muted">({{ $grouped[$year]->flatten(1)->count() }})</span>
+                        <span class="rounded-full bg-novix-mint px-2 py-0.5 text-[11px] font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ $grouped[$year]->flatten(1)->count() }}</span>
+                        <span class="h-px flex-1 bg-gray-100 dark:bg-white/10" aria-hidden="true"></span>
                     </button>
 
-                    <div x-show="open" x-cloak class="mt-3 space-y-5 border-l-2 border-gray-100 pl-5 dark:border-white/10">
+                    <div x-show="open" x-cloak class="ml-1 mt-3 space-y-5 border-l-2 border-novix-green/15 pl-7 dark:border-white/10">
                         @foreach($grouped[$year] as $month => $monthEntries)
                             <div>
                                 <h4 class="mb-2 text-xs font-bold uppercase tracking-wide text-novix-muted">{{ $month }}</h4>
                                 <div class="space-y-2">
                                     @foreach($monthEntries->sortByDesc('date') as $entry)
-                                        <div class="rounded-novix bg-white shadow-novix-sm dark:bg-white/5" x-data="{ open: false }">
+                                        {{-- The node sits in the left gutter, on the spine. --}}
+                                        <div class="novix-gold-edge relative rounded-novix bg-white shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5" x-data="{ open: false }">
+                                            <span class="absolute -left-[27px] top-6 h-3 w-3 rounded-full {{ $typeTone[$entry['type']] ?? 'bg-novix-muted' }} ring-4 ring-novix-cream dark:ring-novix-night" aria-hidden="true"></span>
                                             <div class="flex items-start gap-3 p-4">
                                                 @if(isset($entry['compare']))
                                                     <input type="checkbox"
@@ -147,7 +163,7 @@
                                                         class="mt-1.5 h-4 w-4 flex-shrink-0 rounded border-gray-300 text-novix-green focus:ring-novix-green">
                                                 @endif
 
-                                                <span class="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-sm dark:bg-white/10">{!! $typeIcons[$entry['type']] !!}</span>
+                                                <span class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-novix-cream text-base transition group-hover:scale-110 dark:bg-white/10">{!! $typeIcons[$entry['type']] !!}</span>
 
                                                 <button type="button" @click="open = !open" class="min-w-0 flex-1 text-left">
                                                     <p class="truncate text-sm font-semibold capitalize text-novix-ink dark:text-white">{{ $entry['title'] }}</p>
@@ -158,7 +174,7 @@
                                                 </button>
 
                                                 @if($entry['type'] === 'report')
-                                                    <a href="{{ route('reports.show', $entry['model']) }}" class="flex-shrink-0 text-xs font-semibold text-novix-green hover:underline">Open</a>
+                                                    <a href="{{ route('reports.show', $entry['model']) }}" class="group/open flex flex-shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-novix-green transition hover:bg-novix-mint/50 dark:hover:bg-white/10">Open<svg class="h-3 w-3 transition group-hover/open:translate-x-0.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                                                 @endif
                                             </div>
 

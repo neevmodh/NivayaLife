@@ -18,6 +18,10 @@
         <button type="button" @click="lang = 'gu'" :class="lang === 'gu' ? 'bg-novix-green text-white' : 'bg-white text-novix-ink'" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">ગુજરાતી</button>
     </div>
 
+    @php
+        $severeAllergies = $allergies->where('severity', 'severe');
+    @endphp
+
     <div class="overflow-hidden rounded-novix bg-white shadow-novix">
         {{-- Header --}}
         <div class="flex items-center justify-between gap-3 bg-novix-green px-6 py-4">
@@ -45,20 +49,58 @@
             </div>
         </div>
 
-        {{-- Blood group — the single most scanned-for fact --}}
-        <div class="flex items-center justify-between bg-novix-pink/20 px-6 py-5">
-            <span class="text-sm font-bold uppercase tracking-wide text-novix-pink-dark" x-text="labels[lang].blood_group"></span>
-            <span class="text-4xl font-extrabold text-novix-pink-dark">{{ $member->blood_group ?? '—' }}</span>
+        {{-- Critical band. This page is read by a stranger, in a hurry, often
+             in poor light: blood group and severe allergies come before
+             everything else and are sized to be read at a glance. --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2">
+            <div class="flex flex-col items-center justify-center border-b border-gray-100 bg-novix-pink/20 px-6 py-6 sm:border-b-0 sm:border-r">
+                <span class="text-[11px] font-bold uppercase tracking-widest text-novix-pink-dark" x-text="labels[lang].blood_group"></span>
+                <span class="mt-1 text-5xl font-extrabold leading-none text-novix-pink-dark">{{ $member->blood_group ?? '—' }}</span>
+            </div>
+
+            <div class="flex flex-col justify-center px-6 py-6 {{ $severeAllergies->isNotEmpty() ? 'bg-novix-pink-dark' : 'bg-novix-mint/40' }}">
+                @if($severeAllergies->isNotEmpty())
+                    <span class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-white/80">
+                        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span x-text="labels[lang].severe"></span> <span x-text="labels[lang].allergies"></span>
+                    </span>
+                    <ul class="mt-1.5 space-y-0.5">
+                        @foreach($severeAllergies as $allergy)
+                            <li class="text-xl font-extrabold leading-tight text-white">{{ $allergy->allergen_name }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <span class="text-[11px] font-bold uppercase tracking-widest text-novix-green" x-text="labels[lang].allergies"></span>
+                    <span class="mt-1 text-lg font-bold text-novix-green" x-text="labels[lang].no_allergies"></span>
+                @endif
+            </div>
         </div>
+
+        {{-- Call, immediately after the critical facts rather than buried. --}}
+        @if($member->emergency_contact_phone)
+            <a href="tel:{{ $member->emergency_contact_phone }}"
+                class="flex items-center gap-3 border-y border-gray-100 bg-novix-green px-6 py-4 text-white transition active:scale-[0.99]">
+                <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-white/15" aria-hidden="true">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="min-w-0 flex-1">
+                    <span class="block text-[11px] font-semibold uppercase tracking-widest text-white/70" x-text="labels[lang].emergency_contact"></span>
+                    <span class="block truncate text-base font-bold">{{ $member->emergency_contact_name ?? $member->emergency_contact_phone }}</span>
+                    <span class="block truncate text-xs text-white/70">{{ $member->emergency_contact_phone }}@if($member->emergency_contact_relation) &middot; {{ Str::headline($member->emergency_contact_relation) }}@endif</span>
+                </span>
+                <span class="flex-shrink-0 rounded-full bg-white px-4 py-2 text-sm font-extrabold text-novix-green" x-text="labels[lang].call"></span>
+            </a>
+        @endif
 
         {{-- Allergies --}}
         <div class="border-t border-gray-100 p-6">
             <h3 class="text-xs font-bold uppercase tracking-wide text-novix-muted" x-text="labels[lang].allergies"></h3>
-            @if($allergies->isEmpty())
-                <p class="mt-2 text-sm text-novix-muted" x-text="labels[lang].no_allergies"></p>
+            @php($otherAllergies = $allergies->where('severity', '!=', 'severe'))
+            @if($otherAllergies->isEmpty())
+                <p class="mt-2 text-sm text-novix-muted">{{ $allergies->isEmpty() ? '' : '' }}<span x-text="labels[lang].no_allergies"></span></p>
             @else
                 <ul class="mt-2 space-y-1.5">
-                    @foreach($allergies as $allergy)
+                    @foreach($otherAllergies as $allergy)
                         @php($severityClass = match($allergy->severity) {
                             'severe' => 'bg-novix-pink-dark text-white',
                             'moderate' => 'bg-novix-yellow/40 text-novix-ink',
@@ -98,25 +140,6 @@
                         <li>{{ $medication->medicine_name }} @if($medication->dosage) <span class="text-novix-muted">— {{ $medication->dosage }}</span> @endif</li>
                     @endforeach
                 </ul>
-            @endif
-        </div>
-
-        {{-- Emergency contact --}}
-        <div class="border-t border-gray-100 bg-novix-mint/30 p-6">
-            <h3 class="text-xs font-bold uppercase tracking-wide text-novix-muted" x-text="labels[lang].emergency_contact"></h3>
-            @if($member->emergency_contact_phone)
-                <a href="tel:{{ $member->emergency_contact_phone }}" class="mt-2 flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm transition hover:shadow-novix-sm">
-                    <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-novix-green text-white" aria-hidden="true">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </span>
-                    <span class="min-w-0 flex-1">
-                        <span class="block truncate font-semibold text-novix-ink">{{ $member->emergency_contact_name ?? '—' }}</span>
-                        <span class="block text-xs text-novix-muted">{{ $member->emergency_contact_phone }} @if($member->emergency_contact_relation) &middot; {{ Str::headline($member->emergency_contact_relation) }} @endif</span>
-                    </span>
-                    <span class="flex-shrink-0 rounded-full bg-novix-green px-3 py-1.5 text-xs font-bold text-white" x-text="labels[lang].call"></span>
-                </a>
-            @else
-                <p class="mt-2 text-sm text-novix-muted" x-text="labels[lang].no_contact"></p>
             @endif
         </div>
 
