@@ -1,4 +1,14 @@
-# NivayaLife
+<div align="center">
+  <img src="docs/assets/logo.png" alt="NivayaLife logo" width="120" height="120">
+
+  # NivayaLife
+
+  **Your family's health records, online — no more paper.**
+
+  [Live app](https://nivayalife.up.railway.app) · [Report an issue](https://github.com/neevmodh/NivayaLife/issues)
+</div>
+
+<div align="center">
 
 [![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php&logoColor=white)](https://www.php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
@@ -12,6 +22,8 @@
 [![Docker](https://img.shields.io/badge/Docker-multi--service-2496ED?style=flat-square&logo=docker&logoColor=white)](Dockerfile)
 [![Railway](https://img.shields.io/badge/Railway-deployed-0B0D0E?style=flat-square&logo=railway&logoColor=white)](https://railway.com)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)](LICENSE)
+
+</div>
 
 NivayaLife is a family health record manager. It gives a household a single place to store, understand, and act on every family member's medical history — lab reports, prescriptions, medications, vitals, allergies, and emergency information — instead of scattered paper files and phone photos.
 
@@ -354,8 +366,8 @@ Authentication and registration; dashboard and profile; family management and in
 ### Installation
 
 ```bash
-git clone https://github.com/NovixHealth/Novix.git
-cd Novix
+git clone https://github.com/neevmodh/NivayaLife.git
+cd NivayaLife
 
 composer install
 npm install
