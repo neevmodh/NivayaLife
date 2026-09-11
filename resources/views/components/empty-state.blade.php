@@ -21,8 +21,8 @@
     // "positive" is for the all-clear case (no medications is good news);
     // "neutral" is for the nothing-here-yet case (no reports uploaded).
     $tones = [
-        'neutral' => 'bg-novix-cream text-novix-muted dark:bg-white/10',
-        'positive' => 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint',
+        'neutral' => 'bg-nivayalife-cream text-nivayalife-muted dark:bg-white/10',
+        'positive' => 'bg-nivayalife-mint text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint',
     ];
 @endphp
 
@@ -30,12 +30,12 @@
     <span class="flex h-11 w-11 items-center justify-center rounded-full {{ $tones[$tone] ?? $tones['neutral'] }}" aria-hidden="true">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">{!! $icons[$icon] ?? $icons['check'] !!}</svg>
     </span>
-    <p class="text-sm font-medium text-novix-ink dark:text-white">{{ $title }}</p>
+    <p class="text-sm font-medium text-nivayalife-ink dark:text-white">{{ $title }}</p>
     @if($hint)
-        <p class="-mt-1 max-w-[28ch] text-xs text-novix-muted">{{ $hint }}</p>
+        <p class="-mt-1 max-w-[28ch] text-xs text-nivayalife-muted">{{ $hint }}</p>
     @endif
     @if($actionLabel && $actionUrl)
-        <a href="{{ $actionUrl }}" class="mt-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-novix-green transition hover:bg-novix-mint/50 dark:text-novix-mint dark:hover:bg-white/10">
+        <a href="{{ $actionUrl }}" class="mt-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-nivayalife-green transition hover:bg-nivayalife-mint/50 dark:text-nivayalife-mint dark:hover:bg-white/10">
             {{ $actionLabel }}
         </a>
     @endif

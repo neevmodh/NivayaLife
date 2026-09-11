@@ -22,7 +22,7 @@ class AssistantContextBuilder
 
     private const APP_GUIDE = <<<'GUIDE'
     - Reports: uploaded at "Upload Report" (PDF or photo, multiple at once). The app reads the document with OCR and writes a short AI summary automatically. Reports can be searched and filtered by type/date on the "Reports" page.
-    - Family: the account owner can add family members and manage their records, or invite them to link their own Novix account and share access both ways.
+    - Family: the account owner can add family members and manage their records, or invite them to link their own NivayaLife account and share access both ways.
     - Emergency Card: a printable/shareable ID card with blood group, allergies, and emergency contact, for urgent situations.
     - Health Timeline: a combined chronological view of reports, medications, vaccinations, and vitals, with search/filter and a PDF export.
     - Sharing: a report or a full summary can be shared via a secure link, optionally with a PIN and a one-time-view expiry, without the recipient needing an account.

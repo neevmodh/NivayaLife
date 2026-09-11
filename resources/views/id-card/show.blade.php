@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Emergency ID Card</h2>
+        <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Emergency ID Card</h2>
     </x-slot>
 
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
 
         @if(session('status'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-transition
-                class="mb-6 rounded-xl bg-novix-mint px-4 py-3 text-sm font-semibold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">
+                class="mb-6 rounded-xl bg-nivayalife-mint px-4 py-3 text-sm font-semibold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">
                 @switch(session('status'))
                     @case('card-reissued') A new card has been issued. The previous card and QR code no longer work. @break
                     @case('card-deactivated') Card deactivated. The public page now shows as inactive. @break
@@ -21,7 +21,7 @@
             <div class="mb-6 flex flex-wrap gap-3">
                 @foreach($familyMembers as $member)
                     <a href="{{ route('id-card.show') }}?member={{ $member->id }}"
-                        class="rounded-full border px-4 py-1.5 text-sm font-medium {{ $member->id === $active->id ? 'border-novix-green bg-novix-green text-white' : 'border-gray-200 text-novix-ink hover:bg-novix-cream' }}">
+                        class="rounded-full border px-4 py-1.5 text-sm font-medium {{ $member->id === $active->id ? 'border-nivayalife-green bg-nivayalife-green text-white' : 'border-gray-200 text-nivayalife-ink hover:bg-nivayalife-cream' }}">
                         {{ Str::of($member->full_name)->words(1, '') }}
                     </a>
                 @endforeach
@@ -38,21 +38,21 @@
         @endphp
 
         @if($missingPhoto || $missingAddress)
-            <div class="mb-6 flex items-start justify-between gap-4 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+            <div class="mb-6 flex items-start justify-between gap-4 rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
                 <div>
-                    <p class="text-sm font-bold text-novix-ink dark:text-white">Complete {{ $active->linked_user_id === auth()->id() ? 'your' : "{$active->full_name}'s" }} card</p>
-                    <p class="mt-0.5 text-xs text-novix-muted">
+                    <p class="text-sm font-bold text-nivayalife-ink dark:text-white">Complete {{ $active->linked_user_id === auth()->id() ? 'your' : "{$active->full_name}'s" }} card</p>
+                    <p class="mt-0.5 text-xs text-nivayalife-muted">
                         Add a {{ $missingPhoto && $missingAddress ? 'photo and address' : ($missingPhoto ? 'photo' : 'address') }} for a more complete emergency card. Both are optional, but help responders identify {{ $active->linked_user_id === auth()->id() ? 'you' : 'them' }}.
                     </p>
                 </div>
-                <a href="{{ $editUrl }}?tab={{ $editTab }}" class="flex-shrink-0 rounded-lg bg-novix-green px-4 py-2 text-xs font-semibold text-white hover:bg-novix-green-dark">Add details</a>
+                <a href="{{ $editUrl }}?tab={{ $editTab }}" class="flex-shrink-0 rounded-lg bg-nivayalife-green px-4 py-2 text-xs font-semibold text-white hover:bg-nivayalife-green-dark">Add details</a>
             </div>
         @endif
 
         {{-- Card --}}
-        <div class="mx-auto overflow-hidden rounded-novix shadow-novix {{ $card->is_active ? 'bg-novix-green' : 'bg-gray-400' }}">
+        <div class="mx-auto overflow-hidden rounded-nivayalife shadow-nivayalife {{ $card->is_active ? 'bg-nivayalife-green' : 'bg-gray-400' }}">
             <div class="flex items-center justify-between px-6 pt-5">
-                <x-novix-logo size="sm" dark />
+                <x-nivayalife-logo size="sm" dark />
                 <span class="text-xs font-semibold uppercase tracking-widest text-white/70">
                     Emergency Card {{ $card->is_active ? '' : '· Inactive' }}
                 </span>
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <div class="mt-6 rounded-xl border border-gray-100 bg-white p-4 text-sm text-novix-muted dark:border-white/10 dark:bg-white/5">
+        <div class="mt-6 rounded-xl border border-gray-100 bg-white p-4 text-sm text-nivayalife-muted dark:border-white/10 dark:bg-white/5">
             Scanning the QR code opens a public emergency page — blood group, allergies, chronic conditions,
             medications, and emergency contact — that anyone can view without logging in, so a first responder can
             read it instantly. No address or account information is ever shown there.
@@ -93,15 +93,15 @@
         {{-- Actions --}}
         <div class="mt-4 flex flex-wrap gap-3">
             <a href="{{ route('emergency.show', $card->card_number) }}" target="_blank"
-                class="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                class="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                 View public page
             </a>
             <a href="{{ route('emergency.pdf.full', $card->card_number) }}"
-                class="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                class="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                 Download full PDF
             </a>
             <a href="{{ route('emergency.pdf.wallet', $card->card_number) }}"
-                class="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                class="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                 Download wallet card
             </a>
 
@@ -109,14 +109,14 @@
 
             <form method="POST" action="{{ route('id-card.toggle-active', $card) }}" onsubmit="return confirm('{{ $card->is_active ? 'Deactivate this card? The public page will immediately stop showing any data.' : 'Reactivate this card?' }}');">
                 @csrf
-                <button type="submit" class="rounded-xl border px-4 py-2.5 text-sm font-semibold {{ $card->is_active ? 'border-novix-pink-dark/30 text-novix-pink-dark hover:bg-novix-pink/10' : 'border-novix-green/30 text-novix-green hover:bg-novix-mint/40' }}">
+                <button type="submit" class="rounded-xl border px-4 py-2.5 text-sm font-semibold {{ $card->is_active ? 'border-nivayalife-pink-dark/30 text-nivayalife-pink-dark hover:bg-nivayalife-pink/10' : 'border-nivayalife-green/30 text-nivayalife-green hover:bg-nivayalife-mint/40' }}">
                     {{ $card->is_active ? 'Deactivate card' : 'Reactivate card' }}
                 </button>
             </form>
 
             <form method="POST" action="{{ route('id-card.reissue') }}" onsubmit="return confirm('Issue a brand new card? The current card number and QR code will stop working immediately.');">
                 @csrf
-                <button type="submit" class="rounded-xl border border-novix-yellow/50 px-4 py-2.5 text-sm font-semibold text-novix-ink hover:bg-novix-yellow/10 dark:text-white">
+                <button type="submit" class="rounded-xl border border-nivayalife-yellow/50 px-4 py-2.5 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-yellow/10 dark:text-white">
                     Reissue card
                 </button>
             </form>
@@ -124,15 +124,15 @@
 
         @if($active->idCardHistory->count() > 1)
             <div class="mt-8" x-data="{ open: false }">
-                <button type="button" @click="open = !open" class="text-xs font-semibold text-novix-muted hover:text-novix-ink">
+                <button type="button" @click="open = !open" class="text-xs font-semibold text-nivayalife-muted hover:text-nivayalife-ink">
                     <span x-text="open ? 'Hide' : 'Show'"></span> issuance history ({{ $active->idCardHistory->count() }})
                 </button>
                 <div x-show="open" x-cloak class="mt-3 space-y-2">
                     @foreach($active->idCardHistory as $historyCard)
                         <div class="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2 text-xs dark:border-white/10">
-                            <span class="font-mono text-novix-ink dark:text-white">{{ $historyCard->card_number }}</span>
-                            <span class="text-novix-muted">Issued {{ $historyCard->issued_at->format('M j, Y') }}</span>
-                            <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $historyCard->is_active ? 'bg-novix-mint text-novix-green' : 'bg-gray-100 text-gray-500' }}">
+                            <span class="font-mono text-nivayalife-ink dark:text-white">{{ $historyCard->card_number }}</span>
+                            <span class="text-nivayalife-muted">Issued {{ $historyCard->issued_at->format('M j, Y') }}</span>
+                            <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $historyCard->is_active ? 'bg-nivayalife-mint text-nivayalife-green' : 'bg-gray-100 text-gray-500' }}">
                                 {{ $historyCard->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </div>

@@ -10,13 +10,13 @@
         $current = (isset($values) && $values !== null) ? ($values->{$name} ?? null) : null;
     @endphp
     <div>
-        <label class="mb-1.5 block text-xs font-semibold text-novix-muted">
+        <label class="mb-1.5 block text-xs font-semibold text-nivayalife-muted">
             {{ Str::headline($name) }}
-            <span class="font-normal lowercase text-novix-muted/70">({{ $column['type_name'] }}{{ $column['nullable'] ? ', optional' : '' }})</span>
+            <span class="font-normal lowercase text-nivayalife-muted/70">({{ $column['type_name'] }}{{ $column['nullable'] ? ', optional' : '' }})</span>
         </label>
 
         @if(!empty($column['enum_options']))
-            <select name="{{ $name }}" class="w-full rounded-xl border border-gray-200 bg-novix-cream/40 px-4 py-2.5 text-sm text-novix-ink shadow-sm focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+            <select name="{{ $name }}" class="w-full rounded-xl border border-gray-200 bg-nivayalife-cream/40 px-4 py-2.5 text-sm text-nivayalife-ink shadow-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30">
                 @if($column['nullable'])
                     <option value="" {{ $current === null ? 'selected' : '' }}>—</option>
                 @endif
@@ -25,19 +25,19 @@
                 @endforeach
             </select>
         @elseif($column['is_boolean'])
-            <select name="{{ $name }}" class="w-full rounded-xl border border-gray-200 bg-novix-cream/40 px-4 py-2.5 text-sm text-novix-ink shadow-sm focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+            <select name="{{ $name }}" class="w-full rounded-xl border border-gray-200 bg-nivayalife-cream/40 px-4 py-2.5 text-sm text-nivayalife-ink shadow-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30">
                 <option value="1" {{ $current ? 'selected' : '' }}>Yes</option>
                 <option value="0" {{ !$current ? 'selected' : '' }}>No</option>
             </select>
         @elseif(in_array($column['type_name'], ['text', 'longtext', 'mediumtext', 'json']))
-            <textarea name="{{ $name }}" rows="4" class="w-full rounded-xl border border-gray-200 bg-novix-cream/40 px-4 py-2.5 text-sm text-novix-ink shadow-sm focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">{{ old($name, $current) }}</textarea>
+            <textarea name="{{ $name }}" rows="4" class="w-full rounded-xl border border-gray-200 bg-nivayalife-cream/40 px-4 py-2.5 text-sm text-nivayalife-ink shadow-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30">{{ old($name, $current) }}</textarea>
         @else
             <input type="text" name="{{ $name }}" value="{{ old($name, $current) }}"
-                class="w-full rounded-xl border border-gray-200 bg-novix-cream/40 px-4 py-2.5 text-sm text-novix-ink shadow-sm focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+                class="w-full rounded-xl border border-gray-200 bg-nivayalife-cream/40 px-4 py-2.5 text-sm text-nivayalife-ink shadow-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30">
         @endif
 
         @error($name)
-            <p class="mt-1 text-xs font-semibold text-novix-pink-dark">{{ $message }}</p>
+            <p class="mt-1 text-xs font-semibold text-nivayalife-pink-dark">{{ $message }}</p>
         @enderror
     </div>
 @endforeach

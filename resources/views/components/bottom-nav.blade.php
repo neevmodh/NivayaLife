@@ -39,7 +39,7 @@
      sm:hidden in the compiled CSS, so it wins the cascade. A bare
      standalone:block emits earlier and loses (verified against the build). --}}
 <nav aria-label="Primary"
-    class="fixed inset-x-0 bottom-0 z-40 border-t border-novix-green/10 bg-white/95 backdrop-blur-lg sm:hidden sm:standalone:block dark:border-white/10 dark:bg-novix-night/95"
+    class="fixed inset-x-0 bottom-0 z-40 border-t border-nivayalife-green/10 bg-white/95 backdrop-blur-lg sm:hidden sm:standalone:block dark:border-white/10 dark:bg-nivayalife-night/95"
     style="padding-bottom: env(safe-area-inset-bottom);">
     <div class="relative mx-auto grid max-w-md grid-cols-5 items-end px-2 pb-1 pt-1.5">
         @foreach($tabs as $i => $tab)
@@ -49,8 +49,8 @@
                     'flex flex-col items-center gap-1 rounded-xl px-1 py-1.5 transition',
                     'col-start-4' => $i === 2,
                     'col-start-5' => $i === 3,
-                    'text-novix-green dark:text-novix-mint' => $tab['active'],
-                    'text-novix-muted' => ! $tab['active'],
+                    'text-nivayalife-green dark:text-nivayalife-mint' => $tab['active'],
+                    'text-nivayalife-muted' => ! $tab['active'],
                 ])
                 @if($tab['active']) aria-current="page" @endif>
                 <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" aria-hidden="true">{!! $tab['icon'] !!}</svg>
@@ -58,7 +58,7 @@
                 {{-- Gold dot echoes the "i" dot in the brand mark. --}}
                 <span @class([
                     'h-1 w-1 rounded-full',
-                    'bg-novix-gold' => $tab['active'],
+                    'bg-nivayalife-gold' => $tab['active'],
                     'bg-transparent' => ! $tab['active'],
                 ]) aria-hidden="true"></span>
             </a>
@@ -67,7 +67,7 @@
         {{-- Absolutely positioned so it straddles the top edge of the bar; the
              grid just leaves column 3 empty for it. --}}
         <a href="{{ route('reports.upload') }}" aria-label="Upload a report"
-            class="absolute left-1/2 top-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-gradient-to-br from-novix-green to-novix-green-dark text-white shadow-lg shadow-novix-green/40 ring-2 ring-novix-gold/60 transition active:scale-95">
+            class="absolute left-1/2 top-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark text-white shadow-lg shadow-nivayalife-green/40 ring-2 ring-nivayalife-gold/60 transition active:scale-95">
             <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v12m0-12 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
     </div>

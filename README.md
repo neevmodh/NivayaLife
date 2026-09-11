@@ -1,4 +1,4 @@
-# Novix
+# NivayaLife
 
 [![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php&logoColor=white)](https://www.php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
@@ -13,11 +13,11 @@
 [![Railway](https://img.shields.io/badge/Railway-deployed-0B0D0E?style=flat-square&logo=railway&logoColor=white)](https://railway.com)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)](LICENSE)
 
-Novix is a family health record manager. It gives a household a single place to store, understand, and act on every family member's medical history — lab reports, prescriptions, medications, vitals, allergies, and emergency information — instead of scattered paper files and phone photos.
+NivayaLife is a family health record manager. It gives a household a single place to store, understand, and act on every family member's medical history — lab reports, prescriptions, medications, vitals, allergies, and emergency information — instead of scattered paper files and phone photos.
 
 Every family member is represented as their own record with two possible modes: a linked member who has their own login (the account owner, or anyone they've invited who accepted), or a dependent member with no login of their own (a child, an elderly parent) whose records the primary account manages directly. Two independent adult accounts can also link to each other and share access on their own terms.
 
-Novix is not a medical device. It organizes, extracts, and explains records for convenience. Every AI-generated summary carries a disclaimer and is never presented as a diagnosis. It does not replace a qualified doctor.
+NivayaLife is not a medical device. It organizes, extracts, and explains records for convenience. Every AI-generated summary carries a disclaimer and is never presented as a diagnosis. It does not replace a qualified doctor.
 
 ## Contents
 
@@ -40,15 +40,15 @@ Novix is not a medical device. It organizes, extracts, and explains records for 
 
 ## System overview
 
-Novix runs as three deployed services, one PHP and two Python, connected over a private network:
+NivayaLife runs as three deployed services, one PHP and two Python, connected over a private network:
 
 | Service | Language | Framework | Role |
 |---|---|---|---|
-| `novix-web` | PHP 8.4 | Laravel 11 | The main application — every user-facing page, all data storage, authentication, and orchestration |
+| `nivayalife-web` | PHP 8.4 | Laravel 11 | The main application — every user-facing page, all data storage, authentication, and orchestration |
 | `xray-vision-service` | Python 3.11 | FastAPI | A pretrained chest X-ray classifier, called only for `xray`-type reports |
 | `clinical-nlp-service` | Python 3.11 | FastAPI | PaddleOCR (primary text extraction) plus biomedical entity recognition |
 
-Both Python services are optional from the main application's point of view. Every call to either one is wrapped in a try/catch on the Laravel side; if a service is unreachable, misconfigured, slow, or returns an error, Novix falls back to its next-best option automatically rather than failing the request. Nothing in the report pipeline hard-depends on either service being available — see [Microservices architecture](#microservices-architecture) for exactly how that fallback works.
+Both Python services are optional from the main application's point of view. Every call to either one is wrapped in a try/catch on the Laravel side; if a service is unreachable, misconfigured, slow, or returns an error, NivayaLife falls back to its next-best option automatically rather than failing the request. Nothing in the report pipeline hard-depends on either service being available — see [Microservices architecture](#microservices-architecture) for exactly how that fallback works.
 
 ## Features
 
@@ -56,7 +56,7 @@ Both Python services are optional from the main application's point of view. Eve
 
 Registration asks only for full name, email, password, phone number, and gender. Everything else — date of birth, blood group, photo, address, height and weight, emergency contact — is optional and can be filled in later from the profile pages. Sign-in supports Google OAuth or email and password; a new Google identity is only written to the database once registration completes, so an abandoned sign-up never leaves a half-created account.
 
-A primary account can add dependents (no login of their own) or invite an independent adult by email. If the person being invited already has their own Novix account, acceptance creates a reciprocal sharing grant instead of colliding with their existing profile — both sides see the connection and can revoke it independently. Every invited person chooses their own sharing scope: full access, reports only, or summary only.
+A primary account can add dependents (no login of their own) or invite an independent adult by email. If the person being invited already has their own NivayaLife account, acceptance creates a reciprocal sharing grant instead of colliding with their existing profile — both sides see the connection and can revoke it independently. Every invited person chooses their own sharing scope: full access, reports only, or summary only.
 
 The dashboard shows a family-member switcher, a BMI trend, recent reports with AI summaries, today's medications, and quick-action tiles. A first-run checklist walks a new account through its first real actions, computed from actual data rather than a fixed flag. Dark mode is persisted server-side per user, so it follows the account across devices.
 
@@ -90,11 +90,11 @@ Sensitive actions — account creation, invitations, sharing grants and revokes,
 
 ### Installability
 
-Novix ships a web app manifest, a service worker, and a custom install-prompt banner, so it can be added to a phone's home screen and launched full-screen, without going through an app store. The service worker deliberately caches nothing except the versioned build output — no page, API response, or report data is ever served from cache — so the app fails safely offline rather than risking stale medical information.
+NivayaLife ships a web app manifest, a service worker, and a custom install-prompt banner, so it can be added to a phone's home screen and launched full-screen, without going through an app store. The service worker deliberately caches nothing except the versioned build output — no page, API response, or report data is ever served from cache — so the app fails safely offline rather than risking stale medical information.
 
 ## Tech stack
 
-### Application (novix-web)
+### Application (nivayalife-web)
 
 | Layer | Technology |
 |---|---|
@@ -128,7 +128,7 @@ Both services are built on FastAPI + Uvicorn, packaged in their own Docker image
 
 ```mermaid
 flowchart LR
-    subgraph Laravel["novix-web (PHP / Laravel)"]
+    subgraph Laravel["nivayalife-web (PHP / Laravel)"]
         Job["ProcessReportOcrJob"]
         XClient["XrayVisionClient"]
         CClient["ClinicalNlpClient"]
@@ -278,7 +278,7 @@ The domain schema is organized into five areas: identity and family structure (u
 ## Project structure
 
 ```
-novix/
+nivayalife/
 ├── app/
 │   ├── Console/Commands/          Scheduled jobs: medication logs, reminders,
 │   │                               vaccination reminders, invitation expiry
@@ -421,7 +421,7 @@ pip install -r requirements.txt
 uvicorn main:app --port 8002
 ```
 
-Set `XRAY_VISION_TOKEN` / `CLINICAL_NLP_TOKEN` identically in both the service's own environment and the main application's `.env`, and point `XRAY_VISION_URL` / `CLINICAL_NLP_URL` at the local ports above. Without them set, Novix falls back to Tesseract for OCR and skips X-ray classifier enrichment and entity detection entirely — no other behavior changes.
+Set `XRAY_VISION_TOKEN` / `CLINICAL_NLP_TOKEN` identically in both the service's own environment and the main application's `.env`, and point `XRAY_VISION_URL` / `CLINICAL_NLP_URL` at the local ports above. Without them set, NivayaLife falls back to Tesseract for OCR and skips X-ray classifier enrichment and entity detection entirely — no other behavior changes.
 
 ## Deployment
 

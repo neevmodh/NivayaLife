@@ -16,27 +16,27 @@
             setTimeout(() => (this.pieces = []), 3800);
         },
     }"
-    @novix:confetti.window="burst()"
+    @nivayalife:confetti.window="burst()"
     class="pointer-events-none fixed inset-0 z-[999] overflow-hidden"
     aria-hidden="true"
 >
     <template x-for="piece in pieces" :key="piece.id">
         <span
-            class="novix-confetti-piece absolute top-[-5%]"
-            :style="`left:${piece.left}%; width:${piece.size}px; height:${piece.size * 0.4}px; background:${piece.color}; animation-delay:${piece.delay}s; animation-duration:${piece.duration}s; --novix-drift:${piece.drift}px; --novix-rotate:${piece.rotate}deg;`"
+            class="nivayalife-confetti-piece absolute top-[-5%]"
+            :style="`left:${piece.left}%; width:${piece.size}px; height:${piece.size * 0.4}px; background:${piece.color}; animation-delay:${piece.delay}s; animation-duration:${piece.duration}s; --nivayalife-drift:${piece.drift}px; --nivayalife-rotate:${piece.rotate}deg;`"
         ></span>
     </template>
 </div>
 
 @once
 <style>
-    @keyframes novix-confetti-fall {
+    @keyframes nivayalife-confetti-fall {
         0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-        100% { transform: translate(var(--novix-drift), 105vh) rotate(var(--novix-rotate)); opacity: 0; }
+        100% { transform: translate(var(--nivayalife-drift), 105vh) rotate(var(--nivayalife-rotate)); opacity: 0; }
     }
-    .novix-confetti-piece {
+    .nivayalife-confetti-piece {
         border-radius: 2px;
-        animation-name: novix-confetti-fall;
+        animation-name: nivayalife-confetti-fall;
         animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
         animation-fill-mode: forwards;
     }

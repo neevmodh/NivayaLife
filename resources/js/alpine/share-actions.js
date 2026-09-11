@@ -4,7 +4,7 @@
  * installed); on browsers without support the button just doesn't render
  * (checked via supportsNativeShare), leaving "Copy link" as the fallback.
  */
-export default function shareActions({ url, title = 'Health report shared via Novix' } = {}) {
+export default function shareActions({ url, title = 'Health report shared via NivayaLife' } = {}) {
     return {
         supportsNativeShare: typeof navigator !== 'undefined' && !!navigator.share,
 

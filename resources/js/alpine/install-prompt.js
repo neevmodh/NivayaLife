@@ -1,11 +1,11 @@
 /**
- * Custom "Install Novix" popup — Chrome suppresses its own automatic
+ * Custom "Install NivayaLife" popup — Chrome suppresses its own automatic
  * install banner once beforeinstallprompt is captured, so this owns showing
  * the prompt entirely. Only fires on browsers that support the event
  * (Chrome/Edge on Android and desktop); Safari/Firefox never dispatch it,
  * so the popup simply never appears there — no broken button, no error.
  */
-const DISMISS_KEY = 'novix_install_dismissed_at';
+const DISMISS_KEY = 'nivayalife_install_dismissed_at';
 const DISMISS_DAYS = 7;
 
 function isStandalone() {

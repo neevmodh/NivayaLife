@@ -1,7 +1,7 @@
 @props([
     'uploadUrl',
     'existingPreviewUrl' => null,
-    'elementId' => 'novix-camera-capture',
+    'elementId' => 'nivayalife-camera-capture',
 ])
 
 {{-- Plain id (not x-ref) so callers outside this component's own Alpine
@@ -13,7 +13,7 @@
     x-data="cameraCapture({ uploadUrl: @js($uploadUrl), existingPreviewUrl: @js($existingPreviewUrl), csrfToken: @js(csrf_token()) })"
     class="text-center"
 >
-    <div class="relative mx-auto flex h-64 w-64 items-center justify-center overflow-hidden rounded-full bg-novix-ink/90 shadow-novix">
+    <div class="relative mx-auto flex h-64 w-64 items-center justify-center overflow-hidden rounded-full bg-nivayalife-ink/90 shadow-nivayalife">
         <video x-ref="video" x-show="cameraStarted && !hasCaptured && !cameraError" autoplay playsinline muted class="h-full w-full scale-x-[-1] object-cover"></video>
 
         <img x-show="hasCaptured && capturedDataUrl" :src="capturedDataUrl" class="h-full w-full object-cover" alt="Captured photo preview">
@@ -33,32 +33,32 @@
             <span x-text="cameraError"></span>
         </div>
 
-        <div x-show="justSaved" x-cloak x-transition class="absolute inset-0 flex items-center justify-center bg-novix-green/80">
+        <div x-show="justSaved" x-cloak x-transition class="absolute inset-0 flex items-center justify-center bg-nivayalife-green/80">
             <svg class="h-14 w-14 text-white" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
     </div>
 
     <div class="mt-5 flex flex-wrap items-center justify-center gap-3">
         <button x-show="!cameraStarted && !hasCaptured && !cameraError" x-cloak type="button" @click="startCamera()"
-            class="rounded-xl bg-novix-green px-6 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark">
+            class="rounded-xl bg-nivayalife-green px-6 py-2.5 text-sm font-semibold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark">
             Turn on camera
         </button>
 
         <button x-show="cameraStarted && !hasCaptured && !cameraError" x-cloak type="button" @click="capture()"
-            class="rounded-xl bg-novix-green px-6 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark">
+            class="rounded-xl bg-nivayalife-green px-6 py-2.5 text-sm font-semibold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark">
             Capture
         </button>
 
         <button x-show="hasCaptured" x-cloak type="button" @click="retake()"
-            class="rounded-xl border border-novix-green/30 bg-white px-6 py-2.5 text-sm font-semibold text-novix-green transition hover:bg-novix-mint/40">
+            class="rounded-xl border border-nivayalife-green/30 bg-white px-6 py-2.5 text-sm font-semibold text-nivayalife-green transition hover:bg-nivayalife-mint/40">
             Retake
         </button>
 
-        <label class="cursor-pointer rounded-xl border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-novix-ink transition hover:bg-novix-cream">
+        <label class="cursor-pointer rounded-xl border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-nivayalife-ink transition hover:bg-nivayalife-cream">
             <span x-text="hasCaptured ? 'Upload different photo' : 'Upload a photo instead'"></span>
             <input type="file" accept="image/*" class="hidden" @change="onFileSelected($event)">
         </label>
     </div>
 
-    <p x-cloak x-show="uploadError" x-text="uploadError" class="mt-3 text-sm text-novix-pink-dark"></p>
+    <p x-cloak x-show="uploadError" x-text="uploadError" class="mt-3 text-sm text-nivayalife-pink-dark"></p>
 </div>

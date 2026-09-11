@@ -10,7 +10,7 @@
     // The gauge's centre is a solid disc that has to match whatever sits behind
     // it. On a white card the old cream default showed as a faint off-colour
     // ring, so callers can now pass the surface they're rendering on.
-    'holeClass' => 'bg-novix-cream dark:bg-novix-night',
+    'holeClass' => 'bg-nivayalife-cream dark:bg-nivayalife-night',
 ])
 
 <div x-data="bmiGauge({ heightCm: @js($heightCm), weightKg: @js($weightKg), editable: @js($editable) })">
@@ -18,9 +18,9 @@
     <div class="mb-5 grid grid-cols-2 gap-3">
         <div>
             <div class="mb-1.5 flex items-center justify-between">
-                <label class="block text-xs font-semibold text-novix-muted">Height *</label>
+                <label class="block text-xs font-semibold text-nivayalife-muted">Height *</label>
                 <select x-model="heightUnit" @change="onUnitChange()"
-                    class="rounded-lg border border-gray-200 bg-transparent px-1.5 py-0.5 text-[11px] font-semibold text-novix-muted focus:outline-none dark:border-white/10">
+                    class="rounded-lg border border-gray-200 bg-transparent px-1.5 py-0.5 text-[11px] font-semibold text-nivayalife-muted focus:outline-none dark:border-white/10">
                     <option value="cm">cm</option>
                     <option value="m">m</option>
                     <option value="ft">ft / in</option>
@@ -30,24 +30,24 @@
 
             <template x-if="heightUnit !== 'ft'">
                 <input type="number" :step="heightUnit === 'm' ? 0.01 : 0.1" x-model.number="heightInput" @input="updateHeightFromInput()" required
-                    @if($dynamicErrors) :class="errorFor('{{ $heightName }}') ? 'border-novix-pink-dark ring-2 ring-novix-pink-dark/20' : 'border-gray-200 focus:border-novix-green'" @endif
-                    class="w-full rounded-xl border bg-novix-cream/40 px-4 py-3 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-novix-green' }}">
+                    @if($dynamicErrors) :class="errorFor('{{ $heightName }}') ? 'border-nivayalife-pink-dark ring-2 ring-nivayalife-pink-dark/20' : 'border-gray-200 focus:border-nivayalife-green'" @endif
+                    class="w-full rounded-xl border bg-nivayalife-cream/40 px-4 py-3 text-sm text-nivayalife-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-nivayalife-green' }}">
             </template>
             <template x-if="heightUnit === 'ft'">
                 <div class="flex gap-2">
                     <input type="number" step="1" min="0" x-model.number="feet" @input="updateHeightFromFeetInches()" placeholder="ft" required
-                        class="w-1/2 rounded-xl border border-gray-200 bg-novix-cream/40 px-3 py-3 text-sm text-novix-ink shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+                        class="w-1/2 rounded-xl border border-gray-200 bg-nivayalife-cream/40 px-3 py-3 text-sm text-nivayalife-ink shadow-sm transition focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30">
                     <input type="number" step="0.1" min="0" max="11.9" x-model.number="inches" @input="updateHeightFromFeetInches()" placeholder="in" required
-                        class="w-1/2 rounded-xl border border-gray-200 bg-novix-cream/40 px-3 py-3 text-sm text-novix-ink shadow-sm transition focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30">
+                        class="w-1/2 rounded-xl border border-gray-200 bg-nivayalife-cream/40 px-3 py-3 text-sm text-nivayalife-ink shadow-sm transition focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30">
                 </div>
             </template>
             <input type="hidden" name="{{ $heightName }}" :value="heightCm">
         </div>
         <div>
-            <label class="mb-1.5 block text-xs font-semibold text-novix-muted">Weight (kg) *</label>
+            <label class="mb-1.5 block text-xs font-semibold text-nivayalife-muted">Weight (kg) *</label>
             <input type="number" step="0.1" min="2" max="400" name="{{ $weightName }}" x-model.number="weightKg" required
-                @if($dynamicErrors) :class="errorFor('{{ $weightName }}') ? 'border-novix-pink-dark ring-2 ring-novix-pink-dark/20' : 'border-gray-200 focus:border-novix-green'" @endif
-                class="w-full rounded-xl border bg-novix-cream/40 px-4 py-3 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-novix-green' }}">
+                @if($dynamicErrors) :class="errorFor('{{ $weightName }}') ? 'border-nivayalife-pink-dark ring-2 ring-nivayalife-pink-dark/20' : 'border-gray-200 focus:border-nivayalife-green'" @endif
+                class="w-full rounded-xl border bg-nivayalife-cream/40 px-4 py-3 text-sm text-nivayalife-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 {{ $dynamicErrors ? '' : 'border-gray-200 focus:border-nivayalife-green' }}">
         </div>
     </div>
     @endif
@@ -57,22 +57,22 @@
             <div class="absolute rounded-full" style="width:{{ $size }}px; height:{{ $size }}px; left:0; top:0; background: conic-gradient(from 270deg, #8FB8E0 0deg 43.71deg, #14503F 43.71deg 77.14deg, #F5C879 77.14deg 102.86deg, #E8615A 102.86deg 180deg, transparent 180deg 360deg);"></div>
             <div class="absolute rounded-full {{ $holeClass }}" style="width:{{ $size * 0.68 }}px; height:{{ $size * 0.68 }}px; left:{{ $size * 0.16 }}px; top:{{ $size * 0.16 }}px;"></div>
         </div>
-        <div class="absolute bottom-2 left-1/2 origin-bottom rounded-full bg-novix-ink transition-transform duration-700 ease-out dark:bg-white"
+        <div class="absolute bottom-2 left-1/2 origin-bottom rounded-full bg-nivayalife-ink transition-transform duration-700 ease-out dark:bg-white"
             style="width:3px; height:{{ $size * 0.39 }}px;"
             :style="`transform: translateX(-50%) rotate(${angle}deg)`"></div>
-        <div class="absolute bottom-0 left-1/2 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-novix-ink dark:bg-white"></div>
+        <div class="absolute bottom-0 left-1/2 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-nivayalife-ink dark:bg-white"></div>
     </div>
 
     <div class="mt-2 text-center">
         <div class="flex items-center justify-center gap-2">
-            <span class="text-3xl font-extrabold text-novix-ink dark:text-white" x-text="bmi > 0 ? bmi : '--'"></span>
+            <span class="text-3xl font-extrabold text-nivayalife-ink dark:text-white" x-text="bmi > 0 ? bmi : '--'"></span>
             @if($trend)
                 @if($trend === 'up')
-                    <span class="text-lg text-novix-pink-dark" title="Up from previous reading">&#8593;</span>
+                    <span class="text-lg text-nivayalife-pink-dark" title="Up from previous reading">&#8593;</span>
                 @elseif($trend === 'down')
-                    <span class="text-lg text-novix-blue" title="Down from previous reading">&#8595;</span>
+                    <span class="text-lg text-nivayalife-blue" title="Down from previous reading">&#8595;</span>
                 @else
-                    <span class="text-lg text-novix-muted" title="Stable">&#8594;</span>
+                    <span class="text-lg text-nivayalife-muted" title="Stable">&#8594;</span>
                 @endif
             @endif
         </div>

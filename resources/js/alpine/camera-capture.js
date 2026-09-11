@@ -1,6 +1,6 @@
 /**
  * Live selfie capture via getUserMedia with a file-upload fallback. Crops to
- * a square and compresses client-side before handing off to novixUpload(),
+ * a square and compresses client-side before handing off to nivayaLifeUpload(),
  * which the parent (wizard or profile page) calls directly via
  * Alpine.$data(el) — no event ping-pong needed.
  */
@@ -104,7 +104,7 @@ export default function cameraCapture({ uploadUrl, existingPreviewUrl = null, cs
         },
 
         /** Called by the parent component. Returns true on success. */
-        async novixUpload() {
+        async nivayaLifeUpload() {
             if (!this.capturedDataUrl || this.capturedDataUrl === existingPreviewUrl) {
                 return !!this.capturedDataUrl;
             }

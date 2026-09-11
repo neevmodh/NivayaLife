@@ -1,12 +1,12 @@
 // Minimal service worker — its only job is satisfying the browser's PWA
 // installability requirement (a registered SW + valid manifest), not
-// offline data access. Novix is an authenticated, data-heavy medical-
+// offline data access. NivayaLife is an authenticated, data-heavy medical-
 // records app: caching HTML/API responses risks showing stale or wrong
 // medical data with no network indicator, so this deliberately stays
 // network-only for everything except the versioned, hashed Vite build
 // output (safe to cache — the filename itself changes on every deploy,
 // so there's no staleness risk).
-const BUILD_CACHE = 'novix-build-v1';
+const BUILD_CACHE = 'nivayalife-build-v1';
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
@@ -42,7 +42,7 @@ self.addEventListener('fetch', (event) => {
 // so the notification behaves like an alarm (stays up until the user acts)
 // rather than a toast that quietly disappears.
 self.addEventListener('push', (event) => {
-    let data = { title: 'Novix', body: 'You have a new reminder.', url: '/dashboard' };
+    let data = { title: 'NivayaLife', body: 'You have a new reminder.', url: '/dashboard' };
     try {
         if (event.data) data = { ...data, ...event.data.json() };
     } catch (e) {

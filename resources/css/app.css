@@ -10,13 +10,13 @@
    and the faintest gold rising from the bottom-left — depth without ever
    competing with the cards sitting on it. Dark mode swaps to the neutral
    charcoal with a soft brand-green aurora instead. */
-.novix-surface {
+.nivayalife-surface {
     background-color: #FBF6EA;
     background-image:
         radial-gradient(60rem 40rem at 110% -10%, rgba(220, 239, 227, 0.6), transparent 60%),
         radial-gradient(50rem 35rem at -10% 110%, rgba(201, 148, 26, 0.07), transparent 55%);
 }
-.dark .novix-surface {
+.dark .nivayalife-surface {
     background-color: #12161B;
     background-image:
         radial-gradient(60rem 40rem at 110% -10%, rgba(20, 80, 63, 0.28), transparent 60%),
@@ -45,13 +45,13 @@
  * already carries an explicit dark:text-* utility keeps its own colour and
  * this only fills the gaps.
  */
-.dark :where(.text-novix-muted) { color: #9BA8A2; }
-.dark :where(.text-novix-ink) { color: #E9EEEB; }
-.dark :where(.text-novix-green) { color: #5FBFA3; }
-.dark :where(.text-novix-ink\/70) { color: rgba(233, 238, 235, 0.72); }
-.dark :where(.text-novix-ink\/60) { color: rgba(233, 238, 235, 0.62); }
-.dark :where(.text-novix-ink\/50) { color: rgba(233, 238, 235, 0.52); }
-.dark :where(.text-novix-ink\/80) { color: rgba(233, 238, 235, 0.82); }
+.dark :where(.text-nivayalife-muted) { color: #9BA8A2; }
+.dark :where(.text-nivayalife-ink) { color: #E9EEEB; }
+.dark :where(.text-nivayalife-green) { color: #5FBFA3; }
+.dark :where(.text-nivayalife-ink\/70) { color: rgba(233, 238, 235, 0.72); }
+.dark :where(.text-nivayalife-ink\/60) { color: rgba(233, 238, 235, 0.62); }
+.dark :where(.text-nivayalife-ink\/50) { color: rgba(233, 238, 235, 0.52); }
+.dark :where(.text-nivayalife-ink\/80) { color: rgba(233, 238, 235, 0.82); }
 /* Hairline borders and dividers disappear against the dark surface. */
 .dark :where(.border-gray-100, .border-gray-200) { border-color: rgba(255, 255, 255, 0.10); }
 .dark :where(.divide-gray-100) > :not([hidden]) ~ :not([hidden]) { border-color: rgba(255, 255, 255, 0.10); }
@@ -75,13 +75,13 @@
 /* Gold as a structural accent, not just a highlight colour.
    A hairline that fades in from nothing at both ends — used to separate
    major sections without the hard line of a border. */
-.novix-rule-gold {
+.nivayalife-rule-gold {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(201, 148, 26, 0.55), transparent);
 }
 
 /* Gold gradient text for the one phrase per page that should carry weight. */
-.novix-text-gold {
+.nivayalife-text-gold {
     background: linear-gradient(100deg, #C9941A 0%, #E1C37E 45%, #C9941A 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -89,10 +89,10 @@
 }
 
 /* A card whose gold edge only appears on hover — restrained until touched. */
-.novix-gold-edge {
+.nivayalife-gold-edge {
     position: relative;
 }
-.novix-gold-edge::before {
+.nivayalife-gold-edge::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -106,7 +106,7 @@
     transition: opacity 0.3s ease;
     pointer-events: none;
 }
-.novix-gold-edge:hover::before {
+.nivayalife-gold-edge:hover::before {
     opacity: 1;
 }
 
@@ -117,30 +117,30 @@
    --------------------------------------------------------------- */
 
 /* Hero ornaments drifting, at different speeds so they never look paired. */
-@keyframes novix-float {
+@keyframes nivayalife-float {
     0%, 100% { transform: translate3d(0, 0, 0); }
     50% { transform: translate3d(0, -18px, 0); }
 }
-.novix-float { animation: novix-float 7s ease-in-out infinite; }
-.novix-float-slow { animation: novix-float 11s ease-in-out infinite; }
+.nivayalife-float { animation: nivayalife-float 7s ease-in-out infinite; }
+.nivayalife-float-slow { animation: nivayalife-float 11s ease-in-out infinite; }
 
 /* The scan line that sweeps a report while the AI "reads" it. */
-@keyframes novix-scan {
+@keyframes nivayalife-scan {
     0% { top: 0; opacity: 0; }
     10% { opacity: 1; }
     90% { opacity: 1; }
     100% { top: 100%; opacity: 0; }
 }
-.novix-scanline {
-    animation: novix-scan 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.nivayalife-scanline {
+    animation: nivayalife-scan 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 /* Caret for the summary that types itself out. */
-@keyframes novix-caret {
+@keyframes nivayalife-caret {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
-.novix-caret::after {
+.nivayalife-caret::after {
     content: '';
     display: inline-block;
     width: 2px;
@@ -148,57 +148,57 @@
     margin-left: 2px;
     vertical-align: text-bottom;
     background: currentColor;
-    animation: novix-caret 1s step-end infinite;
+    animation: nivayalife-caret 1s step-end infinite;
 }
 
 /* Emergency card flip. */
-.novix-flip { perspective: 1200px; }
-.novix-flip-inner {
+.nivayalife-flip { perspective: 1200px; }
+.nivayalife-flip-inner {
     position: relative;
     transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
 }
-.novix-flip.is-flipped .novix-flip-inner { transform: rotateY(180deg); }
-.novix-flip-face {
+.nivayalife-flip.is-flipped .nivayalife-flip-inner { transform: rotateY(180deg); }
+.nivayalife-flip-face {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
-.novix-flip-back {
+.nivayalife-flip-back {
     position: absolute;
     inset: 0;
     transform: rotateY(180deg);
 }
 
 /* A slow gold sheen that travels across the final call to action. */
-@keyframes novix-sheen {
+@keyframes nivayalife-sheen {
     0% { transform: translateX(-120%) skewX(-18deg); }
     55%, 100% { transform: translateX(320%) skewX(-18deg); }
 }
-.novix-sheen::after {
+.nivayalife-sheen::after {
     content: '';
     position: absolute;
     inset-block: 0;
     width: 45%;
     background: linear-gradient(90deg, transparent, rgba(225, 195, 126, 0.16), transparent);
-    animation: novix-sheen 6.5s ease-in-out infinite;
+    animation: nivayalife-sheen 6.5s ease-in-out infinite;
     pointer-events: none;
 }
 
 /* Respect users who ask the OS for less motion: the fade/slide entrance
    animations and shake become instant instead of animated. */
 @media (prefers-reduced-motion: reduce) {
-    .animate-novix-fade-up,
-    .animate-novix-shake,
+    .animate-nivayalife-fade-up,
+    .animate-nivayalife-shake,
     .animate-bounce,
     .animate-ping,
-    .novix-sheen::after,
-    .novix-float,
-    .novix-float-slow,
-    .novix-scanline,
-    .novix-caret::after {
+    .nivayalife-sheen::after,
+    .nivayalife-float,
+    .nivayalife-float-slow,
+    .nivayalife-scanline,
+    .nivayalife-caret::after {
         animation: none !important;
     }
-    .novix-flip-inner {
+    .nivayalife-flip-inner {
         transition: none !important;
     }
     [data-reveal] {

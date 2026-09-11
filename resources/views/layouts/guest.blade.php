@@ -14,17 +14,17 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-novix-ink antialiased">
-        <div class="novix-surface flex min-h-screen flex-col items-center bg-novix-cream px-4 pt-10 sm:justify-center sm:pt-0">
+    <body class="font-sans text-nivayalife-ink antialiased">
+        <div class="nivayalife-surface flex min-h-screen flex-col items-center bg-nivayalife-cream px-4 pt-10 sm:justify-center sm:pt-0">
             <a href="/" aria-label="Nivaya Life home">
-                <x-novix-logo />
+                <x-nivayalife-logo />
             </a>
 
-            <div class="mt-6 w-full overflow-hidden rounded-novix bg-white p-6 shadow-novix sm:max-w-md sm:p-8">
+            <div class="mt-6 w-full overflow-hidden rounded-nivayalife bg-white p-6 shadow-nivayalife sm:max-w-md sm:p-8">
                 {{ $slot }}
             </div>
 
-            <p class="mt-6 pb-8 text-xs text-novix-ink/50">&copy; {{ date('Y') }} Nivaya Life</p>
+            <p class="mt-6 pb-8 text-xs text-nivayalife-ink/50">&copy; {{ date('Y') }} Nivaya Life</p>
         </div>
     </body>
 </html>

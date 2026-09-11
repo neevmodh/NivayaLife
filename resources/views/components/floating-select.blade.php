@@ -13,7 +13,7 @@
 @php($fieldId = $id ?? $name)
 
 <div class="relative">
-    <label for="{{ $fieldId }}" class="mb-1.5 block text-xs font-semibold text-novix-muted">
+    <label for="{{ $fieldId }}" class="mb-1.5 block text-xs font-semibold text-nivayalife-muted">
         {{ $label }}{{ $required ? ' *' : '' }}
     </label>
     <select
@@ -21,9 +21,9 @@
         id="{{ $fieldId }}"
         @if($required) required @endif
         @if($dynamicErrors)
-        :class="errorFor('{{ $name }}') ? 'border-novix-pink-dark ring-2 ring-novix-pink-dark/20' : 'border-gray-200 focus:border-novix-green'"
+        :class="errorFor('{{ $name }}') ? 'border-nivayalife-pink-dark ring-2 ring-nivayalife-pink-dark/20' : 'border-gray-200 focus:border-nivayalife-green'"
         @endif
-        {{ $attributes->merge(['class' => 'w-full appearance-none rounded-xl border bg-novix-cream/40 px-4 py-3 text-sm text-novix-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-novix-green/30' . ($dynamicErrors ? '' : ' border-gray-200 focus:border-novix-green')]) }}
+        {{ $attributes->merge(['class' => 'w-full appearance-none rounded-xl border bg-nivayalife-cream/40 px-4 py-3 text-sm text-nivayalife-ink shadow-sm transition focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30' . ($dynamicErrors ? '' : ' border-gray-200 focus:border-nivayalife-green')]) }}
     >
         <option value="" @selected($value === '')>{{ $placeholder }}</option>
         @foreach($options as $optValue => $optLabel)
@@ -32,8 +32,8 @@
     </select>
 
     @if($dynamicErrors)
-        <p x-cloak x-show="errorFor('{{ $name }}')" x-text="errorFor('{{ $name }}')" class="mt-1 text-xs text-novix-pink-dark"></p>
+        <p x-cloak x-show="errorFor('{{ $name }}')" x-text="errorFor('{{ $name }}')" class="mt-1 text-xs text-nivayalife-pink-dark"></p>
     @elseif($error)
-        <p class="mt-1 text-xs text-novix-pink-dark">{{ $error }}</p>
+        <p class="mt-1 text-xs text-nivayalife-pink-dark">{{ $error }}</p>
     @endif
 </div>

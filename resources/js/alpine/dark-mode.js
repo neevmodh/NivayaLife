@@ -6,7 +6,7 @@
  */
 export default function darkMode({ persistUrl = null, csrfToken = null, initial = null } = {}) {
     return {
-        isDark: initial ?? localStorage.getItem('novix-theme') === 'dark',
+        isDark: initial ?? localStorage.getItem('nivayalife-theme') === 'dark',
 
         init() {
             this.apply();
@@ -15,7 +15,7 @@ export default function darkMode({ persistUrl = null, csrfToken = null, initial 
         toggle() {
             this.isDark = !this.isDark;
             this.apply();
-            localStorage.setItem('novix-theme', this.isDark ? 'dark' : 'light');
+            localStorage.setItem('nivayalife-theme', this.isDark ? 'dark' : 'light');
 
             if (persistUrl) {
                 fetch(persistUrl, {

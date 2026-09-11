@@ -16,24 +16,24 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased dark:bg-novix-night">
-        <div class="novix-surface flex min-h-screen items-center justify-center bg-novix-cream p-4 dark:bg-novix-night sm:p-6">
-            <div class="w-full max-w-4xl bg-white dark:bg-white/5 rounded-novix shadow-novix overflow-hidden grid md:grid-cols-2 relative">
+    <body class="font-sans antialiased dark:bg-nivayalife-night">
+        <div class="nivayalife-surface flex min-h-screen items-center justify-center bg-nivayalife-cream p-4 dark:bg-nivayalife-night sm:p-6">
+            <div class="w-full max-w-4xl bg-white dark:bg-white/5 rounded-nivayalife shadow-nivayalife overflow-hidden grid md:grid-cols-2 relative">
                 <div class="absolute right-4 top-4 z-10 md:right-6 md:top-6">
                     <x-dark-mode-toggle />
                 </div>
 
-                <div class="relative hidden md:flex flex-col justify-between bg-novix-green p-10 text-white overflow-hidden">
+                <div class="relative hidden md:flex flex-col justify-between bg-nivayalife-green p-10 text-white overflow-hidden">
                     <div class="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-white/5"></div>
                     <div class="absolute -left-16 bottom-0 h-64 w-64 rounded-full bg-white/5"></div>
 
                     <div class="relative">
-                        <a href="{{ url('/') }}"><x-novix-logo dark /></a>
+                        <a href="{{ url('/') }}"><x-nivayalife-logo dark /></a>
                     </div>
 
                     <div class="relative">
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">
-                            <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
+                            <span class="h-1.5 w-1.5 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
                             No more paper
                         </span>
                         <h2 class="mt-4 text-3xl font-bold leading-tight">Welcome to Nivaya Life</h2>
@@ -69,17 +69,17 @@
 
                 <div class="p-8 sm:p-10 flex flex-col justify-center">
                     <div class="md:hidden mb-6 flex justify-center">
-                        <x-novix-logo />
+                        <x-nivayalife-logo />
                     </div>
 
                     <div class="mx-auto w-full max-w-sm">
-                        <div class="flex rounded-full bg-novix-mint/60 p-1 text-sm font-medium">
+                        <div class="flex rounded-full bg-nivayalife-mint/60 p-1 text-sm font-medium">
                             <a href="{{ route('login') }}"
-                                class="flex-1 text-center rounded-full py-2 transition {{ $active === 'login' ? 'bg-novix-green text-white shadow-novix-sm' : 'text-novix-green/70 hover:text-novix-green' }}">
+                                class="flex-1 text-center rounded-full py-2 transition {{ $active === 'login' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green' }}">
                                 Login
                             </a>
                             <a href="{{ route('register') }}"
-                                class="flex-1 text-center rounded-full py-2 transition {{ $active === 'register' ? 'bg-novix-green text-white shadow-novix-sm' : 'text-novix-green/70 hover:text-novix-green' }}">
+                                class="flex-1 text-center rounded-full py-2 transition {{ $active === 'register' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green' }}">
                                 Create Account
                             </a>
                         </div>

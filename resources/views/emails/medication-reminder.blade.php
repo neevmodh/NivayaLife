@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Medication reminder — Novix</title>
+    <title>Medication reminder — NivayaLife</title>
 </head>
 <body style="margin:0; padding:0; background-color:#FBF6EA; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FBF6EA; padding: 32px 16px;">
@@ -13,7 +13,7 @@
 
                     <tr>
                         <td style="background-color:#14503F; padding:32px 40px;">
-                            <span style="font-size:20px; font-weight:800; color:#ffffff; letter-spacing:-0.02em;">Novix</span>
+                            <span style="font-size:20px; font-weight:800; color:#ffffff; letter-spacing:-0.02em;">NivayaLife</span>
                         </td>
                     </tr>
 
@@ -32,7 +32,7 @@
                                     <td style="border-radius:14px; background-color:#14503F;">
                                         <a href="{{ $dashboardUrl }}" target="_blank"
                                             style="display:inline-block; padding:14px 32px; font-size:15px; font-weight:700; color:#ffffff; text-decoration:none; border-radius:14px;">
-                                            Open Novix
+                                            Open NivayaLife
                                         </a>
                                     </td>
                                 </tr>
@@ -43,7 +43,7 @@
                     <tr>
                         <td style="padding:24px 40px; border-top:1px solid #EFEAE0;">
                             <p style="margin:0; font-size:12px; color:#9AA79F; text-align:center;">
-                                &copy; {{ date('Y') }} Novix &middot; Your family's health records, organized and secure.
+                                &copy; {{ date('Y') }} NivayaLife &middot; Your family's health records, organized and secure.
                             </p>
                         </td>
                     </tr>

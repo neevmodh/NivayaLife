@@ -7,9 +7,9 @@
     ];
     $ocrBadge = [
         'pending' => ['label' => 'Pending', 'class' => 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60'],
-        'processing' => ['label' => 'Processing', 'class' => 'bg-novix-yellow/30 text-amber-700 dark:text-novix-yellow'],
-        'completed' => ['label' => 'Ready', 'class' => 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint'],
-        'failed' => ['label' => 'Failed', 'class' => 'bg-novix-pink/30 text-novix-pink-dark'],
+        'processing' => ['label' => 'Processing', 'class' => 'bg-nivayalife-yellow/30 text-amber-700 dark:text-nivayalife-yellow'],
+        'completed' => ['label' => 'Ready', 'class' => 'bg-nivayalife-mint text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint'],
+        'failed' => ['label' => 'Failed', 'class' => 'bg-nivayalife-pink/30 text-nivayalife-pink-dark'],
     ];
 
     // Server-rendered fallback only. The real greeting is computed from the
@@ -72,9 +72,9 @@
     }
 
     $attentionTones = [
-        'urgent' => 'bg-novix-pink-dark',
-        'warn' => 'bg-novix-yellow',
-        'info' => 'bg-novix-blue',
+        'urgent' => 'bg-nivayalife-pink-dark',
+        'warn' => 'bg-nivayalife-yellow',
+        'info' => 'bg-nivayalife-blue',
     ];
 
     $quickActions = [
@@ -108,8 +108,8 @@
                         : 'Good night';
                 },
             }">
-                <h2 class="text-2xl font-bold leading-tight tracking-tight text-novix-ink dark:text-white"><span x-text="greeting">{{ $greeting }}</span>, {{ $firstName }} 👋</h2>
-                <p class="mt-1 text-sm text-novix-muted">
+                <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white"><span x-text="greeting">{{ $greeting }}</span>, {{ $firstName }} 👋</h2>
+                <p class="mt-1 text-sm text-nivayalife-muted">
                     {{ $isSelf ? "Here's what's happening with your health today." : "You're viewing {$active->full_name}'s records." }}
                 </p>
             </div>
@@ -121,21 +121,21 @@
                         <button type="submit" aria-label="Switch to {{ $member->full_name }}"
                             @class([
                                 'flex items-center gap-2 rounded-full border py-1 pl-1 pr-3.5 transition',
-                                'border-novix-green bg-white shadow-novix-sm dark:bg-white/10' => $member->id === $active->id,
-                                'border-transparent bg-white/60 hover:border-novix-green/30 hover:bg-white dark:bg-white/5' => $member->id !== $active->id,
+                                'border-nivayalife-green bg-white shadow-nivayalife-sm dark:bg-white/10' => $member->id === $active->id,
+                                'border-transparent bg-white/60 hover:border-nivayalife-green/30 hover:bg-white dark:bg-white/5' => $member->id !== $active->id,
                             ])>
                             <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
                             <span @class([
                                 'whitespace-nowrap text-sm font-semibold',
-                                'text-novix-green dark:text-novix-mint' => $member->id === $active->id,
-                                'text-novix-muted' => $member->id !== $active->id,
+                                'text-nivayalife-green dark:text-nivayalife-mint' => $member->id === $active->id,
+                                'text-nivayalife-muted' => $member->id !== $active->id,
                             ])>{{ Str::of($member->full_name)->words(1, '') }}</span>
                         </button>
                     </form>
                 @endforeach
 
                 <a href="{{ route('family.add') }}" aria-label="Add family member"
-                    class="flex h-10 w-10 flex-shrink-0 snap-start items-center justify-center rounded-full border border-dashed border-novix-green/40 text-novix-green transition hover:border-novix-green hover:bg-novix-mint/40 dark:text-novix-mint">
+                    class="flex h-10 w-10 flex-shrink-0 snap-start items-center justify-center rounded-full border border-dashed border-nivayalife-green/40 text-nivayalife-green transition hover:border-nivayalife-green hover:bg-nivayalife-mint/40 dark:text-nivayalife-mint">
                     <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </a>
             </div>
@@ -143,10 +143,10 @@
     </x-slot>
 
     @if(session('just_registered'))
-        <div x-data x-init="window.dispatchEvent(new CustomEvent('novix:confetti'))"></div>
+        <div x-data x-init="window.dispatchEvent(new CustomEvent('nivayalife:confetti'))"></div>
         <x-confetti />
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" x-transition
-            class="fixed right-6 top-20 z-50 rounded-xl bg-novix-green px-5 py-3 text-sm font-semibold text-white shadow-novix">
+            class="fixed right-6 top-20 z-50 rounded-xl bg-nivayalife-green px-5 py-3 text-sm font-semibold text-white shadow-nivayalife">
             Welcome, {{ session('just_registered') }}! Your account is ready.
         </div>
     @endif
@@ -156,15 +156,15 @@
         {{-- First-run checklist --}}
         @if($onboarding)
             <div x-data="{ show: true }" x-show="show" x-transition
-                class="animate-novix-fade-up rounded-novix border border-novix-green/15 bg-white p-5 shadow-novix-sm dark:border-white/10 dark:bg-white/5">
+                class="animate-nivayalife-fade-up rounded-nivayalife border border-nivayalife-green/15 bg-white p-5 shadow-nivayalife-sm dark:border-white/10 dark:bg-white/5">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-sm font-bold text-novix-ink dark:text-white">Get the most out of Nivaya Life</p>
-                        <p class="mt-0.5 text-xs text-novix-muted">A few quick things to try:</p>
+                        <p class="text-sm font-bold text-nivayalife-ink dark:text-white">Get the most out of Nivaya Life</p>
+                        <p class="mt-0.5 text-xs text-nivayalife-muted">A few quick things to try:</p>
                     </div>
                     <button type="button"
                         @click="show = false; fetch('{{ route('dashboard.dismiss-onboarding') }}', { method: 'POST', headers: { 'X-CSRF-TOKEN': @js(csrf_token()), Accept: 'application/json' } })"
-                        class="flex-shrink-0 text-novix-muted hover:text-novix-ink dark:hover:text-white" aria-label="Dismiss">
+                        class="flex-shrink-0 text-nivayalife-muted hover:text-nivayalife-ink dark:hover:text-white" aria-label="Dismiss">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     </button>
                 </div>
@@ -177,13 +177,13 @@
                         ];
                     @endphp
                     @foreach($checklistItems as $key => $item)
-                        <a href="{{ $item['url'] }}" class="flex items-center gap-2 rounded-xl border {{ $onboarding[$key] ? 'border-novix-green/30 bg-novix-mint/30' : 'border-gray-200 dark:border-white/10' }} px-3 py-2.5 text-sm font-medium transition hover:border-novix-green/40">
-                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full {{ $onboarding[$key] ? 'bg-novix-green text-white' : 'border-2 border-gray-300 dark:border-white/20' }}">
+                        <a href="{{ $item['url'] }}" class="flex items-center gap-2 rounded-xl border {{ $onboarding[$key] ? 'border-nivayalife-green/30 bg-nivayalife-mint/30' : 'border-gray-200 dark:border-white/10' }} px-3 py-2.5 text-sm font-medium transition hover:border-nivayalife-green/40">
+                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full {{ $onboarding[$key] ? 'bg-nivayalife-green text-white' : 'border-2 border-gray-300 dark:border-white/20' }}">
                                 @if($onboarding[$key])
                                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 @endif
                             </span>
-                            <span class="{{ $onboarding[$key] ? 'text-novix-green line-through dark:text-novix-mint' : 'text-novix-ink dark:text-white' }}">{{ $item['label'] }}</span>
+                            <span class="{{ $onboarding[$key] ? 'text-nivayalife-green line-through dark:text-nivayalife-mint' : 'text-nivayalife-ink dark:text-white' }}">{{ $item['label'] }}</span>
                         </a>
                     @endforeach
                 </div>
@@ -192,7 +192,7 @@
 
         {{-- Identity card. Carries the member's actual vitals instead of the old
              row of zero-counters, and offers to fill in whatever is missing. --}}
-        <div class="animate-novix-fade-up relative overflow-hidden rounded-novix bg-gradient-to-br from-novix-green to-novix-green-dark shadow-novix ring-1 ring-novix-gold/40" style="animation-delay:40ms">
+        <div class="animate-nivayalife-fade-up relative overflow-hidden rounded-nivayalife bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark shadow-nivayalife ring-1 ring-nivayalife-gold/40" style="animation-delay:40ms">
             <div class="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-white/5"></div>
             {{-- Brand mark watermark, corner of the identity card. --}}
             <svg class="pointer-events-none absolute right-5 top-5 h-12 w-12 opacity-[0.18]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -213,14 +213,14 @@
                         <h1 class="truncate text-xl font-bold tracking-tight sm:text-2xl">{{ $active->full_name }}</h1>
                         <span class="sr-only">Nivaya Life health record</span>
                         <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/65">
-                            <span class="font-mono tracking-tight text-novix-gold-light">{{ $active->unique_health_id }}</span>
+                            <span class="font-mono tracking-tight text-nivayalife-gold-light">{{ $active->unique_health_id }}</span>
                             <span aria-hidden="true">&middot;</span>
                             <span>{{ Str::headline($active->relation) }}</span>
                         </p>
                     </div>
 
                     <a href="{{ route('id-card.show') }}"
-                        class="flex w-full flex-shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-novix-green shadow-lg shadow-black/10 transition hover:bg-novix-mint sm:w-auto">
+                        class="flex w-full flex-shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-nivayalife-green shadow-lg shadow-black/10 transition hover:bg-nivayalife-mint sm:w-auto">
                         <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><path d="M13 10h5M13 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
                         Emergency card
                     </a>
@@ -245,7 +245,7 @@
              On wide screens the items sit side by side instead of stacking
              into a tall column that pushes the real content off-screen. --}}
         @if(count($attention))
-            <div class="animate-novix-fade-up overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix-sm dark:bg-white/5" style="animation-delay:60ms">
+            <div class="animate-nivayalife-fade-up overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife-sm dark:bg-white/5" style="animation-delay:60ms">
                 <ul class="divide-y divide-gray-100 dark:divide-white/10 lg:flex lg:divide-x lg:divide-y-0">
                     @foreach($attention as $item)
                         <li class="flex flex-1 items-center gap-3 px-5 py-3.5">
@@ -255,8 +255,8 @@
                                 @endif
                                 <span class="relative inline-flex h-2.5 w-2.5 rounded-full {{ $attentionTones[$item['tone']] }}"></span>
                             </span>
-                            <p class="min-w-0 flex-1 text-sm font-medium text-novix-ink dark:text-white">{{ $item['text'] }}</p>
-                            <a href="{{ $item['url'] }}" class="flex-shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold text-novix-green transition hover:bg-novix-mint/50 active:scale-95 dark:text-novix-mint dark:hover:bg-white/10">{{ $item['label'] }}</a>
+                            <p class="min-w-0 flex-1 text-sm font-medium text-nivayalife-ink dark:text-white">{{ $item['text'] }}</p>
+                            <a href="{{ $item['url'] }}" class="flex-shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold text-nivayalife-green transition hover:bg-nivayalife-mint/50 active:scale-95 dark:text-nivayalife-mint dark:hover:bg-white/10">{{ $item['label'] }}</a>
                         </li>
                     @endforeach
                 </ul>
@@ -265,7 +265,7 @@
 
         {{-- Desktop-only stat rail. On a phone these numbers are already one
              swipe away in the cards below, so it would only add scrolling. --}}
-        <div class="hidden animate-novix-fade-up gap-4 lg:grid lg:grid-cols-4" style="animation-delay:80ms">
+        <div class="hidden animate-nivayalife-fade-up gap-4 lg:grid lg:grid-cols-4" style="animation-delay:80ms">
             @php
                 $railStats = [
                     ['value' => $recentReports->count(), 'label' => 'Recent reports', 'sub' => $readyReportCount.' explained', 'url' => route('reports.index')],
@@ -275,10 +275,10 @@
                 ];
             @endphp
             @foreach($railStats as $stat)
-                <a href="{{ $stat['url'] }}" class="novix-gold-edge group rounded-novix bg-white p-5 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5">
-                    <p class="text-3xl font-extrabold tracking-tight text-novix-ink dark:text-white">{{ $stat['value'] }}</p>
-                    <p class="mt-1 text-sm font-bold text-novix-ink dark:text-white">{{ $stat['label'] }}</p>
-                    <p class="mt-0.5 flex items-center gap-1 text-xs text-novix-muted">
+                <a href="{{ $stat['url'] }}" class="nivayalife-gold-edge group rounded-nivayalife bg-white p-5 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:shadow-nivayalife dark:bg-white/5">
+                    <p class="text-3xl font-extrabold tracking-tight text-nivayalife-ink dark:text-white">{{ $stat['value'] }}</p>
+                    <p class="mt-1 text-sm font-bold text-nivayalife-ink dark:text-white">{{ $stat['label'] }}</p>
+                    <p class="mt-0.5 flex items-center gap-1 text-xs text-nivayalife-muted">
                         {{ $stat['sub'] }}
                         <svg class="h-3 w-3 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </p>
@@ -292,7 +292,7 @@
             <div class="space-y-5 lg:col-span-2">
 
                 {{-- Today's medications --}}
-                <section id="todays-medications" class="animate-novix-fade-up scroll-mt-24 rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:100ms"
+                <section id="todays-medications" class="animate-nivayalife-fade-up scroll-mt-24 rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5" style="animation-delay:100ms"
                     x-data="doseTracker({ csrfToken: @js(csrf_token()), initialStatuses: @js($doseStatuses) })">
                     <x-section-header title="Today's doses" icon="pill" action-label="Manage" :action-url="route('medications.index') . '?member=' . $active->id" />
 
@@ -308,31 +308,31 @@
                             @foreach($activeMedications as $medication)
                                 <li class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
                                     <div class="min-w-0">
-                                        <p class="truncate text-sm font-semibold text-novix-ink dark:text-white">{{ $medication->medicine_name }}</p>
-                                        <p class="text-xs text-novix-muted">{{ $medication->dosage }}</p>
+                                        <p class="truncate text-sm font-semibold text-nivayalife-ink dark:text-white">{{ $medication->medicine_name }}</p>
+                                        <p class="text-xs text-nivayalife-muted">{{ $medication->dosage }}</p>
                                     </div>
                                     <div class="flex flex-wrap gap-1.5">
                                         @forelse($medication->schedule_times ?? [] as $time)
                                             <button type="button" @click="toggle({{ $medication->id }}, '{{ $time }}')"
                                                 class="rounded-full px-2.5 py-1 text-[11px] font-bold tabular-nums transition"
                                                 :class="{
-                                                    'bg-novix-mint text-novix-green line-through dark:bg-novix-green/20 dark:text-novix-mint': statusFor({{ $medication->id }}, '{{ $time }}') === 'taken',
-                                                    'bg-novix-pink/30 text-novix-pink-dark': statusFor({{ $medication->id }}, '{{ $time }}') === 'missed',
-                                                    'bg-novix-cream text-novix-muted hover:bg-novix-mint/60 dark:bg-white/10 dark:text-white/60': !['taken', 'missed'].includes(statusFor({{ $medication->id }}, '{{ $time }}')),
+                                                    'bg-nivayalife-mint text-nivayalife-green line-through dark:bg-nivayalife-green/20 dark:text-nivayalife-mint': statusFor({{ $medication->id }}, '{{ $time }}') === 'taken',
+                                                    'bg-nivayalife-pink/30 text-nivayalife-pink-dark': statusFor({{ $medication->id }}, '{{ $time }}') === 'missed',
+                                                    'bg-nivayalife-cream text-nivayalife-muted hover:bg-nivayalife-mint/60 dark:bg-white/10 dark:text-white/60': !['taken', 'missed'].includes(statusFor({{ $medication->id }}, '{{ $time }}')),
                                                 }">{{ $time }}</button>
                                         @empty
-                                            <span class="text-xs text-novix-muted">{{ $medication->frequency ?? 'As needed' }}</span>
+                                            <span class="text-xs text-nivayalife-muted">{{ $medication->frequency ?? 'As needed' }}</span>
                                         @endforelse
                                     </div>
                                 </li>
                             @endforeach
                         </ul>
-                        <p class="mt-3 text-[11px] text-novix-muted">Tap a time to mark that dose taken.</p>
+                        <p class="mt-3 text-[11px] text-nivayalife-muted">Tap a time to mark that dose taken.</p>
                     @endif
                 </section>
 
                 {{-- Recent reports --}}
-                <section class="animate-novix-fade-up rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:140ms">
+                <section class="animate-nivayalife-fade-up rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5" style="animation-delay:140ms">
                     <x-section-header title="Recent reports" icon="report" action-label="Upload new" :action-url="route('reports.upload')" />
 
                     @if($recentReports->isEmpty())
@@ -350,17 +350,17 @@
                                     @unless($loop->last)
                                         <span class="absolute left-[18px] top-9 bottom-0 w-px bg-gray-100 dark:bg-white/10" aria-hidden="true"></span>
                                     @endunless
-                                    <span class="relative z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-base dark:bg-white/10">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
-                                    <a href="{{ route('reports.show', $report) }}" class="-mt-1 min-w-0 flex-1 rounded-xl px-3 py-2 transition hover:bg-novix-cream/70 dark:hover:bg-white/5">
+                                    <span class="relative z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-base dark:bg-white/10">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
+                                    <a href="{{ route('reports.show', $report) }}" class="-mt-1 min-w-0 flex-1 rounded-xl px-3 py-2 transition hover:bg-nivayalife-cream/70 dark:hover:bg-white/5">
                                         <div class="flex items-start justify-between gap-2">
                                             <div class="min-w-0">
-                                                <p class="truncate text-sm font-semibold text-novix-ink dark:text-white">{{ Str::headline($report->type) }}</p>
-                                                <p class="text-xs text-novix-muted">{{ $report->report_date?->format('M j, Y') ?? $report->uploaded_at?->format('M j, Y') }}</p>
+                                                <p class="truncate text-sm font-semibold text-nivayalife-ink dark:text-white">{{ Str::headline($report->type) }}</p>
+                                                <p class="text-xs text-nivayalife-muted">{{ $report->report_date?->format('M j, Y') ?? $report->uploaded_at?->format('M j, Y') }}</p>
                                             </div>
                                             <span class="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $badge['class'] }}">{{ $badge['label'] }}</span>
                                         </div>
                                         @if($report->ai_summary)
-                                            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-novix-muted">{{ Str::limit(Str::of($report->ai_summary)->before("\n\n"), 120) }}</p>
+                                            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-nivayalife-muted">{{ Str::limit(Str::of($report->ai_summary)->before("\n\n"), 120) }}</p>
                                         @endif
                                     </a>
                                 </li>
@@ -374,33 +374,33 @@
 
                 {{-- Quick actions — one accent colour, differentiated by icon and
                      label rather than four unrelated gradients. --}}
-                <section class="animate-novix-fade-up rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:180ms">
+                <section class="animate-nivayalife-fade-up rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5" style="animation-delay:180ms">
                     <x-section-header title="Quick actions" icon="bolt" />
                     <div class="mt-3 space-y-1">
                         @foreach($quickActions as $action)
-                            <a href="{{ $action['url'] }}" class="group flex items-center gap-3 rounded-xl p-2.5 transition hover:bg-novix-cream/70 dark:hover:bg-white/5">
-                                <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-novix-mint text-novix-green transition group-hover:bg-novix-green group-hover:text-white dark:bg-novix-green/20 dark:text-novix-mint" aria-hidden="true">
+                            <a href="{{ $action['url'] }}" class="group flex items-center gap-3 rounded-xl p-2.5 transition hover:bg-nivayalife-cream/70 dark:hover:bg-white/5">
+                                <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-nivayalife-mint text-nivayalife-green transition group-hover:bg-nivayalife-green group-hover:text-white dark:bg-nivayalife-green/20 dark:text-nivayalife-mint" aria-hidden="true">
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">{!! $action['icon'] !!}</svg>
                                 </span>
                                 <span class="min-w-0 flex-1">
-                                    <span class="block truncate text-sm font-semibold text-novix-ink dark:text-white">{{ $action['label'] }}</span>
-                                    <span class="block truncate text-xs text-novix-muted">{{ $action['hint'] }}</span>
+                                    <span class="block truncate text-sm font-semibold text-nivayalife-ink dark:text-white">{{ $action['label'] }}</span>
+                                    <span class="block truncate text-xs text-nivayalife-muted">{{ $action['hint'] }}</span>
                                 </span>
-                                <svg class="h-4 w-4 flex-shrink-0 text-novix-muted transition group-hover:translate-x-0.5 group-hover:text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg class="h-4 w-4 flex-shrink-0 text-nivayalife-muted transition group-hover:translate-x-0.5 group-hover:text-nivayalife-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </a>
                         @endforeach
                     </div>
                 </section>
 
                 {{-- Vitals --}}
-                <section class="animate-novix-fade-up rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:220ms">
+                <section class="animate-nivayalife-fade-up rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5" style="animation-delay:220ms">
                     <x-section-header title="Body mass index" icon="pulse" :action-label="$latestBmi ? 'Update' : null" :action-url="$latestBmi ? $editUrl : null" />
 
                     @if($latestBmi)
                         <div class="mt-3">
-                            <x-bmi-gauge :height-cm="$latestBmi->height_cm" :weight-kg="$latestBmi->weight_kg" :editable="false" :trend="$trend" :size="150" hole-class="bg-white dark:bg-novix-night" />
+                            <x-bmi-gauge :height-cm="$latestBmi->height_cm" :weight-kg="$latestBmi->weight_kg" :editable="false" :trend="$trend" :size="150" hole-class="bg-white dark:bg-nivayalife-night" />
                         </div>
-                        <p class="mt-2 text-center text-xs text-novix-muted">Last recorded {{ $latestBmi->recorded_date->diffForHumans() }}</p>
+                        <p class="mt-2 text-center text-xs text-nivayalife-muted">Last recorded {{ $latestBmi->recorded_date->diffForHumans() }}</p>
                     @else
                         <x-empty-state
                             title="No measurement yet"
@@ -412,7 +412,7 @@
                 </section>
 
                 {{-- Vaccinations --}}
-                <section class="animate-novix-fade-up rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5" style="animation-delay:260ms">
+                <section class="animate-nivayalife-fade-up rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5" style="animation-delay:260ms">
                     <x-section-header title="Vaccinations" icon="syringe" action-label="Manage" :action-url="route('vaccinations.index') . '?member=' . $active->id" />
 
                     @if($upcomingVaccinations->isEmpty())
@@ -431,11 +431,11 @@
                                 @endphp
                                 <li class="flex items-center justify-between gap-3 py-3">
                                     <div class="min-w-0">
-                                        <p class="truncate text-sm font-semibold text-novix-ink dark:text-white">{{ $vaccination->vaccine_name }}</p>
-                                        <p class="text-xs text-novix-muted">Dose {{ $vaccination->dose_number + 1 }} &middot; {{ $vaccination->next_due_date->format('M j, Y') }}</p>
+                                        <p class="truncate text-sm font-semibold text-nivayalife-ink dark:text-white">{{ $vaccination->vaccine_name }}</p>
+                                        <p class="text-xs text-nivayalife-muted">Dose {{ $vaccination->dose_number + 1 }} &middot; {{ $vaccination->next_due_date->format('M j, Y') }}</p>
                                     </div>
                                     @if($overdue || $dueSoon)
-                                        <span class="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $overdue ? 'bg-novix-pink/30 text-novix-pink-dark' : 'bg-novix-yellow/30 text-amber-700 dark:text-novix-yellow' }}">
+                                        <span class="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $overdue ? 'bg-nivayalife-pink/30 text-nivayalife-pink-dark' : 'bg-nivayalife-yellow/30 text-amber-700 dark:text-nivayalife-yellow' }}">
                                             {{ $overdue ? 'Overdue' : 'Due soon' }}
                                         </span>
                                     @endif

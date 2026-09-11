@@ -82,7 +82,7 @@ return [
     // Unset means the app behaves exactly as it does today — email
     // reminders keep working unchanged, push is purely additive.
     'vapid' => [
-        'subject' => env('VAPID_SUBJECT', 'mailto:support@novix.app'),
+        'subject' => env('VAPID_SUBJECT', 'mailto:support@nivayalife.app'),
         'public_key' => env('VAPID_PUBLIC_KEY'),
         'private_key' => env('VAPID_PRIVATE_KEY'),
     ],

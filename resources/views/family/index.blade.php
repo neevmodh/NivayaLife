@@ -1,7 +1,7 @@
 @php
     $accessBadge = fn ($member) => $member->access_type === 'linked'
-        ? ['label' => 'Linked', 'class' => 'bg-novix-blue/20 text-novix-blue']
-        : ['label' => 'Dependent', 'class' => 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint'];
+        ? ['label' => 'Linked', 'class' => 'bg-nivayalife-blue/20 text-nivayalife-blue']
+        : ['label' => 'Dependent', 'class' => 'bg-nivayalife-mint text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint'];
     $isReciprocal = fn ($member) => $member->primary_account_id !== auth()->id() && $member->linked_user_id !== auth()->id();
 @endphp
 
@@ -9,11 +9,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Family</h2>
-                <p class="mt-1 text-sm text-novix-muted">Everyone linked to your Nivaya Life account.</p>
+                <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Family</h2>
+                <p class="mt-1 text-sm text-nivayalife-muted">Everyone linked to your Nivaya Life account.</p>
             </div>
             <a href="{{ route('family.add') }}"
-                class="flex items-center gap-2 rounded-xl bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:-translate-y-0.5 hover:bg-novix-green-dark active:translate-y-0 active:scale-95">
+                class="flex items-center gap-2 rounded-xl bg-nivayalife-green px-5 py-2.5 text-sm font-semibold text-white shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:bg-nivayalife-green-dark active:translate-y-0 active:scale-95">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 Add Family Member
             </a>
@@ -24,7 +24,7 @@
 
         @if(session('status'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-transition
-                class="rounded-xl bg-novix-mint px-4 py-3 text-sm font-semibold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">
+                class="rounded-xl bg-nivayalife-mint px-4 py-3 text-sm font-semibold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">
                 @switch(session('status'))
                     @case('family-member-archived') That family member has been archived. Their medical history is kept, not deleted. @break
                     @case('family-member-restored') Family member restored. @break
@@ -41,16 +41,16 @@
         {{-- Active --}}
         <section>
             <div class="mb-4 flex items-center gap-3">
-                <h3 class="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-novix-muted">
-                    <span class="h-2 w-2 rounded-full bg-novix-green"></span>
+                <h3 class="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-nivayalife-muted">
+                    <span class="h-2 w-2 rounded-full bg-nivayalife-green"></span>
                     Active
                 </h3>
-                <span class="rounded-full bg-novix-mint px-2 py-0.5 text-[11px] font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ $active->count() }}</span>
+                <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[11px] font-bold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">{{ $active->count() }}</span>
                 <span class="h-px flex-1 bg-gray-100 dark:bg-white/10" aria-hidden="true"></span>
             </div>
 
             @if($active->isEmpty())
-                <div class="rounded-novix bg-white shadow-novix-sm dark:bg-white/5">
+                <div class="rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5">
                     <x-empty-state
                         title="No family members yet"
                         hint="Add a parent, partner or child and their records live alongside yours."
@@ -63,12 +63,12 @@
                     @foreach($active as $member)
                         @php($badge = $accessBadge($member))
                         @php($reciprocal = $isReciprocal($member))
-                        <div class="novix-gold-edge group rounded-novix bg-white p-5 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix dark:bg-white/5 {{ $reciprocal ? 'border border-novix-blue/20' : '' }}">
+                        <div class="nivayalife-gold-edge group rounded-nivayalife bg-white p-5 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:shadow-nivayalife dark:bg-white/5 {{ $reciprocal ? 'border border-nivayalife-blue/20' : '' }}">
                             <div class="flex items-start gap-3.5">
                                 <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-16 w-16" class="flex-shrink-0 shadow-sm transition group-hover:scale-105" />
                                 <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-bold text-novix-ink dark:text-white">{{ $member->full_name }}</p>
-                                    <p class="flex items-center gap-1 text-xs text-novix-muted">
+                                    <p class="truncate text-sm font-bold text-nivayalife-ink dark:text-white">{{ $member->full_name }}</p>
+                                    <p class="flex items-center gap-1 text-xs text-nivayalife-muted">
                                         @if($reciprocal)
                                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"><path d="M17 20h4v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             Shared their profile with you
@@ -81,27 +81,27 @@
                                 <span class="flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold {{ $badge['class'] }}">{{ $badge['label'] }}</span>
                             </div>
 
-                            <p class="mt-3 font-mono text-[11px] text-novix-muted">{{ $member->unique_health_id }}</p>
+                            <p class="mt-3 font-mono text-[11px] text-nivayalife-muted">{{ $member->unique_health_id }}</p>
 
                             <div class="mt-4 flex flex-wrap gap-3 border-t border-gray-100 pt-3 text-xs font-semibold dark:border-white/10">
-                                <a href="{{ route('family.show', $member) }}" class="text-novix-green hover:underline">View profile</a>
+                                <a href="{{ route('family.show', $member) }}" class="text-nivayalife-green hover:underline">View profile</a>
 
                                 @if($member->access_type === 'dependent')
-                                    <a href="{{ route('family.member.edit', $member) }}" class="text-novix-green hover:underline">Edit</a>
+                                    <a href="{{ route('family.member.edit', $member) }}" class="text-nivayalife-green hover:underline">Edit</a>
                                     <button type="button"
                                         x-data
                                         @click="$dispatch('open-archive-modal', { id: {{ $member->id }}, name: @js($member->full_name), url: @js(route('family.archive', $member)) })"
-                                        class="text-novix-pink-dark hover:underline">
+                                        class="text-nivayalife-pink-dark hover:underline">
                                         Archive
                                     </button>
                                 @else
                                     @if($member->linked_user_id !== auth()->id())
                                         @php($myGrant = $member->sharingPermissions->firstWhere('granted_to_user_id', auth()->id()))
-                                        <span class="text-novix-muted">
+                                        <span class="text-nivayalife-muted">
                                             {{ $myGrant ? 'Sharing: '.Str::headline($myGrant->scope) : 'No access granted yet' }}
                                         </span>
                                         @if($myGrant?->scope === 'full')
-                                            <a href="{{ route('family.member.edit', $member) }}" class="text-novix-green hover:underline">Edit</a>
+                                            <a href="{{ route('family.member.edit', $member) }}" class="text-nivayalife-green hover:underline">Edit</a>
                                         @endif
                                         {{-- Only the account that actually invited/owns this row can remove it —
                                              a reciprocal grant (an existing account that shared with you) only
@@ -110,7 +110,7 @@
                                             <button type="button"
                                                 x-data
                                                 @click="$dispatch('open-archive-modal', { id: {{ $member->id }}, name: @js($member->full_name), url: @js(route('family.archive', $member)), linked: true })"
-                                                class="text-novix-pink-dark hover:underline">
+                                                class="text-nivayalife-pink-dark hover:underline">
                                                 Remove
                                             </button>
                                         @endif
@@ -126,8 +126,8 @@
         {{-- Invited --}}
         @if($invited->isNotEmpty())
             <section>
-                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
-                    <span class="h-2 w-2 rounded-full bg-novix-yellow"></span>
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-nivayalife-ink dark:text-white">
+                    <span class="h-2 w-2 rounded-full bg-nivayalife-yellow"></span>
                     Invited ({{ $invited->count() }})
                 </h3>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -141,8 +141,8 @@
         {{-- Expired --}}
         @if($expired->isNotEmpty())
             <section>
-                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
-                    <span class="h-2 w-2 rounded-full bg-novix-pink-dark"></span>
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-nivayalife-ink dark:text-white">
+                    <span class="h-2 w-2 rounded-full bg-nivayalife-pink-dark"></span>
                     Expired ({{ $expired->count() }})
                 </h3>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -158,29 +158,29 @@
              person who received it, invisible (and un-revokable) to the person who gave it. --}}
         @if($sharedWith->isNotEmpty())
             <section>
-                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-novix-ink dark:text-white">
-                    <svg class="h-4 w-4 text-novix-green" viewBox="0 0 24 24" fill="none"><path d="M6 10V8a6 6 0 1 1 12 0v2M5 10h14v10H5V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-nivayalife-ink dark:text-white">
+                    <svg class="h-4 w-4 text-nivayalife-green" viewBox="0 0 24 24" fill="none"><path d="M6 10V8a6 6 0 1 1 12 0v2M5 10h14v10H5V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                     Your profile is shared with ({{ $sharedWith->count() }})
                 </h3>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($sharedWith as $grant)
-                        <div class="rounded-novix bg-white p-5 shadow-novix-sm dark:bg-white/5">
+                        <div class="rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
                             <div class="flex items-center gap-3">
                                 <x-avatar :photo-path="$grant->grantedToUser?->avatar_path" :full-name="$grant->grantedToUser->name ?? '?'" size="h-12 w-12" />
                                 <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-bold text-novix-ink dark:text-white">{{ $grant->grantedToUser->name ?? 'Unknown' }}</p>
-                                    <p class="text-xs text-novix-muted">{{ $grant->grantedToUser->email ?? '' }}</p>
+                                    <p class="truncate text-sm font-bold text-nivayalife-ink dark:text-white">{{ $grant->grantedToUser->name ?? 'Unknown' }}</p>
+                                    <p class="text-xs text-nivayalife-muted">{{ $grant->grantedToUser->email ?? '' }}</p>
                                 </div>
                             </div>
 
-                            <span class="mt-3 inline-block rounded-full bg-novix-mint px-2.5 py-1 text-[11px] font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">
+                            <span class="mt-3 inline-block rounded-full bg-nivayalife-mint px-2.5 py-1 text-[11px] font-bold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">
                                 {{ Str::headline($grant->scope) }} access{{ $grant->scope === 'full' ? ' · can edit' : '' }}
                             </span>
 
                             <div class="mt-4 border-t border-gray-100 pt-3 dark:border-white/10">
                                 <form method="POST" action="{{ route('family.sharing.revoke', $grant) }}" onsubmit="return confirm('Revoke this access? They will no longer be able to view your profile.');">
                                     @csrf
-                                    <button type="submit" class="text-xs font-semibold text-novix-pink-dark hover:underline">Revoke access</button>
+                                    <button type="submit" class="text-xs font-semibold text-nivayalife-pink-dark hover:underline">Revoke access</button>
                                 </form>
                             </div>
                         </div>
@@ -198,16 +198,16 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
         @keydown.escape.window="open = false"
     >
-        <div @click.outside="open = false" x-show="open" x-transition class="w-full max-w-md rounded-novix bg-white p-6 shadow-novix dark:bg-novix-night">
-            <h3 class="text-lg font-bold text-novix-ink dark:text-white" x-text="linked ? `Remove ${name} from your family group?` : `Archive ${name}'s profile?`"></h3>
-            <p class="mt-2 text-sm text-novix-muted">
+        <div @click.outside="open = false" x-show="open" x-transition class="w-full max-w-md rounded-nivayalife bg-white p-6 shadow-nivayalife dark:bg-nivayalife-night">
+            <h3 class="text-lg font-bold text-nivayalife-ink dark:text-white" x-text="linked ? `Remove ${name} from your family group?` : `Archive ${name}'s profile?`"></h3>
+            <p class="mt-2 text-sm text-nivayalife-muted">
                 <span x-show="!linked">This archives their profile — their medical history is kept, not deleted, and you can restore this profile anytime from Account Security in your Profile settings.</span>
                 <span x-show="linked">They'll no longer appear in your family list. If they have their own login, it stays theirs — only this connection is removed, and you can re-invite them anytime.</span>
             </p>
             <form method="POST" :action="url" class="mt-5 flex justify-end gap-3">
                 @csrf
-                <button type="button" @click="open = false" class="rounded-xl px-4 py-2 text-sm font-semibold text-novix-muted hover:text-novix-ink">Cancel</button>
-                <button type="submit" class="rounded-xl bg-novix-pink-dark px-5 py-2 text-sm font-semibold text-white hover:bg-novix-pink-dark/90">Confirm</button>
+                <button type="button" @click="open = false" class="rounded-xl px-4 py-2 text-sm font-semibold text-nivayalife-muted hover:text-nivayalife-ink">Cancel</button>
+                <button type="submit" class="rounded-xl bg-nivayalife-pink-dark px-5 py-2 text-sm font-semibold text-white hover:bg-nivayalife-pink-dark/90">Confirm</button>
             </form>
         </div>
     </div>

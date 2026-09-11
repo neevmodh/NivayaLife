@@ -49,31 +49,31 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="novix-surface bg-novix-cream font-sans text-novix-ink antialiased">
+<body class="nivayalife-surface bg-nivayalife-cream font-sans text-nivayalife-ink antialiased">
 
     {{-- ============ HEADER ============ --}}
-    <header x-data="{ mobileOpen: false }" class="sticky top-0 z-50 border-b border-novix-green/10 bg-novix-cream/90 backdrop-blur">
+    <header x-data="{ mobileOpen: false }" class="sticky top-0 z-50 border-b border-nivayalife-green/10 bg-nivayalife-cream/90 backdrop-blur">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-            <a href="/" aria-label="Nivaya Life home"><x-novix-logo size="sm" /></a>
+            <a href="/" aria-label="Nivaya Life home"><x-nivayalife-logo size="sm" /></a>
 
-            <nav class="hidden items-center gap-8 text-sm font-medium text-novix-ink/80 md:flex" aria-label="Primary">
-                <a href="#features" class="hover:text-novix-green">Features</a>
-                <a href="#how-it-works" class="hover:text-novix-green">How it works</a>
-                <a href="#privacy" class="hover:text-novix-green">Privacy</a>
-                <a href="#faq" class="hover:text-novix-green">FAQ</a>
+            <nav class="hidden items-center gap-8 text-sm font-medium text-nivayalife-ink/80 md:flex" aria-label="Primary">
+                <a href="#features" class="hover:text-nivayalife-green">Features</a>
+                <a href="#how-it-works" class="hover:text-nivayalife-green">How it works</a>
+                <a href="#privacy" class="hover:text-nivayalife-green">Privacy</a>
+                <a href="#faq" class="hover:text-nivayalife-green">FAQ</a>
             </nav>
 
             <div class="hidden items-center gap-3 md:flex">
-                <a href="{{ route('login') }}" class="rounded-lg px-4 py-2 text-sm font-semibold text-novix-ink hover:text-novix-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green">
+                <a href="{{ route('login') }}" class="rounded-lg px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:text-nivayalife-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nivayalife-green">
                     Log in
                 </a>
-                <a href="{{ route('register') }}" class="rounded-lg bg-novix-green px-5 py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green">
+                <a href="{{ route('register') }}" class="rounded-lg bg-nivayalife-green px-5 py-2.5 text-sm font-semibold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nivayalife-green">
                     Get Started
                 </a>
             </div>
 
             <button type="button" @click="mobileOpen = !mobileOpen" :aria-expanded="mobileOpen.toString()" aria-controls="mobile-menu"
-                class="inline-flex items-center justify-center rounded-lg p-2 text-novix-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green md:hidden">
+                class="inline-flex items-center justify-center rounded-lg p-2 text-nivayalife-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nivayalife-green md:hidden">
                 <span class="sr-only">Toggle menu</span>
                 <svg x-show="!mobileOpen" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
                 <svg x-show="mobileOpen" x-cloak class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
@@ -81,15 +81,15 @@
         </div>
 
         <div id="mobile-menu" x-show="mobileOpen" x-cloak x-transition
-            class="border-t border-novix-green/10 bg-novix-cream px-6 py-4 md:hidden">
+            class="border-t border-nivayalife-green/10 bg-nivayalife-cream px-6 py-4 md:hidden">
             <nav class="flex flex-col gap-4 text-sm font-medium" aria-label="Mobile">
-                <a href="#features" @click="mobileOpen = false" class="hover:text-novix-green">Features</a>
-                <a href="#how-it-works" @click="mobileOpen = false" class="hover:text-novix-green">How it works</a>
-                <a href="#privacy" @click="mobileOpen = false" class="hover:text-novix-green">Privacy</a>
-                <a href="#faq" @click="mobileOpen = false" class="hover:text-novix-green">FAQ</a>
-                <div class="mt-2 flex flex-col gap-3 border-t border-novix-green/10 pt-4">
-                    <a href="{{ route('login') }}" class="text-center font-semibold text-novix-ink">Log in</a>
-                    <a href="{{ route('register') }}" class="rounded-lg bg-novix-green px-5 py-2.5 text-center font-semibold text-white">Get Started</a>
+                <a href="#features" @click="mobileOpen = false" class="hover:text-nivayalife-green">Features</a>
+                <a href="#how-it-works" @click="mobileOpen = false" class="hover:text-nivayalife-green">How it works</a>
+                <a href="#privacy" @click="mobileOpen = false" class="hover:text-nivayalife-green">Privacy</a>
+                <a href="#faq" @click="mobileOpen = false" class="hover:text-nivayalife-green">FAQ</a>
+                <div class="mt-2 flex flex-col gap-3 border-t border-nivayalife-green/10 pt-4">
+                    <a href="{{ route('login') }}" class="text-center font-semibold text-nivayalife-ink">Log in</a>
+                    <a href="{{ route('register') }}" class="rounded-lg bg-nivayalife-green px-5 py-2.5 text-center font-semibold text-white">Get Started</a>
                 </div>
             </nav>
         </div>
@@ -97,8 +97,8 @@
 
     {{-- ============ HERO ============ --}}
     <section class="relative overflow-hidden">
-        <div class="novix-float pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-novix-mint/60 blur-3xl"></div>
-        <div class="novix-float-slow pointer-events-none absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-novix-gold/15 blur-3xl"></div>
+        <div class="nivayalife-float pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-nivayalife-mint/60 blur-3xl"></div>
+        <div class="nivayalife-float-slow pointer-events-none absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-nivayalife-gold/15 blur-3xl"></div>
 
         {{-- On phones the hero fills the viewport and centres like an app's
              opening screen (the preview card sits below the fold); on lg the
@@ -107,53 +107,53 @@
             <div>
                 {{-- The mark leads the hero, so the brand registers before the headline. --}}
                 <img src="/icons/icon-192.png?v=2" alt="" width="56" height="56"
-                    class="mb-5 h-14 w-14 rounded-2xl shadow-novix-sm" aria-hidden="true">
+                    class="mb-5 h-14 w-14 rounded-2xl shadow-nivayalife-sm" aria-hidden="true">
 
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-novix-green shadow-novix-sm">
-                    <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-nivayalife-green shadow-nivayalife-sm">
+                    <span class="h-1.5 w-1.5 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
                     100% digital, zero paper
                 </span>
 
-                <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-novix-ink sm:text-5xl lg:text-6xl">
+                <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-nivayalife-ink sm:text-5xl lg:text-6xl">
                     No more paper.<br>
                     No more confusion.<br>
                     Just your family's health,<br>
-                    <span class="relative inline-block novix-text-gold italic">
+                    <span class="relative inline-block nivayalife-text-gold italic">
                         organized online.
-                        <svg class="absolute -bottom-2 left-0 w-full text-novix-gold/70" viewBox="0 0 200 9" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7c50-5 148-5 196-2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                        <svg class="absolute -bottom-2 left-0 w-full text-nivayalife-gold/70" viewBox="0 0 200 9" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7c50-5 148-5 196-2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
                     </span>
                 </h1>
 
-                <p class="mt-6 max-w-md text-lg text-novix-ink/70">
+                <p class="mt-6 max-w-md text-lg text-nivayalife-ink/70">
                     Nivaya Life stores every family member's medical reports online and uses AI to explain
                     them in plain language — so nothing is scattered, and nothing is confusing.
                 </p>
 
                 <div class="mt-8 flex flex-wrap items-center gap-4">
                     <a href="{{ route('register') }}"
-                        class="rounded-xl bg-novix-green px-6 py-3 text-sm font-semibold text-white shadow-novix transition hover:bg-novix-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green">
+                        class="rounded-xl bg-nivayalife-green px-6 py-3 text-sm font-semibold text-white shadow-nivayalife transition hover:bg-nivayalife-green-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nivayalife-green">
                         Get Started
                     </a>
                     <a href="#how-it-works"
-                        class="rounded-xl border border-novix-green/20 bg-white px-6 py-3 text-sm font-semibold text-novix-green transition hover:bg-novix-mint/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green">
+                        class="rounded-xl border border-nivayalife-green/20 bg-white px-6 py-3 text-sm font-semibold text-nivayalife-green transition hover:bg-nivayalife-mint/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nivayalife-green">
                         See how it works
                     </a>
                 </div>
 
                 {{-- App-style scroll hint — phones only, where the hero fills the screen. --}}
                 <div class="mt-12 flex justify-center lg:hidden" aria-hidden="true">
-                    <svg class="h-5 w-5 animate-bounce text-novix-green/50" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="h-5 w-5 animate-bounce text-nivayalife-green/50" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
             </div>
 
             {{-- Miniature of the real dashboard — sample data, not a real user --}}
             <div class="relative">
-                <p class="mb-2 text-center text-xs font-medium uppercase tracking-wide text-novix-muted lg:text-left">
+                <p class="mb-2 text-center text-xs font-medium uppercase tracking-wide text-nivayalife-muted lg:text-left">
                     Preview with sample data
                 </p>
-                <div class="rounded-novix bg-white p-4 shadow-novix sm:p-5" aria-hidden="true">
+                <div class="rounded-nivayalife bg-white p-4 shadow-nivayalife sm:p-5" aria-hidden="true">
                     {{-- identity card --}}
-                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-novix-green to-novix-green-dark p-4 text-white">
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark p-4 text-white">
                         <div class="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/5"></div>
                         <div class="relative flex items-center gap-3">
                             <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border-2 border-white/25 bg-white/10">
@@ -161,9 +161,9 @@
                             </span>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-bold">Aarav Shah</p>
-                                <p class="font-mono text-[10px] tracking-tight text-novix-gold-light">NVX-8FK2M &middot; Self</p>
+                                <p class="font-mono text-[10px] tracking-tight text-nivayalife-gold-light">NVX-8FK2M &middot; Self</p>
                             </div>
-                            <span class="rounded-lg bg-white px-2.5 py-1.5 text-[10px] font-bold text-novix-green">Emergency card</span>
+                            <span class="rounded-lg bg-white px-2.5 py-1.5 text-[10px] font-bold text-nivayalife-green">Emergency card</span>
                         </div>
                         <div class="relative mt-3 grid grid-cols-4 gap-1.5 text-center">
                             @foreach ([['Age', '34 yrs'], ['Blood', 'O+'], ['BMI', '22.4'], ['Sex', 'Male']] as [$label, $value])
@@ -176,39 +176,39 @@
                     </div>
 
                     {{-- today's doses --}}
-                    <div class="mt-3 rounded-2xl border border-novix-green/10 p-3">
-                        <p class="text-[10px] font-bold uppercase tracking-wide text-novix-muted">Today's doses</p>
+                    <div class="mt-3 rounded-2xl border border-nivayalife-green/10 p-3">
+                        <p class="text-[10px] font-bold uppercase tracking-wide text-nivayalife-muted">Today's doses</p>
                         <div class="mt-2 flex items-center justify-between gap-2">
                             <div class="min-w-0">
-                                <p class="truncate text-xs font-semibold text-novix-ink">Metformin <span class="font-normal text-novix-muted">· 500 mg</span></p>
+                                <p class="truncate text-xs font-semibold text-nivayalife-ink">Metformin <span class="font-normal text-nivayalife-muted">· 500 mg</span></p>
                             </div>
                             <div class="flex gap-1">
-                                <span class="rounded-full bg-novix-mint px-2 py-0.5 text-[9px] font-bold text-novix-green line-through">08:00</span>
-                                <span class="rounded-full bg-novix-cream px-2 py-0.5 text-[9px] font-bold text-novix-muted">14:00</span>
-                                <span class="rounded-full bg-novix-cream px-2 py-0.5 text-[9px] font-bold text-novix-muted">21:00</span>
+                                <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[9px] font-bold text-nivayalife-green line-through">08:00</span>
+                                <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">14:00</span>
+                                <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">21:00</span>
                             </div>
                         </div>
                     </div>
 
                     {{-- report + AI summary --}}
-                    <div class="mt-3 rounded-2xl border border-novix-green/10 p-3">
+                    <div class="mt-3 rounded-2xl border border-nivayalife-green/10 p-3">
                         <div class="flex items-start justify-between gap-2">
                             <div class="flex min-w-0 items-center gap-2">
-                                <span class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-xs">🩸</span>
+                                <span class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-xs">🩸</span>
                                 <div class="min-w-0">
-                                    <p class="truncate text-xs font-semibold text-novix-ink">Blood Test</p>
-                                    <p class="text-[10px] text-novix-muted">Explained in plain language by AI</p>
+                                    <p class="truncate text-xs font-semibold text-nivayalife-ink">Blood Test</p>
+                                    <p class="text-[10px] text-nivayalife-muted">Explained in plain language by AI</p>
                                 </div>
                             </div>
-                            <span class="rounded-full bg-novix-mint px-2 py-0.5 text-[9px] font-semibold text-novix-green">Ready</span>
+                            <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[9px] font-semibold text-nivayalife-green">Ready</span>
                         </div>
-                        <p class="mt-2 rounded-lg bg-novix-green/5 px-2.5 py-2 text-[10px] leading-relaxed text-novix-green">
+                        <p class="mt-2 rounded-lg bg-nivayalife-green/5 px-2.5 py-2 text-[10px] leading-relaxed text-nivayalife-green">
                             "Haemoglobin is in the normal range. Vitamin D is slightly low — worth discussing supplements with your doctor."
                         </p>
                     </div>
                 </div>
 
-                <div class="pointer-events-none absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-novix-gold/25 blur-2xl"></div>
+                <div class="pointer-events-none absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-nivayalife-gold/25 blur-2xl"></div>
             </div>
         </div>
     </section>
@@ -218,32 +218,32 @@
          actually does, stated plainly, before any argument is made. --}}
     <section class="relative px-6 lg:px-8" aria-label="What Nivaya Life does">
         <div class="mx-auto max-w-7xl">
-            <div class="novix-rule-gold" aria-hidden="true"></div>
-            <div class="grid gap-px overflow-hidden bg-novix-green/10 py-px sm:grid-cols-2 lg:grid-cols-4">
+            <div class="nivayalife-rule-gold" aria-hidden="true"></div>
+            <div class="grid gap-px overflow-hidden bg-nivayalife-green/10 py-px sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
                     ['n' => '10', 'suffix' => '+', 'label' => 'Report types recognized', 'sub' => 'Blood work to X-rays, sorted automatically'],
                     ['n' => '3', 'suffix' => '', 'label' => 'Languages explained in', 'sub' => 'English, Hindi and Gujarati'],
                     ['n' => '1', 'suffix' => '', 'label' => 'Account for the family', 'sub' => 'Parents, partner, children, grandparents'],
                     ['n' => '0', 'suffix' => '', 'label' => 'Paper to keep', 'sub' => 'Photograph it once and let it go'],
                 ] as $stat)
-                    <div class="bg-novix-cream px-6 py-8 text-center" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
-                        <p class="text-4xl font-extrabold tracking-tight text-novix-green">
+                    <div class="bg-nivayalife-cream px-6 py-8 text-center" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
+                        <p class="text-4xl font-extrabold tracking-tight text-nivayalife-green">
                             <span data-count-to="{{ $stat['n'] }}" data-count-suffix="{{ $stat['suffix'] }}">0</span>
                         </p>
-                        <p class="mt-2 text-sm font-bold text-novix-ink">{{ $stat['label'] }}</p>
-                        <p class="mt-1 text-xs leading-relaxed text-novix-ink/60">{{ $stat['sub'] }}</p>
+                        <p class="mt-2 text-sm font-bold text-nivayalife-ink">{{ $stat['label'] }}</p>
+                        <p class="mt-1 text-xs leading-relaxed text-nivayalife-ink/60">{{ $stat['sub'] }}</p>
                     </div>
                 @endforeach
             </div>
-            <div class="novix-rule-gold" aria-hidden="true"></div>
+            <div class="nivayalife-rule-gold" aria-hidden="true"></div>
         </div>
     </section>
 
     {{-- ============ PROBLEM ============ --}}
     <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8" aria-labelledby="problem-heading">
         <div class="mx-auto max-w-2xl text-center">
-            <h2 data-reveal id="problem-heading" class="text-3xl font-extrabold text-novix-ink">Paper records don't work anymore</h2>
-            <p class="mt-3 text-novix-ink/70">Every family runs into the same problems managing health records the old way.</p>
+            <h2 data-reveal id="problem-heading" class="text-3xl font-extrabold text-nivayalife-ink">Paper records don't work anymore</h2>
+            <p class="mt-3 text-nivayalife-ink/70">Every family runs into the same problems managing health records the old way.</p>
         </div>
 
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -253,12 +253,12 @@
                 ['icon' => 'M17 20h4v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'title' => 'Managing the whole family manually', 'body' => 'Parents, kids, grandparents — everyone\'s reports pile up in different places, with no single view of who has what.'],
                 ['icon' => 'M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', 'title' => 'Repeating tests you\'ve already done', 'body' => 'When an old report can\'t be found in time, the easiest fix is often just redoing the test — more cost, more waiting.'],
             ] as $problem)
-                <div class="rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-mint text-novix-green" aria-hidden="true">
+                <div class="rounded-nivayalife bg-white p-6 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:shadow-nivayalife" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-nivayalife-mint text-nivayalife-green" aria-hidden="true">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $problem['icon'] }}"/></svg>
                     </span>
-                    <h3 class="mt-4 font-semibold text-novix-ink">{{ $problem['title'] }}</h3>
-                    <p class="mt-1.5 text-sm text-novix-ink/70">{{ $problem['body'] }}</p>
+                    <h3 class="mt-4 font-semibold text-nivayalife-ink">{{ $problem['title'] }}</h3>
+                    <p class="mt-1.5 text-sm text-nivayalife-ink/70">{{ $problem['body'] }}</p>
                 </div>
             @endforeach
         </div>
@@ -268,8 +268,8 @@
     <section id="how-it-works" class="scroll-mt-20 py-20" aria-labelledby="how-heading">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl text-center">
-                <h2 data-reveal id="how-heading" class="text-3xl font-extrabold text-novix-ink">How Nivaya Life works</h2>
-                <p class="mt-3 text-novix-ink/70">Four steps from a drawer full of paper to a health record everyone can actually use.</p>
+                <h2 data-reveal id="how-heading" class="text-3xl font-extrabold text-nivayalife-ink">How Nivaya Life works</h2>
+                <p class="mt-3 text-nivayalife-ink/70">Four steps from a drawer full of paper to a health record everyone can actually use.</p>
             </div>
 
             <ol class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -279,10 +279,10 @@
                     ['step' => '3', 'title' => 'AI organizes and explains them', 'body' => 'Nivaya Life sorts each report into the right category and explains what it means in plain language.'],
                     ['step' => '4', 'title' => 'Share a summary with your doctor', 'body' => 'Generate a secure link or a clean summary you can hand to any doctor in one tap.'],
                 ] as $step)
-                    <li class="relative rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
-                        <span class="text-4xl font-extrabold text-novix-gold/60" aria-hidden="true">{{ $step['step'] }}</span>
-                        <h3 class="mt-3 font-semibold text-novix-ink">{{ $step['title'] }}</h3>
-                        <p class="mt-1.5 text-sm text-novix-ink/70">{{ $step['body'] }}</p>
+                    <li class="relative rounded-nivayalife bg-white p-6 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:shadow-nivayalife" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
+                        <span class="text-4xl font-extrabold text-nivayalife-gold/60" aria-hidden="true">{{ $step['step'] }}</span>
+                        <h3 class="mt-3 font-semibold text-nivayalife-ink">{{ $step['title'] }}</h3>
+                        <p class="mt-1.5 text-sm text-nivayalife-ink/70">{{ $step['body'] }}</p>
                     </li>
                 @endforeach
             </ol>
@@ -292,8 +292,8 @@
     {{-- ============ FEATURES ============ --}}
     <section id="features" class="scroll-mt-20 mx-auto max-w-7xl px-6 py-20 lg:px-8" aria-labelledby="features-heading">
         <div class="mx-auto max-w-2xl text-center">
-            <h2 data-reveal id="features-heading" class="text-3xl font-extrabold text-novix-ink">Everything your family's health needs</h2>
-            <p class="mt-3 text-novix-ink/70">Built to replace the folder of paperwork every family accumulates.</p>
+            <h2 data-reveal id="features-heading" class="text-3xl font-extrabold text-nivayalife-ink">Everything your family's health needs</h2>
+            <p class="mt-3 text-nivayalife-ink/70">Built to replace the folder of paperwork every family accumulates.</p>
         </div>
 
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -309,12 +309,12 @@
                 ['icon' => 'M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-4-5.66V5a2 2 0 1 0-4 0v.34C7.67 6.17 6 8.39 6 11v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9', 'title' => 'Medicine Reminders', 'body' => 'Scheduled reminders for every medication, for every family member, so doses don\'t get missed.'],
                 ['icon' => 'M3 12h18M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9ZM3 12a9 9 0 0 1 9-9M21 12a9 9 0 0 1-9 9', 'title' => 'Multilingual Support', 'body' => 'Report explanations available in multiple languages, so every family member can actually understand them.'],
             ] as $feature)
-                <div class="novix-gold-edge group rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-1 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 55 }}ms">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-green text-white transition group-hover:scale-110" aria-hidden="true">
+                <div class="nivayalife-gold-edge group rounded-nivayalife bg-white p-6 shadow-nivayalife-sm transition hover:-translate-y-1 hover:shadow-nivayalife" data-reveal style="transition-delay:{{ $loop->index * 55 }}ms">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-nivayalife-green text-white transition group-hover:scale-110" aria-hidden="true">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $feature['icon'] }}"/></svg>
                     </span>
-                    <h3 class="mt-4 font-semibold text-novix-ink">{{ $feature['title'] }}</h3>
-                    <p class="mt-1.5 text-sm text-novix-ink/70">{{ $feature['body'] }}</p>
+                    <h3 class="mt-4 font-semibold text-nivayalife-ink">{{ $feature['title'] }}</h3>
+                    <p class="mt-1.5 text-sm text-nivayalife-ink/70">{{ $feature['body'] }}</p>
                 </div>
             @endforeach
         </div>
@@ -323,13 +323,13 @@
     {{-- ============ MULTILINGUAL DEMO ============ --}}
     <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="lang-heading">
         <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="lang-heading" class="text-3xl font-extrabold text-novix-ink">Read in the language you think in</h2>
-            <p class="mt-3 text-novix-ink/70">
+            <h2 id="lang-heading" class="text-3xl font-extrabold text-nivayalife-ink">Read in the language you think in</h2>
+            <p class="mt-3 text-nivayalife-ink/70">
                 The same report, explained plainly — switch languages and watch it change.
             </p>
         </div>
 
-        <div class="mx-auto mt-10 max-w-2xl overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix"
+        <div class="mx-auto mt-10 max-w-2xl overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife"
             data-reveal
             x-data="{
                 lang: 'en',
@@ -339,27 +339,27 @@
                     gu: { label: 'ગુજરાતી', text: 'તમારું હીમોગ્લોબિન સામાન્ય શ્રેણીમાં છે. વિટામિન ડી થોડું ઓછું છે — તમારા ડૉક્ટર સાથે સપ્લિમેન્ટ વિશે વાત કરો.' },
                 },
             }">
-            <div class="flex items-center justify-between gap-3 border-b border-novix-green/10 px-5 py-4">
+            <div class="flex items-center justify-between gap-3 border-b border-nivayalife-green/10 px-5 py-4">
                 <div class="flex min-w-0 items-center gap-2.5">
-                    <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-novix-cream text-base" aria-hidden="true">🩸</span>
+                    <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-base" aria-hidden="true">🩸</span>
                     <div class="min-w-0">
-                        <p class="truncate text-sm font-semibold text-novix-ink">Blood Test &middot; AI summary</p>
-                        <p class="text-xs text-novix-muted">Sample report</p>
+                        <p class="truncate text-sm font-semibold text-nivayalife-ink">Blood Test &middot; AI summary</p>
+                        <p class="text-xs text-nivayalife-muted">Sample report</p>
                     </div>
                 </div>
-                <div class="flex flex-shrink-0 gap-1 rounded-full bg-novix-cream p-1" role="group" aria-label="Summary language">
+                <div class="flex flex-shrink-0 gap-1 rounded-full bg-nivayalife-cream p-1" role="group" aria-label="Summary language">
                     <template x-for="(meta, code) in langs" :key="code">
                         <button type="button" @click="lang = code"
                             class="rounded-full px-3 py-1 text-xs font-bold transition"
-                            :class="lang === code ? 'bg-novix-green text-white shadow-novix-sm' : 'text-novix-muted hover:text-novix-green'"
+                            :class="lang === code ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-muted hover:text-nivayalife-green'"
                             :aria-pressed="(lang === code).toString()"
                             x-text="meta.label"></button>
                     </template>
                 </div>
             </div>
             <div class="p-6">
-                <p class="min-h-[3.5rem] text-[15px] leading-relaxed text-novix-ink" x-text="langs[lang].text"></p>
-                <p class="mt-4 border-t border-novix-green/10 pt-3 text-xs text-novix-ink/50">
+                <p class="min-h-[3.5rem] text-[15px] leading-relaxed text-nivayalife-ink" x-text="langs[lang].text"></p>
+                <p class="mt-4 border-t border-nivayalife-green/10 pt-3 text-xs text-nivayalife-ink/50">
                     Illustrative example. Nivaya Life explains reports — it never diagnoses.
                 </p>
             </div>
@@ -369,18 +369,18 @@
     {{-- ============ PAPER VS NIVAYA ============ --}}
     <section class="mx-auto max-w-5xl px-6 pb-20 lg:px-8" aria-labelledby="compare-heading">
         <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="compare-heading" class="text-3xl font-extrabold text-novix-ink">The difference in practice</h2>
+            <h2 id="compare-heading" class="text-3xl font-extrabold text-nivayalife-ink">The difference in practice</h2>
         </div>
 
         <div class="mt-10 grid gap-6 md:grid-cols-2">
-            <div class="rounded-novix border border-novix-ink/10 bg-white/60 p-7" data-reveal>
-                <h3 class="flex items-center gap-2 font-bold text-novix-ink/70">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-novix-ink/5 text-novix-ink/50" aria-hidden="true">
+            <div class="rounded-nivayalife border border-nivayalife-ink/10 bg-white/60 p-7" data-reveal>
+                <h3 class="flex items-center gap-2 font-bold text-nivayalife-ink/70">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-nivayalife-ink/5 text-nivayalife-ink/50" aria-hidden="true">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M9 13h6m-6 4h4m1-15H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
                     </span>
                     With paper
                 </h3>
-                <ul class="mt-4 space-y-3 text-sm text-novix-ink/60">
+                <ul class="mt-4 space-y-3 text-sm text-nivayalife-ink/60">
                     @foreach ([
                         'Hunting through folders before every appointment',
                         'Reports fading, tearing, or going missing',
@@ -389,21 +389,21 @@
                         'Nothing at hand in an emergency',
                     ] as $line)
                         <li class="flex gap-2.5">
-                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-novix-ink/25" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-nivayalife-ink/25" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
                             {{ $line }}
                         </li>
                     @endforeach
                 </ul>
             </div>
 
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-7 shadow-novix" data-reveal style="transition-delay:120ms">
-                <h3 class="flex items-center gap-2 font-bold text-novix-green">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-novix-mint text-novix-green" aria-hidden="true">
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-7 shadow-nivayalife" data-reveal style="transition-delay:120ms">
+                <h3 class="flex items-center gap-2 font-bold text-nivayalife-green">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-nivayalife-mint text-nivayalife-green" aria-hidden="true">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
                     </span>
                     With Nivaya Life
                 </h3>
-                <ul class="mt-4 space-y-3 text-sm text-novix-ink/80">
+                <ul class="mt-4 space-y-3 text-sm text-nivayalife-ink/80">
                     @foreach ([
                         'Every report for every family member, in one place',
                         'Stored securely online — nothing to lose or damage',
@@ -412,7 +412,7 @@
                         'An emergency card ready before you need it',
                     ] as $line)
                         <li class="flex gap-2.5">
-                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-nivayalife-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ $line }}
                         </li>
                     @endforeach
@@ -425,8 +425,8 @@
     <section id="privacy" class="scroll-mt-20 py-20" aria-labelledby="privacy-heading">
         <div class="mx-auto max-w-5xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl text-center">
-                <h2 data-reveal id="privacy-heading" class="text-3xl font-extrabold text-novix-ink">Your data, protected and controlled by you</h2>
-                <p class="mt-3 text-novix-ink/70">Nivaya Life is built to earn trust with real families managing real medical information.</p>
+                <h2 data-reveal id="privacy-heading" class="text-3xl font-extrabold text-nivayalife-ink">Your data, protected and controlled by you</h2>
+                <p class="mt-3 text-nivayalife-ink/70">Nivaya Life is built to earn trust with real families managing real medical information.</p>
             </div>
 
             <div class="mt-12 grid gap-6 sm:grid-cols-3">
@@ -435,18 +435,18 @@
                     ['icon' => 'M8.7 10.7 15.3 7.3M8.7 13.3l6.6 3.4M18 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm0 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM8 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z', 'title' => 'You control sharing', 'body' => 'Share a report for a set time window — you decide who sees what, and for how long. Revoke access anytime.'],
                     ['icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a4 4 0 1 1 5.657 0A4 4 0 0 1 12 18a4 4 0 0 1-2.828-1.464Z', 'title' => 'AI explains, it doesn\'t diagnose', 'body' => 'Nivaya Life\'s AI reads and organizes your reports and explains them in plain language. It never makes a diagnosis or prescribes treatment.'],
                 ] as $item)
-                    <div class="rounded-novix bg-white p-6 shadow-novix-sm transition hover:-translate-y-0.5 hover:shadow-novix" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-novix-mint text-novix-green" aria-hidden="true">
+                    <div class="rounded-nivayalife bg-white p-6 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:shadow-nivayalife" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-nivayalife-mint text-nivayalife-green" aria-hidden="true">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $item['icon'] }}"/></svg>
                         </span>
-                        <h3 class="mt-4 font-semibold text-novix-ink">{{ $item['title'] }}</h3>
-                        <p class="mt-1.5 text-sm text-novix-ink/70">{{ $item['body'] }}</p>
+                        <h3 class="mt-4 font-semibold text-nivayalife-ink">{{ $item['title'] }}</h3>
+                        <p class="mt-1.5 text-sm text-nivayalife-ink/70">{{ $item['body'] }}</p>
                     </div>
                 @endforeach
             </div>
 
-            <div class="mt-8 rounded-novix border-2 border-novix-green/15 bg-white px-6 py-5 text-center shadow-novix-sm">
-                <p class="font-medium text-novix-ink">
+            <div class="mt-8 rounded-nivayalife border-2 border-nivayalife-green/15 bg-white px-6 py-5 text-center shadow-nivayalife-sm">
+                <p class="font-medium text-nivayalife-ink">
                     "Nivaya Life is a personal health companion. It explains and organizes your records —
                     it does not diagnose, prescribe, or replace your doctor."
                 </p>
@@ -457,13 +457,13 @@
     {{-- ============ LIVE AI DEMO ============ --}}
     <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="demo-heading">
         <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="demo-heading" class="text-3xl font-extrabold text-novix-ink">Watch it read a report</h2>
-            <p class="mt-3 text-novix-ink/70">
+            <h2 id="demo-heading" class="text-3xl font-extrabold text-nivayalife-ink">Watch it read a report</h2>
+            <p class="mt-3 text-nivayalife-ink/70">
                 Press play on a sample lab report and see what you would get back.
             </p>
         </div>
 
-        <div class="mt-10 overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix" data-reveal
+        <div class="mt-10 overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife" data-reveal
             x-data="{
                 state: 'idle',
                 typed: '',
@@ -511,36 +511,36 @@
             }">
             <div class="grid gap-0 md:grid-cols-2">
                 {{-- The document being read --}}
-                <div class="relative overflow-hidden border-b border-novix-green/10 bg-novix-cream/50 p-6 md:border-b-0 md:border-r">
+                <div class="relative overflow-hidden border-b border-nivayalife-green/10 bg-nivayalife-cream/50 p-6 md:border-b-0 md:border-r">
                     <div class="flex items-center justify-between">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-novix-muted">Sample lab report</p>
-                        <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-novix-muted shadow-sm">PDF</span>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-nivayalife-muted">Sample lab report</p>
+                        <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-nivayalife-muted shadow-sm">PDF</span>
                     </div>
 
                     <div class="relative mt-4 overflow-hidden rounded-xl bg-white p-4 shadow-sm">
                         {{-- The sweep only exists while the AI is "reading". --}}
                         <template x-if="state === 'scanning'">
                             <div class="pointer-events-none absolute inset-x-0 top-0 z-10">
-                                <div class="novix-scanline absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-novix-green/20 to-transparent"></div>
-                                <div class="novix-scanline absolute inset-x-0 h-0.5 bg-novix-green/70"></div>
+                                <div class="nivayalife-scanline absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-nivayalife-green/20 to-transparent"></div>
+                                <div class="nivayalife-scanline absolute inset-x-0 h-0.5 bg-nivayalife-green/70"></div>
                             </div>
                         </template>
 
-                        <p class="text-[10px] font-bold text-novix-ink">HAEMATOLOGY &amp; BIOCHEMISTRY</p>
-                        <p class="text-[9px] text-novix-muted">Sample Diagnostics · 12 Mar 2026</p>
+                        <p class="text-[10px] font-bold text-nivayalife-ink">HAEMATOLOGY &amp; BIOCHEMISTRY</p>
+                        <p class="text-[9px] text-nivayalife-muted">Sample Diagnostics · 12 Mar 2026</p>
                         <div class="mt-3 space-y-1.5">
                             <template x-for="(row, idx) in rows" :key="row.name">
                                 <div class="flex items-center justify-between gap-2 border-b border-dashed border-gray-100 pb-1.5 text-[10px] last:border-0">
-                                    <span class="min-w-0 flex-1 truncate text-novix-ink" x-text="row.name"></span>
+                                    <span class="min-w-0 flex-1 truncate text-nivayalife-ink" x-text="row.name"></span>
                                     <span class="font-mono font-bold"
-                                        :class="state !== 'idle' && row.flag === 'low' ? 'text-novix-pink-dark' : 'text-novix-ink'">
-                                        <span x-text="row.value"></span><span class="font-normal text-novix-muted" x-text="' ' + row.unit"></span>
+                                        :class="state !== 'idle' && row.flag === 'low' ? 'text-nivayalife-pink-dark' : 'text-nivayalife-ink'">
+                                        <span x-text="row.value"></span><span class="font-normal text-nivayalife-muted" x-text="' ' + row.unit"></span>
                                     </span>
-                                    <span class="w-16 text-right font-mono text-[9px] text-novix-muted" x-text="row.range"></span>
+                                    <span class="w-16 text-right font-mono text-[9px] text-nivayalife-muted" x-text="row.range"></span>
                                     {{-- The flag only appears once it has been read. --}}
                                     <span class="w-3 text-right">
                                         <template x-if="state !== 'idle' && row.flag === 'low'">
-                                            <span class="text-novix-pink-dark" aria-hidden="true">&#9660;</span>
+                                            <span class="text-nivayalife-pink-dark" aria-hidden="true">&#9660;</span>
                                         </template>
                                     </span>
                                 </div>
@@ -549,7 +549,7 @@
                     </div>
 
                     <button type="button" @click="state === 'idle' ? play() : reset()"
-                        class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-novix-green py-2.5 text-sm font-bold text-white shadow-novix-sm transition hover:bg-novix-green-dark active:scale-95">
+                        class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-nivayalife-green py-2.5 text-sm font-bold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark active:scale-95">
                         <template x-if="state === 'idle'">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg>
                         </template>
@@ -562,42 +562,42 @@
 
                 {{-- What comes back --}}
                 <div class="flex flex-col p-6">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-novix-muted">What you get back</p>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-nivayalife-muted">What you get back</p>
 
                     <div class="mt-4 flex-1">
                         <template x-if="state === 'idle'">
-                            <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-novix-green/25 text-center">
-                                <svg class="h-7 w-7 text-novix-green/40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v2.2M8.5 6.2h7a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="10" cy="11.5" r="1.1" fill="currentColor"/><circle cx="14" cy="11.5" r="1.1" fill="currentColor"/></svg>
-                                <p class="text-xs text-novix-muted">Press <span class="font-semibold text-novix-green">Read this report</span></p>
+                            <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-nivayalife-green/25 text-center">
+                                <svg class="h-7 w-7 text-nivayalife-green/40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v2.2M8.5 6.2h7a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="10" cy="11.5" r="1.1" fill="currentColor"/><circle cx="14" cy="11.5" r="1.1" fill="currentColor"/></svg>
+                                <p class="text-xs text-nivayalife-muted">Press <span class="font-semibold text-nivayalife-green">Read this report</span></p>
                             </div>
                         </template>
 
                         <template x-if="state === 'scanning'">
                             <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-3 text-center">
                                 <div class="flex gap-1.5">
-                                    <span class="h-2 w-2 animate-bounce rounded-full bg-novix-green [animation-delay:-0.3s]"></span>
-                                    <span class="h-2 w-2 animate-bounce rounded-full bg-novix-green [animation-delay:-0.15s]"></span>
-                                    <span class="h-2 w-2 animate-bounce rounded-full bg-novix-green"></span>
+                                    <span class="h-2 w-2 animate-bounce rounded-full bg-nivayalife-green [animation-delay:-0.3s]"></span>
+                                    <span class="h-2 w-2 animate-bounce rounded-full bg-nivayalife-green [animation-delay:-0.15s]"></span>
+                                    <span class="h-2 w-2 animate-bounce rounded-full bg-nivayalife-green"></span>
                                 </div>
-                                <p class="text-xs font-semibold text-novix-green">Reading the document…</p>
+                                <p class="text-xs font-semibold text-nivayalife-green">Reading the document…</p>
                             </div>
                         </template>
 
                         <template x-if="state === 'typing' || state === 'done'">
                             <div>
-                                <div class="rounded-xl bg-novix-green/5 p-4">
-                                    <p class="text-sm leading-relaxed text-novix-ink" :class="state === 'typing' ? 'novix-caret' : ''" x-text="typed"></p>
+                                <div class="rounded-xl bg-nivayalife-green/5 p-4">
+                                    <p class="text-sm leading-relaxed text-nivayalife-ink" :class="state === 'typing' ? 'nivayalife-caret' : ''" x-text="typed"></p>
                                 </div>
                                 <div x-cloak x-show="state === 'done'" x-transition class="mt-3 flex flex-wrap gap-2">
-                                    <span class="rounded-full bg-novix-pink/20 px-2.5 py-1 text-[11px] font-bold text-novix-pink-dark">1 value flagged low</span>
-                                    <span class="rounded-full bg-novix-mint px-2.5 py-1 text-[11px] font-bold text-novix-green">3 in range</span>
-                                    <span class="rounded-full bg-novix-gold/20 px-2.5 py-1 text-[11px] font-bold text-amber-700">Filed automatically</span>
+                                    <span class="rounded-full bg-nivayalife-pink/20 px-2.5 py-1 text-[11px] font-bold text-nivayalife-pink-dark">1 value flagged low</span>
+                                    <span class="rounded-full bg-nivayalife-mint px-2.5 py-1 text-[11px] font-bold text-nivayalife-green">3 in range</span>
+                                    <span class="rounded-full bg-nivayalife-gold/20 px-2.5 py-1 text-[11px] font-bold text-amber-700">Filed automatically</span>
                                 </div>
                             </div>
                         </template>
                     </div>
 
-                    <p class="mt-4 border-t border-novix-green/10 pt-3 text-[11px] leading-relaxed text-novix-ink/50">
+                    <p class="mt-4 border-t border-nivayalife-green/10 pt-3 text-[11px] leading-relaxed text-nivayalife-ink/50">
                         Illustrative sample, not a real patient. Nivaya Life explains and organizes reports — it never diagnoses.
                     </p>
                 </div>
@@ -609,27 +609,27 @@
     <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="break-heading">
         <x-confetti />
         <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="break-heading" class="text-3xl font-extrabold text-novix-ink">Take a 10-second health break</h2>
-            <p class="mt-3 text-novix-ink/70">Try the real thing before you sign up for anything.</p>
+            <h2 id="break-heading" class="text-3xl font-extrabold text-nivayalife-ink">Take a 10-second health break</h2>
+            <p class="mt-3 text-nivayalife-ink/70">Try the real thing before you sign up for anything.</p>
         </div>
 
         {{-- Live BMI check leads: it is the actual gauge component from inside
              the app, so the strongest demo gets the most prominent slot. --}}
-        <div class="mt-10 overflow-hidden rounded-novix border-t-2 border-novix-gold/50 bg-white shadow-novix-sm" data-reveal>
+        <div class="mt-10 overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife-sm" data-reveal>
             <div class="grid items-center gap-8 p-8 md:grid-cols-2 md:p-10">
                 <div class="order-2 md:order-1">
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-novix-mint px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-novix-green">
-                        <span class="h-1.5 w-1.5 rounded-full bg-novix-gold" aria-hidden="true"></span>
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-nivayalife-mint px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-nivayalife-green">
+                        <span class="h-1.5 w-1.5 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
                         Live demo
                     </span>
-                    <h3 class="mt-3 text-2xl font-extrabold text-novix-ink">Check your BMI right now</h3>
-                    <p class="mt-2 text-sm leading-relaxed text-novix-ink/70">
+                    <h3 class="mt-3 text-2xl font-extrabold text-nivayalife-ink">Check your BMI right now</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-nivayalife-ink/70">
                         Enter a height and weight and the needle moves instantly. This is the very
                         same gauge that sits on your dashboard and tracks every reading over time
                         once you have an account.
                     </p>
-                    <p class="mt-4 flex items-start gap-2 text-xs text-novix-ink/50">
-                        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-novix-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 1 0-8 0v4h8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                    <p class="mt-4 flex items-start gap-2 text-xs text-nivayalife-ink/50">
+                        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-nivayalife-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 1 0-8 0v4h8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                         Runs entirely in your browser — nothing is saved, sent, or shared.
                     </p>
                 </div>
@@ -642,24 +642,24 @@
         {{-- Emergency card, flippable. It is the feature people understand
              fastest once they see the QR on the back. --}}
         <div class="mt-6 grid gap-6 md:grid-cols-2">
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-6 shadow-novix-sm" data-reveal>
-                <h3 class="font-semibold text-novix-ink">Your emergency card</h3>
-                <p class="mt-1 text-sm leading-relaxed text-novix-ink/60">
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-6 shadow-nivayalife-sm" data-reveal>
+                <h3 class="font-semibold text-nivayalife-ink">Your emergency card</h3>
+                <p class="mt-1 text-sm leading-relaxed text-nivayalife-ink/60">
                     Blood group, allergies and who to call — on one card a paramedic can read
                     without unlocking your phone. Tap it to see the back.
                 </p>
 
-                <div class="novix-flip mt-5" x-data="{ flipped: false }" :class="flipped ? 'is-flipped' : ''">
-                    <button type="button" @click="flipped = !flipped" class="novix-flip-inner block w-full text-left"
+                <div class="nivayalife-flip mt-5" x-data="{ flipped: false }" :class="flipped ? 'is-flipped' : ''">
+                    <button type="button" @click="flipped = !flipped" class="nivayalife-flip-inner block w-full text-left"
                         :aria-pressed="flipped.toString()" aria-label="Flip the emergency card">
 
                         {{-- Front --}}
-                        <div class="novix-flip-face overflow-hidden rounded-2xl bg-gradient-to-br from-novix-green to-novix-green-dark p-5 text-white shadow-novix ring-1 ring-novix-gold/40">
+                        <div class="nivayalife-flip-face overflow-hidden rounded-2xl bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark p-5 text-white shadow-nivayalife ring-1 ring-nivayalife-gold/40">
                             <div class="flex items-start justify-between">
                                 <div>
                                     <p class="text-[10px] font-bold uppercase tracking-widest text-white/60">Emergency card</p>
                                     <p class="mt-1 text-lg font-bold">Aarav Shah</p>
-                                    <p class="font-mono text-[10px] text-novix-gold-light">NVX-8FK2M</p>
+                                    <p class="font-mono text-[10px] text-nivayalife-gold-light">NVX-8FK2M</p>
                                 </div>
                                 <svg class="h-8 w-8 opacity-30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <path d="M6.5 18.5v-13l9 13" stroke="#FFFFFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -672,7 +672,7 @@
                                     <p class="text-[9px] font-semibold uppercase tracking-wider text-white/60">Blood group</p>
                                     <p class="text-xl font-extrabold">O+</p>
                                 </div>
-                                <div class="rounded-xl bg-novix-pink-dark px-3 py-2">
+                                <div class="rounded-xl bg-nivayalife-pink-dark px-3 py-2">
                                     <p class="text-[9px] font-semibold uppercase tracking-wider text-white/80">Severe allergy</p>
                                     <p class="text-base font-extrabold leading-tight">Penicillin</p>
                                 </div>
@@ -681,18 +681,18 @@
                         </div>
 
                         {{-- Back --}}
-                        <div class="novix-flip-face novix-flip-back flex flex-col items-center justify-center rounded-2xl bg-white p-5 shadow-novix ring-1 ring-novix-green/15">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-novix-muted">Scan for full card</p>
+                        <div class="nivayalife-flip-face nivayalife-flip-back flex flex-col items-center justify-center rounded-2xl bg-white p-5 shadow-nivayalife ring-1 ring-nivayalife-green/15">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-nivayalife-muted">Scan for full card</p>
                             {{-- A drawn stand-in, not a working code. --}}
                             <div class="mt-3 grid grid-cols-7 gap-1" aria-hidden="true">
                                 @foreach([1,1,1,0,1,1,1, 1,0,1,0,1,0,1, 1,1,1,0,1,1,1, 0,0,0,1,0,0,0, 1,1,0,1,0,1,1, 1,0,1,0,1,0,1, 1,1,1,0,1,1,1] as $cell)
-                                    <span class="h-2.5 w-2.5 rounded-[2px] {{ $cell ? 'bg-novix-green' : 'bg-novix-cream' }}"></span>
+                                    <span class="h-2.5 w-2.5 rounded-[2px] {{ $cell ? 'bg-nivayalife-green' : 'bg-nivayalife-cream' }}"></span>
                                 @endforeach
                             </div>
-                            <p class="mt-3 text-center text-[11px] leading-relaxed text-novix-ink/60">
+                            <p class="mt-3 text-center text-[11px] leading-relaxed text-nivayalife-ink/60">
                                 Works without an account, and without unlocking the phone.
                             </p>
-                            <p class="mt-2 text-[10px] text-novix-muted">Tap to flip back</p>
+                            <p class="mt-2 text-[10px] text-nivayalife-muted">Tap to flip back</p>
                         </div>
                     </button>
                 </div>
@@ -700,7 +700,7 @@
 
         {{-- Tap-the-heart: a synthesized lub-dub on every tap, confetti at ten.
              Pure WebAudio — no audio file, and silent until the visitor asks. --}}
-            <div class="flex flex-col items-center justify-center gap-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-8 text-center shadow-novix-sm"
+            <div class="flex flex-col items-center justify-center gap-6 rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-8 text-center shadow-nivayalife-sm"
                 data-reveal
             x-data="{
                 beats: 0,
@@ -726,42 +726,42 @@
                         thump(t, 60, 0.5);
                         thump(t + 0.22, 48, 0.35);
                     } catch (e) { /* audio blocked — the visual bump still lands */ }
-                    if (this.beats === 10) window.dispatchEvent(new CustomEvent('novix:confetti'));
+                    if (this.beats === 10) window.dispatchEvent(new CustomEvent('nivayalife:confetti'));
                 },
             }">
             <button type="button" @click="tap()" aria-label="Tap to hear a heartbeat"
-                class="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-novix-pink/20 transition hover:bg-novix-pink/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-novix-green"
+                class="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-pink/20 transition hover:bg-nivayalife-pink/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nivayalife-green"
                 :class="bumping ? 'scale-110' : 'scale-100'" style="transition: transform 0.15s ease">
-                <svg class="h-10 w-10 text-novix-pink-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg class="h-10 w-10 text-nivayalife-pink-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12 21s-7-4.35-9.5-8.5C.83 9.1 2.3 5.5 6 5c2-.27 3.5 1 4 2 .5-1 2-2.27 4-2 3.7.5 5.17 4.1 3.5 7.5C19 16.65 12 21 12 21Z"/>
                 </svg>
             </button>
             <div class="min-w-0">
-                <h3 class="font-semibold text-novix-ink">Tap the heart</h3>
-                <p class="mt-1 text-sm text-novix-ink/60">Hear a real lub-dub — sound on. Ten beats earns a small celebration.</p>
-                    <p class="mt-2 h-5 text-xs font-bold text-novix-gold" x-cloak x-show="beats > 0"
+                <h3 class="font-semibold text-nivayalife-ink">Tap the heart</h3>
+                <p class="mt-1 text-sm text-nivayalife-ink/60">Hear a real lub-dub — sound on. Ten beats earns a small celebration.</p>
+                    <p class="mt-2 h-5 text-xs font-bold text-nivayalife-gold" x-cloak x-show="beats > 0"
                         x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="mx-auto max-w-3xl px-6 lg:px-8"><div class="novix-rule-gold" aria-hidden="true"></div></div>
+    <div class="mx-auto max-w-3xl px-6 lg:px-8"><div class="nivayalife-rule-gold" aria-hidden="true"></div></div>
 
     {{-- ============ FAQ ============ --}}
     <section id="faq" class="scroll-mt-20 mx-auto max-w-3xl px-6 py-20 lg:px-8" aria-labelledby="faq-heading">
         <div class="text-center">
-            <h2 data-reveal id="faq-heading" class="text-3xl font-extrabold text-novix-ink">Frequently asked questions</h2>
+            <h2 data-reveal id="faq-heading" class="text-3xl font-extrabold text-nivayalife-ink">Frequently asked questions</h2>
         </div>
 
-        <div class="mt-10 divide-y divide-novix-green/10 rounded-novix border border-novix-green/10 bg-white px-6 shadow-novix-sm">
+        <div class="mt-10 divide-y divide-nivayalife-green/10 rounded-nivayalife border border-nivayalife-green/10 bg-white px-6 shadow-nivayalife-sm">
             @foreach ($faqs as $index => $faq)
                 <div x-data="{ open: {{ $index === 0 ? 'true' : 'false' }} }" class="py-2">
                     <h3>
                         <button type="button" @click="open = !open" :aria-expanded="open.toString()" :aria-controls="'faq-panel-{{ $index }}'"
-                            class="flex w-full items-center justify-between gap-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-novix-green">
-                            <span class="font-semibold text-novix-ink">{{ $faq['q'] }}</span>
-                            <svg class="h-5 w-5 shrink-0 text-novix-green transition-transform" :class="open ? 'rotate-45' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            class="flex w-full items-center justify-between gap-4 py-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nivayalife-green">
+                            <span class="font-semibold text-nivayalife-ink">{{ $faq['q'] }}</span>
+                            <svg class="h-5 w-5 shrink-0 text-nivayalife-green transition-transform" :class="open ? 'rotate-45' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path stroke-linecap="round" d="M12 5v14M5 12h14"/>
                             </svg>
                         </button>
@@ -773,7 +773,7 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0">
-                        <p class="pb-5 pr-8 text-sm text-novix-ink/70">{{ $faq['a'] }}</p>
+                        <p class="pb-5 pr-8 text-sm text-nivayalife-ink/70">{{ $faq['a'] }}</p>
                     </div>
                 </div>
             @endforeach
@@ -782,16 +782,16 @@
 
     {{-- ============ FINAL CTA ============ --}}
     <section class="px-6 pb-20 lg:px-8">
-        <div class="mx-auto mb-16 max-w-4xl novix-rule-gold" aria-hidden="true"></div>
-        <div class="novix-sheen relative mx-auto max-w-4xl overflow-hidden rounded-novix bg-novix-green px-8 py-14 text-center shadow-novix ring-1 ring-novix-gold/30 sm:px-16" data-reveal>
-            <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-novix-gold/10" aria-hidden="true"></div>
+        <div class="mx-auto mb-16 max-w-4xl nivayalife-rule-gold" aria-hidden="true"></div>
+        <div class="nivayalife-sheen relative mx-auto max-w-4xl overflow-hidden rounded-nivayalife bg-nivayalife-green px-8 py-14 text-center shadow-nivayalife ring-1 ring-nivayalife-gold/30 sm:px-16" data-reveal>
+            <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-nivayalife-gold/10" aria-hidden="true"></div>
             <div class="pointer-events-none absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-white/5" aria-hidden="true"></div>
             <h2 class="relative text-3xl font-extrabold text-white">Ready to leave the paper behind?</h2>
             <p class="relative mx-auto mt-3 max-w-md text-white/80">
                 Create your family's secure health record today — free to get started.
             </p>
             <a href="{{ route('register') }}"
-                class="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-novix-green shadow-novix-sm transition hover:-translate-y-0.5 hover:bg-novix-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                class="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-nivayalife-green shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:bg-nivayalife-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 Get Started
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
@@ -800,26 +800,26 @@
 
     {{-- ============ FOOTER ============ --}}
     <footer class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div class="flex flex-col items-center gap-8 border-b border-novix-green/10 pb-8 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex flex-col items-center gap-8 border-b border-nivayalife-green/10 pb-8 sm:flex-row sm:items-start sm:justify-between">
             <div class="max-w-xs text-center sm:text-left">
-                <a href="/" class="flex justify-center sm:justify-start" aria-label="Nivaya Life home"><x-novix-logo size="sm" /></a>
-                <p class="mt-2 text-sm text-novix-ink/60">Your family's health records, online — no more paper.</p>
+                <a href="/" class="flex justify-center sm:justify-start" aria-label="Nivaya Life home"><x-nivayalife-logo size="sm" /></a>
+                <p class="mt-2 text-sm text-nivayalife-ink/60">Your family's health records, online — no more paper.</p>
             </div>
 
-            <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-novix-ink/70 sm:justify-end" aria-label="Footer">
-                <a href="#features" class="hover:text-novix-green">Features</a>
-                <a href="#how-it-works" class="hover:text-novix-green">How it works</a>
-                <a href="#privacy" class="hover:text-novix-green">Privacy</a>
-                <a href="#faq" class="hover:text-novix-green">FAQ</a>
-                <a href="mailto:hello@nivayalife.example" class="hover:text-novix-green">hello@nivayalife.example</a>
+            <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-nivayalife-ink/70 sm:justify-end" aria-label="Footer">
+                <a href="#features" class="hover:text-nivayalife-green">Features</a>
+                <a href="#how-it-works" class="hover:text-nivayalife-green">How it works</a>
+                <a href="#privacy" class="hover:text-nivayalife-green">Privacy</a>
+                <a href="#faq" class="hover:text-nivayalife-green">FAQ</a>
+                <a href="mailto:hello@nivayalife.example" class="hover:text-nivayalife-green">hello@nivayalife.example</a>
             </nav>
         </div>
 
-        <div class="flex flex-col items-center justify-between gap-3 pt-6 text-center text-xs text-novix-ink/50 sm:flex-row sm:text-left">
+        <div class="flex flex-col items-center justify-between gap-3 pt-6 text-center text-xs text-nivayalife-ink/50 sm:flex-row sm:text-left">
             <p>&copy; {{ date('Y') }} Nivaya Life. Not a diagnostic tool — always consult a qualified doctor.</p>
             <p class="flex gap-4">
-                <a href="{{ url('/terms') }}" class="hover:text-novix-green">Terms of Service</a>
-                <a href="{{ url('/privacy') }}" class="hover:text-novix-green">Privacy Policy</a>
+                <a href="{{ url('/terms') }}" class="hover:text-nivayalife-green">Terms of Service</a>
+                <a href="{{ url('/privacy') }}" class="hover:text-nivayalife-green">Privacy Policy</a>
             </p>
         </div>
     </footer>
@@ -832,13 +832,13 @@
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="translate-y-full"
         x-transition:enter-end="translate-y-0"
-        class="fixed inset-x-0 bottom-0 z-40 border-t border-novix-green/10 bg-novix-cream/95 px-4 py-3 backdrop-blur md:hidden"
+        class="fixed inset-x-0 bottom-0 z-40 border-t border-nivayalife-green/10 bg-nivayalife-cream/95 px-4 py-3 backdrop-blur md:hidden"
         style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));">
         <div class="flex items-center gap-3">
-            <a href="{{ route('register') }}" class="flex-1 rounded-xl bg-novix-green py-3 text-center text-sm font-bold text-white shadow-novix-sm">
+            <a href="{{ route('register') }}" class="flex-1 rounded-xl bg-nivayalife-green py-3 text-center text-sm font-bold text-white shadow-nivayalife-sm">
                 Get Started — free
             </a>
-            <a href="{{ route('login') }}" class="rounded-xl border border-novix-green/20 bg-white px-4 py-3 text-sm font-semibold text-novix-green">
+            <a href="{{ route('login') }}" class="rounded-xl border border-nivayalife-green/20 bg-white px-4 py-3 text-sm font-semibold text-nivayalife-green">
                 Log in
             </a>
         </div>
@@ -850,7 +850,7 @@
         x-show="shown" x-cloak x-transition
         @click="window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })"
         aria-label="Back to top"
-        class="fixed bottom-6 right-6 z-40 hidden h-11 w-11 items-center justify-center rounded-full bg-white text-novix-green shadow-novix ring-1 ring-novix-green/10 transition hover:-translate-y-0.5 hover:bg-novix-mint md:flex">
+        class="fixed bottom-6 right-6 z-40 hidden h-11 w-11 items-center justify-center rounded-full bg-white text-nivayalife-green shadow-nivayalife ring-1 ring-nivayalife-green/10 transition hover:-translate-y-0.5 hover:bg-nivayalife-mint md:flex">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 15 6-6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
 

@@ -261,7 +261,7 @@ class OcrExtractor
         $imagick->rotateImage('white', $degrees);
         $imagick->setImageFormat('png');
 
-        $path = tempnam(sys_get_temp_dir(), 'novix_ocr_rot_').'.png';
+        $path = tempnam(sys_get_temp_dir(), 'nivayalife_ocr_rot_').'.png';
         $imagick->writeImage($path);
         $tempFiles[] = $path;
 
@@ -317,7 +317,7 @@ class OcrExtractor
 
         $imagick->setImageFormat('png');
 
-        $path = tempnam(sys_get_temp_dir(), 'novix_ocr_').'.png';
+        $path = tempnam(sys_get_temp_dir(), 'nivayalife_ocr_').'.png';
         $imagick->writeImage($path);
         $tempFiles[] = $path;
 

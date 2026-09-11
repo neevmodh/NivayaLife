@@ -1,12 +1,12 @@
 <x-auth-card active="login">
-    <div x-data="{ shake: {{ $errors->any() ? 'true' : 'false' }} }" x-init="if (shake) setTimeout(() => shake = false, 500)" :class="{ 'animate-novix-shake': shake }">
-        <h1 class="text-2xl font-bold text-novix-ink dark:text-white">Welcome back</h1>
-        <p class="mt-1 text-sm text-novix-muted">Log in to access your family's health records.</p>
+    <div x-data="{ shake: {{ $errors->any() ? 'true' : 'false' }} }" x-init="if (shake) setTimeout(() => shake = false, 500)" :class="{ 'animate-nivayalife-shake': shake }">
+        <h1 class="text-2xl font-bold text-nivayalife-ink dark:text-white">Welcome back</h1>
+        <p class="mt-1 text-sm text-nivayalife-muted">Log in to access your family's health records.</p>
 
         <x-auth-session-status class="mt-4" :status="session('status')" />
 
         <a href="{{ route('auth.google.redirect') }}"
-            class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-novix-ink hover:bg-novix-cream/60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-novix-green">
+            class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-nivayalife-ink hover:bg-nivayalife-cream/60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nivayalife-green">
             <svg class="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
@@ -18,7 +18,7 @@
 
         <div class="mt-6 flex items-center">
             <div class="flex-grow border-t border-gray-200"></div>
-            <span class="mx-3 text-xs text-novix-muted">or log in with email</span>
+            <span class="mx-3 text-xs text-nivayalife-muted">or log in with email</span>
             <div class="flex-grow border-t border-gray-200"></div>
         </div>
 
@@ -30,19 +30,19 @@
 
             <div class="flex items-center justify-between">
                 <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-novix-green shadow-sm focus:ring-novix-green">
-                    <span class="ms-2 text-sm text-novix-muted">Remember me</span>
+                    <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-nivayalife-green shadow-sm focus:ring-nivayalife-green">
+                    <span class="ms-2 text-sm text-nivayalife-muted">Remember me</span>
                 </label>
 
                 @if (Route::has('password.request'))
-                    <a class="text-sm text-novix-green hover:underline" href="{{ route('password.request') }}">
+                    <a class="text-sm text-nivayalife-green hover:underline" href="{{ route('password.request') }}">
                         Forgot your password?
                     </a>
                 @endif
             </div>
 
             <button type="submit"
-                class="w-full rounded-xl bg-novix-green py-2.5 text-sm font-semibold text-white shadow-novix-sm transition hover:bg-novix-green-dark focus:outline-none focus:ring-2 focus:ring-novix-green focus:ring-offset-2">
+                class="w-full rounded-xl bg-nivayalife-green py-2.5 text-sm font-semibold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark focus:outline-none focus:ring-2 focus:ring-nivayalife-green focus:ring-offset-2">
                 Log in
             </button>
         </form>

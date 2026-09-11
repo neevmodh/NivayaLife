@@ -22,7 +22,7 @@ export default {
                 4.5: '1.125rem',
             },
             colors: {
-                novix: {
+                nivayalife: {
                     cream: '#FBF6EA',
                     card: '#FFFFFF',
                     // Brand palette sampled from the Nivaya Life logo
@@ -62,26 +62,26 @@ export default {
                 },
             },
             boxShadow: {
-                novix: '0 12px 32px -12px rgba(20, 80, 63, 0.22)',
-                'novix-sm': '0 4px 14px -4px rgba(20, 80, 63, 0.14)',
+                nivayalife: '0 12px 32px -12px rgba(20, 80, 63, 0.22)',
+                'nivayalife-sm': '0 4px 14px -4px rgba(20, 80, 63, 0.14)',
             },
             borderRadius: {
-                novix: '1.5rem',
+                nivayalife: '1.5rem',
             },
             keyframes: {
-                'novix-shake': {
+                'nivayalife-shake': {
                     '0%, 100%': { transform: 'translateX(0)' },
                     '20%, 60%': { transform: 'translateX(-6px)' },
                     '40%, 80%': { transform: 'translateX(6px)' },
                 },
-                'novix-fade-up': {
+                'nivayalife-fade-up': {
                     '0%': { opacity: '0', transform: 'translateY(10px)' },
                     '100%': { opacity: '1', transform: 'translateY(0)' },
                 },
             },
             animation: {
-                'novix-shake': 'novix-shake 0.4s ease-in-out',
-                'novix-fade-up': 'novix-fade-up 0.5s ease-out both',
+                'nivayalife-shake': 'nivayalife-shake 0.4s ease-in-out',
+                'nivayalife-fade-up': 'nivayalife-fade-up 0.5s ease-out both',
             },
         },
     },

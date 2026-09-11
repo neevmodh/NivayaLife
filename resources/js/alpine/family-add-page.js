@@ -68,7 +68,7 @@ export default function familyAddPage({
             this.errors = {};
 
             try {
-                const cameraEl = document.getElementById('novix-dependent-camera');
+                const cameraEl = document.getElementById('nivayalife-dependent-camera');
                 const camera = window.Alpine.$data(cameraEl);
 
                 const body = new FormData(event.target);
@@ -89,7 +89,7 @@ export default function familyAddPage({
                     return;
                 }
 
-                window.dispatchEvent(new CustomEvent('novix:confetti'));
+                window.dispatchEvent(new CustomEvent('nivayalife:confetti'));
                 setTimeout(() => window.location.assign(json.redirect), 1100);
             } catch (e) {
                 this.triggerShake();
@@ -101,7 +101,7 @@ export default function familyAddPage({
         applySameAddress(checked) {
             if (!checked) return;
 
-            const locEl = document.getElementById('novix-dependent-location');
+            const locEl = document.getElementById('nivayalife-dependent-location');
             window.Alpine.$data(locEl).applyPreset(primaryCountry, primaryState, primaryCity);
 
             this.form_address_line1 = primaryAddressLine1 || '';

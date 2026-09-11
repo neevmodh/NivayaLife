@@ -17,13 +17,13 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'flex items-center justify-between gap-3']) }}>
-    <h3 class="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-novix-muted">
+    <h3 class="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-nivayalife-muted">
         @if($icon && isset($icons[$icon]))
-            <svg class="h-4 w-4 text-novix-green dark:text-novix-mint" viewBox="0 0 24 24" fill="none" aria-hidden="true">{!! $icons[$icon] !!}</svg>
+            <svg class="h-4 w-4 text-nivayalife-green dark:text-nivayalife-mint" viewBox="0 0 24 24" fill="none" aria-hidden="true">{!! $icons[$icon] !!}</svg>
         @endif
         {{ $title }}
     </h3>
     @if($actionLabel && $actionUrl)
-        <a href="{{ $actionUrl }}" class="flex-shrink-0 text-xs font-semibold text-novix-green transition hover:underline dark:text-novix-mint">{{ $actionLabel }}</a>
+        <a href="{{ $actionUrl }}" class="flex-shrink-0 text-xs font-semibold text-nivayalife-green transition hover:underline dark:text-nivayalife-mint">{{ $actionLabel }}</a>
     @endif
 </div>

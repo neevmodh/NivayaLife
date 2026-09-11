@@ -1,6 +1,6 @@
 <div x-data="ajaxForm({ url: @js($isDependentEdit ? route('profile.emergency-contact.member', $member) : route('profile.emergency-contact')), csrfToken: @js(csrf_token()) })">
-    <h3 class="text-lg font-bold text-novix-ink dark:text-white">Emergency contact</h3>
-    <p class="mt-1 text-sm text-novix-muted">Shown on {{ $isDependentEdit ? 'their' : 'your' }} emergency ID card.</p>
+    <h3 class="text-lg font-bold text-nivayalife-ink dark:text-white">Emergency contact</h3>
+    <p class="mt-1 text-sm text-nivayalife-muted">Shown on {{ $isDependentEdit ? 'their' : 'your' }} emergency ID card.</p>
 
     <form @submit.prevent="submit($event)" class="mt-6 space-y-4">
         <x-floating-input name="emergency_contact_name" label="Contact name" :value="$member->emergency_contact_name" :required="true" dynamic-errors />

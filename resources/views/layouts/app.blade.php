@@ -18,7 +18,7 @@
         <x-pending-invitation-popup />
         <x-install-prompt />
 
-        <div class="novix-surface min-h-screen bg-novix-cream dark:bg-novix-night">
+        <div class="nivayalife-surface min-h-screen bg-nivayalife-cream dark:bg-nivayalife-night">
             @include('layouts.navigation')
 
             {{-- The header used to sit in its own white band, which cut a hard

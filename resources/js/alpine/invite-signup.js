@@ -15,7 +15,7 @@ export default function inviteSignupForm({ registerUrl, csrfToken }) {
             this.errors = {};
 
             try {
-                const cameraEl = document.getElementById('novix-invite-camera');
+                const cameraEl = document.getElementById('nivayalife-invite-camera');
                 const camera = window.Alpine.$data(cameraEl);
 
                 if (!camera.capturedDataUrl) {

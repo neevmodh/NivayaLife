@@ -21,7 +21,7 @@ class FamilyInvitationMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->invitation->primaryAccount->name.' invited you to their family on Novix',
+            subject: $this->invitation->primaryAccount->name.' invited you to their family on NivayaLife',
         );
     }
 

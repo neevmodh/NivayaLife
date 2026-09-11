@@ -6,7 +6,7 @@
     'preset' => null,
     'size' => 'h-12 w-12',
     'rounded' => 'rounded-full',
-    'colorClass' => 'bg-novix-mint text-novix-green dark:bg-novix-green/20 dark:text-novix-mint',
+    'colorClass' => 'bg-nivayalife-mint text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint',
 ])
 
 @php

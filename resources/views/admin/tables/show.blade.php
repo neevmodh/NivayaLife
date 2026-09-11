@@ -26,19 +26,19 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">
+            <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">
                 <span class="font-mono">{{ $table }}</span>
             </h2>
             <div class="flex gap-2">
-                <a href="{{ $exportUrl }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                <a href="{{ $exportUrl }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     Export CSV
                 </a>
                 @if($isEditable)
-                    <a href="{{ route('admin.tables.create', $table) }}" class="rounded-lg bg-novix-green px-4 py-2 text-sm font-semibold text-white hover:bg-novix-green-dark">
+                    <a href="{{ route('admin.tables.create', $table) }}" class="rounded-lg bg-nivayalife-green px-4 py-2 text-sm font-semibold text-white hover:bg-nivayalife-green-dark">
                         Add row
                     </a>
                 @endif
-                <a href="{{ route('admin.tables') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                <a href="{{ route('admin.tables') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     All tables
                 </a>
             </div>
@@ -47,14 +47,14 @@
 
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         @if(session('admin_status'))
-            <div class="mb-4 rounded-xl bg-novix-mint px-4 py-3 text-sm font-semibold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ session('admin_status') }}</div>
+            <div class="mb-4 rounded-xl bg-nivayalife-mint px-4 py-3 text-sm font-semibold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">{{ session('admin_status') }}</div>
         @endif
         @if(session('admin_error'))
-            <div class="mb-4 rounded-xl bg-novix-pink/20 px-4 py-3 text-sm font-semibold text-novix-pink-dark">{{ session('admin_error') }}</div>
+            <div class="mb-4 rounded-xl bg-nivayalife-pink/20 px-4 py-3 text-sm font-semibold text-nivayalife-pink-dark">{{ session('admin_error') }}</div>
         @endif
 
         <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <p class="text-sm text-novix-muted">{{ number_format($rows->total()) }} rows{{ $isEditable ? '' : ' · read-only' }}</p>
+            <p class="text-sm text-nivayalife-muted">{{ number_format($rows->total()) }} rows{{ $isEditable ? '' : ' · read-only' }}</p>
 
             <form method="GET" action="{{ route('admin.tables.show', $table) }}" class="flex items-center gap-2">
                 @if($sortColumn !== $primaryKey || $sortDir !== 'desc')
@@ -62,21 +62,21 @@
                     <input type="hidden" name="dir" value="{{ $sortDir }}">
                 @endif
                 <input type="search" name="q" value="{{ $q }}" placeholder="Search {{ count($searchableColumns) }} text column{{ count($searchableColumns) === 1 ? '' : 's' }}…"
-                    class="w-64 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-novix-ink shadow-sm focus:border-novix-green focus:outline-none focus:ring-2 focus:ring-novix-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
+                    class="w-64 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-nivayalife-ink shadow-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
                 @if($q)
-                    <a href="{{ route('admin.tables.show', $table) }}" class="text-xs font-semibold text-novix-muted hover:text-novix-ink">Clear</a>
+                    <a href="{{ route('admin.tables.show', $table) }}" class="text-xs font-semibold text-nivayalife-muted hover:text-nivayalife-ink">Clear</a>
                 @endif
             </form>
         </div>
 
-        <div class="overflow-hidden rounded-novix bg-white shadow-novix-sm dark:bg-white/5">
+        <div class="overflow-hidden rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>
                         <tr class="border-b border-gray-100 dark:border-white/10">
                             @foreach($columns as $column)
-                                <th class="whitespace-nowrap px-3 py-2 font-semibold uppercase tracking-wide text-novix-muted">
-                                    <a href="{{ $sortUrl($column) }}" class="inline-flex items-center gap-1 hover:text-novix-ink dark:hover:text-white">
+                                <th class="whitespace-nowrap px-3 py-2 font-semibold uppercase tracking-wide text-nivayalife-muted">
+                                    <a href="{{ $sortUrl($column) }}" class="inline-flex items-center gap-1 hover:text-nivayalife-ink dark:hover:text-white">
                                         {{ $column }}
                                         @if($sortColumn === $column)
                                             <span aria-hidden="true">{{ $sortDir === 'asc' ? '▲' : '▼' }}</span>
@@ -94,11 +94,11 @@
                             <tr>
                                 @foreach($columns as $column)
                                     @php($value = $row->$column ?? null)
-                                    <td class="whitespace-nowrap px-3 py-2 text-novix-ink dark:text-white">
+                                    <td class="whitespace-nowrap px-3 py-2 text-nivayalife-ink dark:text-white">
                                         @if(preg_match($sensitivePattern, $column) && $value !== null)
-                                            <span class="text-novix-muted">••••••••</span>
+                                            <span class="text-nivayalife-muted">••••••••</span>
                                         @elseif($value === null)
-                                            <span class="text-novix-muted">—</span>
+                                            <span class="text-nivayalife-muted">—</span>
                                         @elseif(in_array($column, $publicDiskImageColumns))
                                             <a href="{{ Storage::url($value) }}" target="_blank">
                                                 <img src="{{ Storage::url($value) }}" alt="" class="h-8 w-8 rounded-full object-cover" loading="lazy">
@@ -114,12 +114,12 @@
                                 @endforeach
                                 @if($isEditable)
                                     <td class="whitespace-nowrap px-3 py-2">
-                                        <a href="{{ route('admin.tables.edit', [$table, $row->$primaryKey]) }}" class="font-semibold text-novix-green hover:underline">Edit</a>
+                                        <a href="{{ route('admin.tables.edit', [$table, $row->$primaryKey]) }}" class="font-semibold text-nivayalife-green hover:underline">Edit</a>
                                     </td>
                                 @endif
                             </tr>
                         @empty
-                            <tr><td colspan="{{ count($columns) + ($isEditable ? 1 : 0) }}" class="px-3 py-4 text-novix-muted">No rows{{ $q ? ' match that search' : '' }}.</td></tr>
+                            <tr><td colspan="{{ count($columns) + ($isEditable ? 1 : 0) }}" class="px-3 py-4 text-nivayalife-muted">No rows{{ $q ? ' match that search' : '' }}.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

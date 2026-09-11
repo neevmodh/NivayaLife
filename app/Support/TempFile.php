@@ -20,7 +20,7 @@ class TempFile
             return $callback(Storage::disk($disk)->path($path));
         }
 
-        $base = tempnam(sys_get_temp_dir(), 'novix_');
+        $base = tempnam(sys_get_temp_dir(), 'nivayalife_');
         $extension = pathinfo($path, PATHINFO_EXTENSION);
         $tmpPath = $extension ? "{$base}.{$extension}" : $base;
 

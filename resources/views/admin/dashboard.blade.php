@@ -9,27 +9,27 @@
 
     $ranges = ['7' => '7 days', '30' => '30 days', '90' => '90 days', '365' => '1 year', 'all' => 'All time'];
 
-    $novixPalette = ['#14503F', '#8FB8E0', '#F4A9A0', '#F5C879', '#2A6B55', '#E8615A'];
+    $nivayaLifePalette = ['#14503F', '#8FB8E0', '#F4A9A0', '#F5C879', '#2A6B55', '#E8615A'];
 @endphp
 
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-novix-ink dark:text-white">Admin overview</h2>
-                <span class="mt-1.5 block h-0.5 w-10 rounded-full bg-novix-gold" aria-hidden="true"></span>
+                <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Admin overview</h2>
+                <span class="mt-1.5 block h-0.5 w-10 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.users.index') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                <a href="{{ route('admin.users.index') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     Users
                 </a>
-                <a href="{{ route('admin.ai-usage') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                <a href="{{ route('admin.ai-usage') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     AI usage
                 </a>
-                <a href="{{ route('admin.settings.edit') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                <a href="{{ route('admin.settings.edit') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     Settings
                 </a>
-                <a href="{{ route('admin.tables') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-novix-ink hover:bg-novix-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
+                <a href="{{ route('admin.tables') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">
                     Browse database tables
                 </a>
             </div>
@@ -40,31 +40,31 @@
 
         {{-- Top-line stats --}}
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Users</p>
-                <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($userCount) }}</p>
-                <p class="mt-1 text-xs text-novix-muted">{{ $verifiedUserCount }} verified &middot; {{ $newUsersLast7Days }} new (7d)</p>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Users</p>
+                <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($userCount) }}</p>
+                <p class="mt-1 text-xs text-nivayalife-muted">{{ $verifiedUserCount }} verified &middot; {{ $newUsersLast7Days }} new (7d)</p>
             </div>
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Family members</p>
-                <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($familyMemberCount) }}</p>
-                <p class="mt-1 text-xs text-novix-muted">
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Family members</p>
+                <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($familyMemberCount) }}</p>
+                <p class="mt-1 text-xs text-nivayalife-muted">
                     @foreach($familyMembersByAccessType as $type => $count)
                         {{ Str::headline($type) }}: {{ $count }}@if(!$loop->last) &middot; @endif
                     @endforeach
                 </p>
             </div>
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Reports</p>
-                <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($reportCount) }}</p>
-                <p class="mt-1 text-xs text-novix-muted">{{ $formatBytes($totalStorageBytes) }} stored</p>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Reports</p>
+                <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($reportCount) }}</p>
+                <p class="mt-1 text-xs text-nivayalife-muted">{{ $formatBytes($totalStorageBytes) }} stored</p>
             </div>
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Background jobs</p>
-                <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pendingJobCount) }}</p>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Background jobs</p>
+                <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($pendingJobCount) }}</p>
                 {{-- Links through rather than being a dead number: the whole
                      point of knowing something failed is being able to act. --}}
-                <p class="mt-1 text-xs {{ $failedJobCount > 0 ? 'text-novix-pink-dark font-semibold' : 'text-novix-muted' }}">
+                <p class="mt-1 text-xs {{ $failedJobCount > 0 ? 'text-nivayalife-pink-dark font-semibold' : 'text-nivayalife-muted' }}">
                     <a href="{{ route('admin.failed-jobs') }}" class="hover:underline">{{ $failedJobCount }} failed</a>
                 </p>
             </div>
@@ -72,12 +72,12 @@
 
         {{-- Range selector --}}
         <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Trends over</span>
-            <div class="flex gap-1 rounded-full bg-white p-1 shadow-novix-sm dark:bg-white/5">
+            <span class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Trends over</span>
+            <div class="flex gap-1 rounded-full bg-white p-1 shadow-nivayalife-sm dark:bg-white/5">
                 @foreach($ranges as $value => $label)
                     {{-- $ranges' numeric-looking keys (7, 30, 90, 365) get silently cast to int by PHP's array-key normalization, while $range from the query string is always a string — cast both sides the same way rather than relying on == --}}
                     <a href="{{ route('admin.dashboard', ['range' => $value]) }}"
-                        class="rounded-full px-3 py-1 text-xs font-semibold transition {{ (string) $value === $range ? 'bg-novix-green text-white' : 'text-novix-muted hover:text-novix-ink dark:hover:text-white' }}">
+                        class="rounded-full px-3 py-1 text-xs font-semibold transition {{ (string) $value === $range ? 'bg-nivayalife-green text-white' : 'text-nivayalife-muted hover:text-nivayalife-ink dark:hover:text-white' }}">
                         {{ $label }}
                     </a>
                 @endforeach
@@ -86,42 +86,42 @@
 
         {{-- Landing page traffic --}}
         <div>
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-novix-muted">Landing page traffic</h3>
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-nivayalife-muted">Landing page traffic</h3>
 
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Total views</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pageViewsTotal) }}</p>
-                    <p class="mt-1 text-xs text-novix-muted">{{ number_format($pageViewsToday) }} today</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Total views</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($pageViewsTotal) }}</p>
+                    <p class="mt-1 text-xs text-nivayalife-muted">{{ number_format($pageViewsToday) }} today</p>
                 </div>
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Views in range</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($pageViewsInRange) }}</p>
-                    <p class="mt-1 text-xs text-novix-muted">for the selected period</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Views in range</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($pageViewsInRange) }}</p>
+                    <p class="mt-1 text-xs text-nivayalife-muted">for the selected period</p>
                 </div>
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Unique visitors</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($uniqueVisitorsInRange) }}</p>
-                    <p class="mt-1 text-xs text-novix-muted">by IP, in range</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Unique visitors</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($uniqueVisitorsInRange) }}</p>
+                    <p class="mt-1 text-xs text-nivayalife-muted">by IP, in range</p>
                 </div>
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Visitor → signup</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ $conversionRate !== null ? $conversionRate.'%' : '—' }}</p>
-                    <p class="mt-1 text-xs text-novix-muted">signups ÷ views, in range</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Visitor → signup</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ $conversionRate !== null ? $conversionRate.'%' : '—' }}</p>
+                    <p class="mt-1 text-xs text-nivayalife-muted">signups ÷ views, in range</p>
                 </div>
             </div>
 
             <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
-                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Views over time</h3>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5 lg:col-span-2">
+                    <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Views over time</h3>
                     @if(collect($pageViewSeries)->sum('count') === 0)
-                        <p class="mt-3 text-sm text-novix-muted">No landing page views recorded yet.</p>
+                        <p class="mt-3 text-sm text-nivayalife-muted">No landing page views recorded yet.</p>
                     @else
                         <div class="mt-2" x-data="adminChart({
                             type: 'area',
                             series: [{ name: 'Views', data: @js(collect($pageViewSeries)->pluck('count')) }],
                             options: {
-                                colors: ['{{ $novixPalette[3] }}'],
+                                colors: ['{{ $nivayaLifePalette[3] }}'],
                                 stroke: { curve: 'smooth', width: 2 },
                                 fill: { type: 'gradient', gradient: { opacityFrom: 0.5, opacityTo: 0.05 } },
                                 dataLabels: { enabled: false },
@@ -132,28 +132,28 @@
                     @endif
                 </div>
 
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Top referrers</h3>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Top referrers</h3>
                     <div class="mt-3 space-y-2">
                         @forelse($topReferrers as $host => $count)
                             <div class="flex items-center justify-between text-sm">
-                                <span class="truncate text-novix-muted">{{ $host }}</span>
-                                <span class="flex-shrink-0 font-semibold text-novix-ink dark:text-white">{{ number_format($count) }}</span>
+                                <span class="truncate text-nivayalife-muted">{{ $host }}</span>
+                                <span class="flex-shrink-0 font-semibold text-nivayalife-ink dark:text-white">{{ number_format($count) }}</span>
                             </div>
                         @empty
-                            <p class="text-sm text-novix-muted">No referrer data yet — most visits are likely direct.</p>
+                            <p class="text-sm text-nivayalife-muted">No referrer data yet — most visits are likely direct.</p>
                         @endforelse
                     </div>
                 </div>
             </div>
 
-            <div class="mt-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Views by hour of day</h3>
+            <div class="mt-6 rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Views by hour of day</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'bar',
                     series: [{ name: 'Views', data: @js($pageViewsByHour) }],
                     options: {
-                        colors: ['{{ $novixPalette[2] }}'],
+                        colors: ['{{ $nivayaLifePalette[2] }}'],
                         plotOptions: { bar: { borderRadius: 4, columnWidth: '70%' } },
                         xaxis: { categories: @js(collect(range(0, 23))->map(fn($h) => sprintf('%02d:00', $h))) },
                         dataLabels: { enabled: false },
@@ -166,32 +166,32 @@
 
         {{-- Sign-ins --}}
         <div>
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-novix-muted">Sign-ins</h3>
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-nivayalife-muted">Sign-ins</h3>
 
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Logins today</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($loginsToday) }}</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Logins today</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($loginsToday) }}</p>
                 </div>
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Successful (range)</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ number_format($successfulLoginsInRange) }}</p>
-                    <p class="mt-1 text-xs text-novix-muted">{{ number_format($uniqueUsersLoggedInRange) }} unique users</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Successful (range)</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ number_format($successfulLoginsInRange) }}</p>
+                    <p class="mt-1 text-xs text-nivayalife-muted">{{ number_format($uniqueUsersLoggedInRange) }} unique users</p>
                 </div>
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Failed (range)</p>
-                    <p class="mt-1 text-2xl font-bold {{ $failedLoginsInRange > 0 ? 'text-novix-pink-dark' : 'text-novix-ink dark:text-white' }}">{{ number_format($failedLoginsInRange) }}</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Failed (range)</p>
+                    <p class="mt-1 text-2xl font-bold {{ $failedLoginsInRange > 0 ? 'text-nivayalife-pink-dark' : 'text-nivayalife-ink dark:text-white' }}">{{ number_format($failedLoginsInRange) }}</p>
                 </div>
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-novix-muted">Avg. logins / active user</p>
-                    <p class="mt-1 text-2xl font-bold text-novix-ink dark:text-white">{{ $uniqueUsersLoggedInRange > 0 ? number_format($successfulLoginsInRange / $uniqueUsersLoggedInRange, 1) : '—' }}</p>
-                    <p class="mt-1 text-xs text-novix-muted">in the selected period</p>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">Avg. logins / active user</p>
+                    <p class="mt-1 text-2xl font-bold text-nivayalife-ink dark:text-white">{{ $uniqueUsersLoggedInRange > 0 ? number_format($successfulLoginsInRange / $uniqueUsersLoggedInRange, 1) : '—' }}</p>
+                    <p class="mt-1 text-xs text-nivayalife-muted">in the selected period</p>
                 </div>
             </div>
 
             <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5 lg:col-span-2">
-                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Logins per day</h3>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5 lg:col-span-2">
+                    <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Logins per day</h3>
                     <div class="mt-2" x-data="adminChart({
                         type: 'bar',
                         series: [
@@ -199,7 +199,7 @@
                             { name: 'Failed', data: @js(collect($loginFailedSeries)->pluck('count')) },
                         ],
                         options: {
-                            colors: ['{{ $novixPalette[0] }}', '{{ $novixPalette[5] }}'],
+                            colors: ['{{ $nivayaLifePalette[0] }}', '{{ $nivayaLifePalette[5] }}'],
                             chart: { stacked: true },
                             plotOptions: { bar: { borderRadius: 3, columnWidth: '55%' } },
                             dataLabels: { enabled: false },
@@ -210,32 +210,32 @@
                     })"></div>
                 </div>
 
-                <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                    <h3 class="text-sm font-bold text-novix-ink dark:text-white">Most active users</h3>
+                <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                    <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Most active users</h3>
                     <div class="mt-3 space-y-3">
                         @forelse($mostActiveUsers as $entry)
                             <div class="flex items-center gap-3 text-sm">
                                 <x-avatar :photo-path="$entry->user?->avatar_path" :full-name="$entry->user?->name ?? 'Unknown'" size="h-8 w-8" />
                                 <div class="min-w-0 flex-1">
-                                    <p class="truncate font-semibold text-novix-ink dark:text-white">{{ $entry->user?->name ?? 'Deleted user' }}</p>
-                                    <p class="truncate text-xs text-novix-muted">{{ $entry->user?->email }}</p>
+                                    <p class="truncate font-semibold text-nivayalife-ink dark:text-white">{{ $entry->user?->name ?? 'Deleted user' }}</p>
+                                    <p class="truncate text-xs text-nivayalife-muted">{{ $entry->user?->email }}</p>
                                 </div>
-                                <span class="flex-shrink-0 rounded-full bg-novix-mint px-2 py-0.5 text-xs font-bold text-novix-green dark:bg-novix-green/20 dark:text-novix-mint">{{ $entry->total }}</span>
+                                <span class="flex-shrink-0 rounded-full bg-nivayalife-mint px-2 py-0.5 text-xs font-bold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">{{ $entry->total }}</span>
                             </div>
                         @empty
-                            <p class="text-sm text-novix-muted">No logins yet.</p>
+                            <p class="text-sm text-nivayalife-muted">No logins yet.</p>
                         @endforelse
                     </div>
                 </div>
             </div>
 
-            <div class="mt-6 rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Successful logins by hour of day</h3>
+            <div class="mt-6 rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Successful logins by hour of day</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'bar',
                     series: [{ name: 'Logins', data: @js($loginsByHour) }],
                     options: {
-                        colors: ['{{ $novixPalette[0] }}'],
+                        colors: ['{{ $nivayaLifePalette[0] }}'],
                         plotOptions: { bar: { borderRadius: 4, columnWidth: '70%' } },
                         xaxis: { categories: @js(collect(range(0, 23))->map(fn($h) => sprintf('%02d:00', $h))) },
                         dataLabels: { enabled: false },
@@ -248,13 +248,13 @@
 
         {{-- Time-series charts --}}
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Signups</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Signups</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'area',
                     series: [{ name: 'Signups', data: @js(collect($signupSeries)->pluck('count')) }],
                     options: {
-                        colors: ['{{ $novixPalette[0] }}'],
+                        colors: ['{{ $nivayaLifePalette[0] }}'],
                         stroke: { curve: 'smooth', width: 2 },
                         fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
                         dataLabels: { enabled: false },
@@ -264,13 +264,13 @@
                 })"></div>
             </div>
 
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Reports uploaded</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Reports uploaded</h3>
                 <div class="mt-2" x-data="adminChart({
                     type: 'area',
                     series: [{ name: 'Reports', data: @js(collect($reportSeries)->pluck('count')) }],
                     options: {
-                        colors: ['{{ $novixPalette[1] }}'],
+                        colors: ['{{ $nivayaLifePalette[1] }}'],
                         stroke: { curve: 'smooth', width: 2 },
                         fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
                         dataLabels: { enabled: false },
@@ -283,16 +283,16 @@
 
         {{-- Breakdown donuts/bars --}}
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Reports by type</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Reports by type</h3>
                 @if($reportsByType->isEmpty())
-                    <p class="mt-3 text-sm text-novix-muted">No reports yet.</p>
+                    <p class="mt-3 text-sm text-nivayalife-muted">No reports yet.</p>
                 @else
                     <div class="mt-2" x-data="adminChart({
                         type: 'donut',
                         series: @js($reportsByType->values()),
                         options: {
-                            colors: @js($novixPalette),
+                            colors: @js($nivayaLifePalette),
                             labels: @js($reportsByType->keys()->map(fn($k) => Str::headline($k))),
                             legend: { position: 'bottom', fontSize: '11px' },
                             dataLabels: { enabled: false },
@@ -301,16 +301,16 @@
                 @endif
             </div>
 
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">OCR status</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">OCR status</h3>
                 @if($reportsByOcrStatus->isEmpty())
-                    <p class="mt-3 text-sm text-novix-muted">No reports yet.</p>
+                    <p class="mt-3 text-sm text-nivayalife-muted">No reports yet.</p>
                 @else
                     <div class="mt-2" x-data="adminChart({
                         type: 'donut',
                         series: @js($reportsByOcrStatus->values()),
                         options: {
-                            colors: @js($novixPalette),
+                            colors: @js($nivayaLifePalette),
                             labels: @js($reportsByOcrStatus->keys()->map(fn($k) => Str::headline($k))),
                             legend: { position: 'bottom', fontSize: '11px' },
                             dataLabels: { enabled: false },
@@ -319,16 +319,16 @@
                 @endif
             </div>
 
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">AI jobs</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">AI jobs</h3>
                 @if($aiJobsByStatus->isEmpty())
-                    <p class="mt-3 text-sm text-novix-muted">No AI jobs yet.</p>
+                    <p class="mt-3 text-sm text-nivayalife-muted">No AI jobs yet.</p>
                 @else
                     <div class="mt-2" x-data="adminChart({
                         type: 'bar',
                         series: [{ name: 'Jobs', data: @js($aiJobsByStatus->values()) }],
                         options: {
-                            colors: ['{{ $novixPalette[0] }}'],
+                            colors: ['{{ $nivayaLifePalette[0] }}'],
                             plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
                             xaxis: { categories: @js($aiJobsByStatus->keys()->map(fn($k) => Str::headline($k))) },
                             dataLabels: { enabled: false },
@@ -338,16 +338,16 @@
                 @endif
             </div>
 
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Blood groups</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Blood groups</h3>
                 @if($bloodGroupDistribution->isEmpty())
-                    <p class="mt-3 text-sm text-novix-muted">No data yet.</p>
+                    <p class="mt-3 text-sm text-nivayalife-muted">No data yet.</p>
                 @else
                     <div class="mt-2" x-data="adminChart({
                         type: 'donut',
                         series: @js($bloodGroupDistribution->values()),
                         options: {
-                            colors: @js($novixPalette),
+                            colors: @js($nivayaLifePalette),
                             labels: @js($bloodGroupDistribution->keys()),
                             legend: { position: 'bottom', fontSize: '11px' },
                             dataLabels: { enabled: false },
@@ -358,13 +358,13 @@
         </div>
 
         {{-- Age distribution --}}
-        <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-            <h3 class="text-sm font-bold text-novix-ink dark:text-white">Age distribution</h3>
+        <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+            <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Age distribution</h3>
             <div class="mt-2" x-data="adminChart({
                 type: 'bar',
                 series: [{ name: 'Family members', data: @js(array_values($ageBuckets)) }],
                 options: {
-                    colors: ['{{ $novixPalette[4] }}'],
+                    colors: ['{{ $nivayaLifePalette[4] }}'],
                     plotOptions: { bar: { borderRadius: 6, columnWidth: '45%' } },
                     xaxis: { categories: @js(array_keys($ageBuckets)) },
                     dataLabels: { enabled: false },
@@ -376,31 +376,31 @@
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {{-- Recent users --}}
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Recent signups</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Recent signups</h3>
                 <div class="mt-3 space-y-3">
                     @forelse($recentUsers as $user)
                         <div class="flex items-center gap-3 text-sm">
                             <x-avatar :photo-path="$user->avatar_path" :full-name="$user->name" size="h-9 w-9" />
                             <div class="min-w-0 flex-1">
-                                <p class="truncate font-semibold text-novix-ink dark:text-white">{{ $user->name }}</p>
-                                <p class="truncate text-xs text-novix-muted">{{ $user->email }}</p>
+                                <p class="truncate font-semibold text-nivayalife-ink dark:text-white">{{ $user->name }}</p>
+                                <p class="truncate text-xs text-nivayalife-muted">{{ $user->email }}</p>
                             </div>
-                            <span class="flex-shrink-0 text-xs text-novix-muted">{{ $user->created_at->diffForHumans() }}</span>
+                            <span class="flex-shrink-0 text-xs text-nivayalife-muted">{{ $user->created_at->diffForHumans() }}</span>
                         </div>
                     @empty
-                        <p class="text-sm text-novix-muted">No users yet.</p>
+                        <p class="text-sm text-nivayalife-muted">No users yet.</p>
                     @endforelse
                 </div>
             </div>
 
             {{-- Recent activity --}}
-            <div class="rounded-novix border-t-2 border-novix-gold/50 bg-white p-5 shadow-novix-sm dark:bg-white/5">
-                <h3 class="text-sm font-bold text-novix-ink dark:text-white">Recent activity</h3>
+            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Recent activity</h3>
                 <div class="mt-3 max-h-72 overflow-y-auto overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead>
-                            <tr class="text-xs font-semibold uppercase tracking-wide text-novix-muted">
+                            <tr class="text-xs font-semibold uppercase tracking-wide text-nivayalife-muted">
                                 <th class="pb-2 pr-4">When</th>
                                 <th class="pb-2 pr-4">Who</th>
                                 <th class="pb-2 pr-4">Action</th>
@@ -410,13 +410,13 @@
                         <tbody class="divide-y divide-gray-100 dark:divide-white/10">
                             @forelse($recentAuditLog as $entry)
                                 <tr>
-                                    <td class="whitespace-nowrap py-2 pr-4 text-novix-muted">{{ $entry->created_at->diffForHumans() }}</td>
+                                    <td class="whitespace-nowrap py-2 pr-4 text-nivayalife-muted">{{ $entry->created_at->diffForHumans() }}</td>
                                     <td class="whitespace-nowrap py-2 pr-4">{{ $entry->user?->name ?? 'System' }}</td>
-                                    <td class="whitespace-nowrap py-2 pr-4 font-medium text-novix-ink dark:text-white">{{ Str::headline($entry->action) }}</td>
-                                    <td class="whitespace-nowrap py-2 text-novix-muted">{{ $entry->target_type }} #{{ $entry->target_id }}</td>
+                                    <td class="whitespace-nowrap py-2 pr-4 font-medium text-nivayalife-ink dark:text-white">{{ Str::headline($entry->action) }}</td>
+                                    <td class="whitespace-nowrap py-2 text-nivayalife-muted">{{ $entry->target_type }} #{{ $entry->target_id }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="4" class="py-3 text-novix-muted">No activity recorded yet.</td></tr>
+                                <tr><td colspan="4" class="py-3 text-nivayalife-muted">No activity recorded yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
