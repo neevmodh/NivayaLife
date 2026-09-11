@@ -7,25 +7,37 @@
  * dynamically imported on init() so it lands in its own chunk and only loads
  * on pages that actually render this component, not on every page load.
  */
-export default function locationSelect({ initialCountry = 'India', initialState = '', initialCity = '' } = {}) {
+export default function locationSelect({ required = true, initialCountry = '', initialState = '', initialCity = '' } = {}) {
     return {
         loaded: false,
+        loadError: false,
         countries: [],
         states: [],
         cities: [],
         countryIso: '',
         stateIso: '',
-        countryName: initialCountry,
+        // Optional + untouched starts blank rather than forcing a country,
+        // so a server-side "was an address actually given?" check can just
+        // look at whether country is filled instead of inferring it from
+        // some other field. Required usage always gets an explicit prop.
+        countryName: initialCountry || (required ? 'India' : ''),
         stateName: initialState,
         cityName: initialCity,
         _csc: null,
 
         async init() {
-            const { Country, State, City } = await import('country-state-city');
-            this._csc = { Country, State, City };
-            this.countries = Country.getAllCountries();
+            try {
+                const { Country, State, City } = await import('country-state-city');
+                this._csc = { Country, State, City };
+                this.countries = Country.getAllCountries();
+            } catch (e) {
+                this.loadError = true;
+                return;
+            }
 
-            this.applyPreset(this.countryName, this.stateName, this.cityName);
+            if (this.countryName) {
+                this.applyPreset(this.countryName, this.stateName, this.cityName);
+            }
 
             this.loaded = true;
         },
@@ -37,8 +49,7 @@ export default function locationSelect({ initialCountry = 'India', initialState 
             if (!this._csc) return;
             const { State, City } = this._csc;
 
-            const country = this.countries.find((c) => c.name === countryName)
-                ?? this.countries.find((c) => c.isoCode === 'IN');
+            const country = this.countries.find((c) => c.name === countryName);
 
             if (!country) return;
 

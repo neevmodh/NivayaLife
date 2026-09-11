@@ -17,12 +17,12 @@ class FamilyDependentController extends Controller
     {
         $user = $request->user();
 
-        // The location-select widget always defaults its hidden country
-        // field to India even when untouched, so "was an address actually
-        // given" has to key off address_line1 rather than country.
+        // The location-select widget leaves country blank until the user
+        // actually picks one, so its presence is a direct "was a location
+        // given" signal — no need to infer that from address_line1.
         $pincodeRule = match (true) {
-            filled($request->input('address_line1')) && $request->input('country') === 'India' => ['required', 'digits:6'],
-            filled($request->input('address_line1')) => ['required', 'string', 'max:12'],
+            $request->input('country') === 'India' => ['required', 'digits:6'],
+            filled($request->input('country')) => ['required', 'string', 'max:12'],
             default => ['nullable', 'string', 'max:12'],
         };
 
