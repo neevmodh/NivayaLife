@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.28",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.35",
         "minishlink/web-push": "^11.0",
         "resend/resend-php": "^1.5",
         "simplesoftwareio/simple-qrcode": "^4.2"

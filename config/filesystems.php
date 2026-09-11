@@ -30,21 +30,44 @@ return [
 
     'disks' => [
 
+        // Both disks below default to the plain local driver for local dev.
+        // In production, FILESYSTEM_LOCAL_DRIVER / FILESYSTEM_PUBLIC_DRIVER
+        // are set to "s3" so they're backed by Cloudflare R2 (S3-compatible)
+        // instead of the container's own ephemeral disk — the R2_* keys are
+        // only read when a disk actually uses the s3 driver.
         'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app/private'),
+            'driver' => env('FILESYSTEM_LOCAL_DRIVER', 'local'),
+            'root' => env('FILESYSTEM_LOCAL_DRIVER', 'local') === 's3'
+                ? 'private'
+                : storage_path('app/private'),
             'serve' => true,
             'throw' => false,
             'report' => false,
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => 'auto',
+            'bucket' => env('R2_BUCKET'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'driver' => env('FILESYSTEM_PUBLIC_DRIVER', 'local'),
+            'root' => env('FILESYSTEM_PUBLIC_DRIVER', 'local') === 's3'
+                ? 'public'
+                : storage_path('app/public'),
+            'url' => env('FILESYSTEM_PUBLIC_DRIVER', 'local') === 's3'
+                ? env('R2_PUBLIC_URL')
+                : env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => 'auto',
+            'bucket' => env('R2_BUCKET'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
         ],
 
         's3' => [

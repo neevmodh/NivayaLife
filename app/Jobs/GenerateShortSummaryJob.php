@@ -7,12 +7,12 @@ use App\Models\Report;
 use App\Services\Ai\AiClient;
 use App\Services\ClinicalNlp\ClinicalNlpClient;
 use App\Services\Ocr\OcrExtractor;
+use App\Support\TempFile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -100,8 +100,7 @@ class GenerateShortSummaryJob implements ShouldQueue
     {
         if ($report->type === 'prescription') {
             try {
-                $absolutePath = Storage::disk('local')->path($report->file_path);
-                $images = $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? '');
+                $images = TempFile::fromDisk('local', $report->file_path, fn (string $absolutePath) => $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? ''));
 
                 return $ai->generateWithImage($this->buildVisionPrompt($report), $images);
             } catch (Throwable $e) {

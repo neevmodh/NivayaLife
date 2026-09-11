@@ -6,6 +6,7 @@ use App\Models\AuditLog;
 use App\Models\Report;
 use App\Models\Share;
 use App\Services\Pdf\PdfExportService;
+use App\Support\TempFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -97,20 +98,20 @@ class PublicShareController extends Controller
             return null;
         }
 
-        $absolutePath = Storage::disk('local')->path($report->file_path);
-
         try {
             if (str_starts_with($report->mime_type ?? '', 'image/')) {
                 return 'data:'.$report->mime_type.';base64,'.base64_encode(Storage::disk('local')->get($report->file_path));
             }
 
             if ($report->mime_type === 'application/pdf') {
-                $imagick = new Imagick;
-                $imagick->setResolution(120, 120);
-                $imagick->readImage($absolutePath.'[0]');
-                $imagick->setImageFormat('png');
+                return TempFile::fromDisk('local', $report->file_path, function (string $absolutePath) {
+                    $imagick = new Imagick;
+                    $imagick->setResolution(120, 120);
+                    $imagick->readImage($absolutePath.'[0]');
+                    $imagick->setImageFormat('png');
 
-                return 'data:image/png;base64,'.base64_encode($imagick->getImageBlob());
+                    return 'data:image/png;base64,'.base64_encode($imagick->getImageBlob());
+                });
             }
         } catch (Throwable $e) {
             report($e);

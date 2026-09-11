@@ -8,13 +8,13 @@ use App\Services\Ai\AiClient;
 use App\Services\Ocr\OcrExtractor;
 use App\Services\Ocr\OcrResolver;
 use App\Services\XrayVision\XrayVisionClient;
+use App\Support\TempFile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -56,7 +56,6 @@ class ProcessReportOcrJob implements ShouldQueue
         ]);
 
         try {
-            $absolutePath = Storage::disk('local')->path($report->file_path);
             $mimeType = $report->mime_type ?? '';
 
             // The upload-time /reports/detect call already ran OcrResolver
@@ -69,7 +68,7 @@ class ProcessReportOcrJob implements ShouldQueue
                 $usable = $cached['looks_usable'];
                 $analysisMethod = $cached['method'] ?? null;
             } else {
-                $result = $ocrResolver->resolve($absolutePath, $mimeType);
+                $result = TempFile::fromDisk('local', $report->file_path, fn (string $absolutePath) => $ocrResolver->resolve($absolutePath, $mimeType));
                 $text = $result['text'];
                 $usable = $result['looks_usable'];
                 $analysisMethod = $result['method'];
@@ -130,22 +129,25 @@ class ProcessReportOcrJob implements ShouldQueue
     private function analyzeWithVision(Report $report, AiJob $aiJob, OcrExtractor $ocrExtractor, AiClient $ai, XrayVisionClient $xrayVision): void
     {
         try {
-            $absolutePath = Storage::disk('local')->path($report->file_path);
-            $images = $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? '');
+            [$images, $findings] = TempFile::fromDisk('local', $report->file_path, function (string $absolutePath) use ($report, $ocrExtractor, $xrayVision) {
+                $images = $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? '');
 
-            // Real CNN classifier output, when available, for chest X-rays
-            // only — this is optional enrichment, never a dependency: any
-            // failure here (unconfigured, unreachable, bad response) just
-            // means the report falls back to the Gemini-only description
-            // that already works today.
-            $findings = null;
-            if ($report->type === 'xray' && $xrayVision->isConfigured()) {
-                try {
-                    $findings = $xrayVision->analyze($absolutePath);
-                } catch (Throwable $e) {
-                    report($e);
+                // Real CNN classifier output, when available, for chest X-rays
+                // only — this is optional enrichment, never a dependency: any
+                // failure here (unconfigured, unreachable, bad response) just
+                // means the report falls back to the Gemini-only description
+                // that already works today.
+                $findings = null;
+                if ($report->type === 'xray' && $xrayVision->isConfigured()) {
+                    try {
+                        $findings = $xrayVision->analyze($absolutePath);
+                    } catch (Throwable $e) {
+                        report($e);
+                    }
                 }
-            }
+
+                return [$images, $findings];
+            });
 
             $result = $ai->generateWithImage($this->buildVisionPrompt($report, $findings), $images);
             $content = $result['text']."\n\n".GenerateShortSummaryJob::DISCLAIMER;
