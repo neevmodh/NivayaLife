@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
- * Mobile API, consumed by the Flutter app (NovixHealth/nivaya-app).
+ * Mobile API, consumed by the NivayaLife React Native app.
  *
  * Token-authenticated via Sanctum rather than sessions. Every endpoint that
  * touches records goes through ScopesToCaller, so "may this caller see this
@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/members', [DashboardController::class, 'members'])->name('api.members');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('api.reports');
+    Route::post('/reports', [ReportController::class, 'store'])->name('api.reports.store');
+    Route::get('/reports/{report}', [ReportController::class, 'show'])->name('api.reports.show');
     Route::post('/medications/{medication}/toggle-dose', [ReportController::class, 'toggleDose'])
         ->name('api.medications.toggle-dose');
 
