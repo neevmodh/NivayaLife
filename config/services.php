@@ -87,4 +87,11 @@ return [
         'private_key' => env('VAPID_PRIVATE_KEY'),
     ],
 
+    // The deep-link scheme the React Native app registers (app.json
+    // "scheme") — GoogleController redirects here with a token once a
+    // mobile-initiated Google sign-in completes.
+    'mobile_app' => [
+        'scheme' => env('MOBILE_APP_SCHEME', 'nivayalife'),
+    ],
+
 ];
