@@ -207,57 +207,6 @@
         </div>
     </section>
 
-    {{-- ============ CAPABILITY BAND ============ --}}
-    {{-- Sits directly under the hero on desktop: the four things the product
-         actually does, stated plainly, before any argument is made. --}}
-    <section class="relative px-6 lg:px-8" aria-label="What Nivaya Life does">
-        <div class="mx-auto max-w-7xl">
-            <div class="nivayalife-rule-gold" aria-hidden="true"></div>
-            <div class="grid gap-px overflow-hidden bg-nivayalife-green/10 py-px sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ([
-                    ['n' => '10', 'suffix' => '+', 'label' => 'Report types recognized', 'sub' => 'Blood work to X-rays, sorted automatically'],
-                    ['n' => '3', 'suffix' => '', 'label' => 'Languages explained in', 'sub' => 'English, Hindi and Gujarati'],
-                    ['n' => '1', 'suffix' => '', 'label' => 'Account for the family', 'sub' => 'Parents, partner, children, grandparents'],
-                    ['n' => '0', 'suffix' => '', 'label' => 'Paper to keep', 'sub' => 'Photograph it once and let it go'],
-                ] as $stat)
-                    <div class="bg-nivayalife-cream px-6 py-8 text-center" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
-                        <p class="text-4xl font-extrabold tracking-tight text-nivayalife-green">
-                            <span data-count-to="{{ $stat['n'] }}" data-count-suffix="{{ $stat['suffix'] }}">0</span>
-                        </p>
-                        <p class="mt-2 text-sm font-bold text-nivayalife-ink">{{ $stat['label'] }}</p>
-                        <p class="mt-1 text-xs leading-relaxed text-nivayalife-ink/60">{{ $stat['sub'] }}</p>
-                    </div>
-                @endforeach
-            </div>
-            <div class="nivayalife-rule-gold" aria-hidden="true"></div>
-        </div>
-    </section>
-
-    {{-- ============ PROBLEM ============ --}}
-    <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8" aria-labelledby="problem-heading">
-        <div class="mx-auto max-w-2xl text-center">
-            <h2 data-reveal id="problem-heading" class="text-3xl font-extrabold text-nivayalife-ink">Paper records don't work anymore</h2>
-            <p class="mt-3 text-nivayalife-ink/70">Every family runs into the same problems managing health records the old way.</p>
-        </div>
-
-        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ([
-                ['icon' => 'M9 13h6m-6 4h4m1-15H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-6-6Z', 'title' => 'Reports scattered everywhere', 'body' => 'Hospital folders, WhatsApp downloads, old envelopes — records end up spread across a dozen places, none of them searchable.'],
-                ['icon' => 'M9 12h.01M15 12h.01M9.5 16a3.5 3.5 0 0 0 5 0M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z', 'title' => 'Doctors missing your history', 'body' => 'Without past reports in hand, a new doctor starts from zero — even if the same test was done six months ago.'],
-                ['icon' => 'M17 20h4v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'title' => 'Managing the whole family manually', 'body' => 'Parents, kids, grandparents — everyone\'s reports pile up in different places, with no single view of who has what.'],
-                ['icon' => 'M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', 'title' => 'Repeating tests you\'ve already done', 'body' => 'When an old report can\'t be found in time, the easiest fix is often just redoing the test — more cost, more waiting.'],
-            ] as $problem)
-                <div class="rounded-nivayalife bg-white p-6 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:shadow-nivayalife" data-reveal style="transition-delay:{{ $loop->index * 70 }}ms">
-                    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-nivayalife-mint text-nivayalife-green" aria-hidden="true">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="{{ $problem['icon'] }}"/></svg>
-                    </span>
-                    <h3 class="mt-4 font-semibold text-nivayalife-ink">{{ $problem['title'] }}</h3>
-                    <p class="mt-1.5 text-sm text-nivayalife-ink/70">{{ $problem['body'] }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
     {{-- ============ HOW IT WORKS ============ --}}
     <section id="how-it-works" class="scroll-mt-20 py-20" aria-labelledby="how-heading">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -294,14 +243,10 @@
             @foreach ([
                 ['icon' => 'M17 20h4v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'title' => 'Login & Family Profiles', 'body' => 'One account for the whole family. Add parents, spouse, and children as separate profiles, each with their own health history.'],
                 ['icon' => 'M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 1 0-8 0v4h8Z', 'title' => 'Secure Health Locker', 'body' => 'Every report, prescription, and bill stored securely online, organized by family member.'],
-                ['icon' => 'M9 12h6m-6 4h6m1 5H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z', 'title' => 'Report Upload & Auto Category', 'body' => 'Upload a photo or PDF and Nivaya Life automatically sorts it — blood test, prescription, X-ray, insurance, or bill.'],
-                ['icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a4 4 0 1 1 5.657 0A4 4 0 0 1 12 18a4 4 0 0 1-2.828-1.464Z', 'title' => 'AI Report Explanation', 'body' => 'Get a plain-language summary of any report, with abnormal values called out clearly.'],
-                ['icon' => 'M4 7V5a2 2 0 0 1 2-2h2M4 17v2a2 2 0 0 0 2 2h2m8-16h2a2 2 0 0 1 2 2v2m-4 12h2a2 2 0 0 0 2-2v-2M8 12h8', 'title' => 'AI Scanner / OCR', 'body' => 'Scan a printed report or prescription and Nivaya Life extracts the text automatically — no manual typing.'],
+                ['icon' => 'M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a4 4 0 1 1 5.657 0A4 4 0 0 1 12 18a4 4 0 0 1-2.828-1.464Z', 'title' => 'AI Report Explanation', 'body' => 'Snap a photo or upload a PDF — Nivaya Life reads it, sorts it into the right category, and gives you a plain-language summary with abnormal values called out.'],
                 ['icon' => 'M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', 'title' => 'Personal Health Timeline', 'body' => 'See every family member\'s reports and medications laid out chronologically, so nothing gets lost.'],
                 ['icon' => 'M8.7 10.7 15.3 7.3M8.7 13.3l6.6 3.4M18 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm0 14a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM8 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z', 'title' => 'Secure Report Sharing', 'body' => 'Generate a time-limited link to share one report with a doctor — no account or login required on their end.'],
-                ['icon' => 'M12 21s-7-4.35-9.5-8.5C.83 9.1 2.3 5.5 6 5c2-.27 3.5 1 4 2 .5-1 2-2.27 4-2 3.7.5 5.17 4.1 3.5 7.5C19 16.65 12 21 12 21Z', 'title' => 'Emergency Medical Card', 'body' => 'A public, no-login page with blood group, allergies, and emergency contacts, ready the moment it\'s needed.'],
                 ['icon' => 'M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-4-5.66V5a2 2 0 1 0-4 0v.34C7.67 6.17 6 8.39 6 11v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9', 'title' => 'Medicine Reminders', 'body' => 'Scheduled reminders for every medication, for every family member, so doses don\'t get missed.'],
-                ['icon' => 'M3 12h18M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9ZM3 12a9 9 0 0 1 9-9M21 12a9 9 0 0 1-9 9', 'title' => 'Multilingual Support', 'body' => 'Report explanations available in multiple languages, so every family member can actually understand them.'],
             ] as $feature)
                 <div class="nivayalife-gold-edge group rounded-nivayalife bg-white p-6 shadow-nivayalife-sm transition hover:-translate-y-1 hover:shadow-nivayalife" data-reveal style="transition-delay:{{ $loop->index * 55 }}ms">
                     <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-nivayalife-green text-white transition group-hover:scale-110" aria-hidden="true">
