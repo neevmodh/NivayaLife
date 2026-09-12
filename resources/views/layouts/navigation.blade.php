@@ -86,10 +86,14 @@
 </nav>
 
 {{-- Desktop sidebar --}}
-<aside class="sticky top-0 hidden h-screen w-60 flex-shrink-0 flex-col gap-6 overflow-y-auto border-r border-nivayalife-green/10 bg-white px-3.5 py-5 sm:flex dark:border-white/10 dark:bg-nivayalife-night">
+{{-- overflow-y-auto lives on the nav-groups div below, not here — setting it
+     on the aside itself would force the x-axis to clip too (that's how CSS
+     overflow works), which silently clipped the notification/account
+     dropdowns below off-screen. --}}
+<aside class="sticky top-0 hidden h-screen w-60 flex-shrink-0 flex-col gap-6 border-r border-nivayalife-green/10 bg-white px-3.5 py-5 sm:flex dark:border-white/10 dark:bg-nivayalife-night">
     <a href="{{ route('dashboard') }}" class="px-2"><x-nivayalife-logo size="sm" /></a>
 
-    <div class="flex flex-1 flex-col gap-5">
+    <div class="flex flex-1 flex-col gap-5 overflow-y-auto">
         @foreach($navGroups as $group => $items)
             @if(count($items))
                 <div class="flex flex-col gap-0.5">
@@ -111,9 +115,9 @@
     </div>
 
     <div class="flex flex-col gap-2 border-t border-nivayalife-green/10 pt-3.5 dark:border-white/10">
-        <div class="flex items-center gap-1 px-1">
-            <x-notification-bell />
-            <x-dark-mode-toggle persist-url="{{ route('profile.theme') }}" />
+        <div class="flex items-center gap-1.5">
+            <x-notification-bell sidebar />
+            <div class="flex-shrink-0"><x-dark-mode-toggle persist-url="{{ route('profile.theme') }}" /></div>
         </div>
 
         @if($navFamilyMembers->count() > 1 && $navActive)
