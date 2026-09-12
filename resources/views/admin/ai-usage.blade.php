@@ -14,7 +14,7 @@
     <x-slot name="header">
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">AI usage &amp; cost</h2>
+                <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">AI usage &amp; cost</h2>
                 <span class="mt-1.5 block h-0.5 w-10 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
             </div>
             <a href="{{ route('admin.dashboard') }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink transition hover:-translate-y-0.5 hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">

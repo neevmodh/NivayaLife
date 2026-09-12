@@ -14,7 +14,7 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">
+        <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">
             {{ $isDependentEdit ? "Edit {$member->full_name}'s profile" : 'Profile' }}
         </h2>
     </x-slot>

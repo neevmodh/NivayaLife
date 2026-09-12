@@ -18,7 +18,7 @@
                 </svg>
             </span>
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">AI Assistant</h2>
+                <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">AI Assistant</h2>
                 <p class="text-sm text-nivayalife-muted">Reading {{ $active->full_name }}'s records</p>
             </div>
         </div>

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">
+            <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">
                 New row in <span class="font-mono">{{ $table }}</span>
             </h2>
             <a href="{{ route('admin.tables.show', $table) }}" class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-nivayalife-ink hover:bg-nivayalife-cream dark:border-white/10 dark:text-white dark:hover:bg-white/10">

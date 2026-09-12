@@ -26,7 +26,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">
+            <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">
                 <span class="font-mono">{{ $table }}</span>
             </h2>
             <div class="flex gap-2">

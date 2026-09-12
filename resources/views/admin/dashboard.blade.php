@@ -16,7 +16,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Admin overview</h2>
+                <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">Admin overview</h2>
                 <span class="mt-1.5 block h-0.5 w-10 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
             </div>
             <div class="flex flex-wrap gap-2">

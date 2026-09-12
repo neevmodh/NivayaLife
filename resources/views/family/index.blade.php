@@ -9,7 +9,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Family</h2>
+                <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">Family</h2>
                 <p class="mt-1 text-sm text-nivayalife-muted">Everyone linked to your Nivaya Life account.</p>
             </div>
             <a href="{{ route('family.add') }}"

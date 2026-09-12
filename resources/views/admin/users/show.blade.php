@@ -21,7 +21,7 @@
             <div class="flex items-center gap-3">
                 <x-avatar :photo-path="$user->avatar_path" :full-name="$user->name" size="h-12 w-12" />
                 <div class="min-w-0">
-                    <h2 class="truncate text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">{{ $user->name }}</h2>
+                    <h2 class="truncate text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">{{ $user->name }}</h2>
                     <p class="truncate text-sm text-nivayalife-muted">{{ $user->email }}</p>
                 </div>
             </div>

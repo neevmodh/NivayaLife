@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Emergency ID Card</h2>
+        <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">Emergency ID Card</h2>
     </x-slot>
 
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">

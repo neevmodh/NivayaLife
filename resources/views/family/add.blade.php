@@ -4,7 +4,7 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Add Family Member</h2>
+        <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">Add Family Member</h2>
     </x-slot>
 
     <x-confetti />

@@ -9,7 +9,7 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-nivayalife-ink dark:text-white">Share History</h2>
+        <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white">Share History</h2>
         <p class="mt-1 text-sm text-nivayalife-muted">For {{ $active->full_name }}</p>
     </x-slot>
 
