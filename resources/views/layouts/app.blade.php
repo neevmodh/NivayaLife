@@ -18,24 +18,26 @@
         <x-pending-invitation-popup />
         <x-install-prompt />
 
-        <div class="nivayalife-surface min-h-screen bg-nivayalife-cream dark:bg-nivayalife-night">
+        <div class="nivayalife-surface min-h-screen bg-nivayalife-cream dark:bg-nivayalife-night sm:flex sm:items-start">
             @include('layouts.navigation')
 
-            {{-- The header used to sit in its own white band, which cut a hard
-                 seam across the page where it met the cream body. It now shares
-                 the page background and just leads the content. --}}
-            @isset($header)
-                <header class="mx-auto max-w-7xl px-4 pb-1 pt-6 sm:px-6 sm:pt-8 lg:px-8">
-                    {{ $header }}
-                </header>
-            @endisset
+            <div class="min-w-0 flex-1">
+                {{-- The header used to sit in its own white band, which cut a hard
+                     seam across the page where it met the cream body. It now shares
+                     the page background and just leads the content. --}}
+                @isset($header)
+                    <header class="mx-auto max-w-7xl px-4 pb-1 pt-6 sm:px-6 sm:pt-8 lg:px-8">
+                        {{ $header }}
+                    </header>
+                @endisset
 
-            {{-- pb-24 clears the fixed mobile tab bar; sm:pb-0 drops it once the
-                 bar is hidden and the top nav takes over — except in an
-                 installed PWA, where the bar stays at every width. --}}
-            <main class="pb-24 sm:pb-0 sm:standalone:pb-24">
-                {{ $slot }}
-            </main>
+                {{-- pb-24 clears the fixed mobile tab bar; sm:pb-0 drops it once the
+                     bar is hidden and the sidebar takes over — except in an
+                     installed PWA, where the bar stays at every width. --}}
+                <main class="pb-24 sm:pb-0 sm:standalone:pb-24">
+                    {{ $slot }}
+                </main>
+            </div>
 
             <x-bottom-nav />
             <x-assistant-fab />

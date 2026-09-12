@@ -114,30 +114,45 @@
                 </p>
             </div>
 
-            <div class="-mx-4 flex snap-x items-center gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:px-0">
-                @foreach($familyMembers as $member)
-                    <form method="POST" action="{{ route('dashboard.switch', $member) }}" class="group flex-shrink-0 snap-start">
-                        @csrf
-                        <button type="submit" aria-label="Switch to {{ $member->full_name }}"
-                            @class([
-                                'flex items-center gap-2 rounded-full border py-1 pl-1 pr-3.5 transition',
-                                'border-nivayalife-green bg-white shadow-nivayalife-sm dark:bg-white/10' => $member->id === $active->id,
-                                'border-transparent bg-white/60 hover:border-nivayalife-green/30 hover:bg-white dark:bg-white/5' => $member->id !== $active->id,
-                            ])>
-                            <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
-                            <span @class([
-                                'whitespace-nowrap text-sm font-semibold',
-                                'text-nivayalife-green dark:text-nivayalife-mint' => $member->id === $active->id,
-                                'text-nivayalife-muted' => $member->id !== $active->id,
-                            ])>{{ Str::of($member->full_name)->words(1, '') }}</span>
-                        </button>
-                    </form>
-                @endforeach
+            <div class="flex flex-col items-stretch gap-3 lg:items-end">
+                <div class="flex flex-shrink-0 items-center justify-end gap-2">
+                    <a href="{{ route('id-card.show') }}"
+                        class="flex items-center gap-2 rounded-xl border border-nivayalife-green/20 bg-white px-4 py-2.5 text-sm font-semibold text-nivayalife-green shadow-nivayalife-sm transition hover:bg-nivayalife-mint/40 dark:border-white/10 dark:bg-white/5 dark:text-nivayalife-mint">
+                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><path d="M13 10h5M13 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                        <span class="hidden sm:inline">Emergency card</span>
+                    </a>
+                    <a href="{{ route('reports.upload') }}"
+                        class="flex items-center gap-2 rounded-xl bg-nivayalife-green px-4 py-2.5 text-sm font-semibold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark">
+                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        <span class="hidden sm:inline">Add report</span>
+                    </a>
+                </div>
 
-                <a href="{{ route('family.add') }}" aria-label="Add family member"
-                    class="flex h-10 w-10 flex-shrink-0 snap-start items-center justify-center rounded-full border border-dashed border-nivayalife-green/40 text-nivayalife-green transition hover:border-nivayalife-green hover:bg-nivayalife-mint/40 dark:text-nivayalife-mint">
-                    <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </a>
+                <div class="-mx-4 flex snap-x items-center gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:px-0">
+                    @foreach($familyMembers as $member)
+                        <form method="POST" action="{{ route('dashboard.switch', $member) }}" class="group flex-shrink-0 snap-start">
+                            @csrf
+                            <button type="submit" aria-label="Switch to {{ $member->full_name }}"
+                                @class([
+                                    'flex items-center gap-2 rounded-full border py-1 pl-1 pr-3.5 transition',
+                                    'border-nivayalife-green bg-white shadow-nivayalife-sm dark:bg-white/10' => $member->id === $active->id,
+                                    'border-transparent bg-white/60 hover:border-nivayalife-green/30 hover:bg-white dark:bg-white/5' => $member->id !== $active->id,
+                                ])>
+                                <x-avatar :photo-path="$member->photo_path" :preset="$member->avatar_preset ?? null" :full-name="$member->full_name" :gender="$member->gender" :age="$member->age()" size="h-8 w-8" />
+                                <span @class([
+                                    'whitespace-nowrap text-sm font-semibold',
+                                    'text-nivayalife-green dark:text-nivayalife-mint' => $member->id === $active->id,
+                                    'text-nivayalife-muted' => $member->id !== $active->id,
+                                ])>{{ Str::of($member->full_name)->words(1, '') }}</span>
+                            </button>
+                        </form>
+                    @endforeach
+
+                    <a href="{{ route('family.add') }}" aria-label="Add family member"
+                        class="flex h-10 w-10 flex-shrink-0 snap-start items-center justify-center rounded-full border border-dashed border-nivayalife-green/40 text-nivayalife-green transition hover:border-nivayalife-green hover:bg-nivayalife-mint/40 dark:text-nivayalife-mint">
+                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </x-slot>
@@ -190,55 +205,23 @@
             </div>
         @endif
 
-        {{-- Identity card. Carries the member's actual vitals instead of the old
-             row of zero-counters, and offers to fill in whatever is missing. --}}
-        <div class="animate-nivayalife-fade-up relative overflow-hidden rounded-nivayalife bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark shadow-nivayalife ring-1 ring-nivayalife-gold/40" style="animation-delay:40ms">
-            <div class="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-white/5"></div>
-            {{-- Brand mark watermark, corner of the identity card. --}}
-            <svg class="pointer-events-none absolute right-5 top-5 h-12 w-12 opacity-[0.18]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M6.5 18.5v-13l9 13" stroke="#FFFFFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M17.5 18.5V9.4" stroke="#C9941A" stroke-width="2.7" stroke-linecap="round"/>
-                <circle cx="17.5" cy="5.4" r="1.85" fill="#C9941A"/>
-            </svg>
-            <div class="pointer-events-none absolute -bottom-24 left-1/4 h-52 w-52 rounded-full bg-white/[0.04]"></div>
-
-            <div class="relative p-5 text-white sm:p-6">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-4">
-                    <div class="relative flex-shrink-0">
-                        <x-avatar :photo-path="$active->photo_path" :preset="$active->avatar_preset ?? null" :full-name="$active->full_name" :gender="$active->gender" :age="$active->age()"
-                            size="h-16 w-16" color-class="bg-white/10 text-white" class="border-2 border-white/25" />
-                    </div>
-
-                    <div class="min-w-0 flex-1">
-                        <h1 class="truncate text-xl font-bold tracking-tight sm:text-2xl">{{ $active->full_name }}</h1>
-                        <span class="sr-only">Nivaya Life health record</span>
-                        <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/65">
-                            <span class="font-mono tracking-tight text-nivayalife-gold-light">{{ $active->unique_health_id }}</span>
-                            <span aria-hidden="true">&middot;</span>
-                            <span>{{ Str::headline($active->relation) }}</span>
-                        </p>
-                    </div>
-
-                    <a href="{{ route('id-card.show') }}"
-                        class="flex w-full flex-shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-nivayalife-green shadow-lg shadow-black/10 transition hover:bg-nivayalife-mint sm:w-auto">
-                        <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none"><path d="M3 7h18v10H3V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><path d="M13 10h5M13 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                        Emergency card
-                    </a>
-                </div>
-
-                <div class="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    <x-data-chip label="Age"
-                        :value="$active->date_of_birth ? $active->date_of_birth->age . ' yrs' : null"
-                        :fallback-url="$editUrl" fallback-label="Set DOB" />
-                    <x-data-chip label="Blood group" :value="$active->blood_group" :fallback-url="$editUrl" accent />
-                    <x-data-chip label="BMI"
-                        :value="$latestBmi ? number_format($latestBmi->bmi_value, 1) : null"
-                        :fallback-url="$editUrl" fallback-label="Measure" />
-                    <x-data-chip label="Sex"
-                        :value="$active->gender ? Str::headline(str_replace('_', ' ', $active->gender)) : null"
-                        :fallback-url="$editUrl" fallback-label="Set" />
-                </div>
+        {{-- Vitals strip. Same four fields the old identity card carried, without
+             the card chrome around them — a plain row on the page background,
+             plus the health ID as a small aside rather than a headline. --}}
+        <div class="animate-nivayalife-fade-up flex flex-wrap items-center justify-between gap-3" style="animation-delay:40ms">
+            <div class="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4">
+                <x-data-chip label="Age"
+                    :value="$active->date_of_birth ? $active->date_of_birth->age . ' yrs' : null"
+                    :fallback-url="$editUrl" fallback-label="Set DOB" />
+                <x-data-chip label="Blood group" :value="$active->blood_group" :fallback-url="$editUrl" accent />
+                <x-data-chip label="BMI"
+                    :value="$latestBmi ? number_format($latestBmi->bmi_value, 1) : null"
+                    :fallback-url="$editUrl" fallback-label="Measure" />
+                <x-data-chip label="Sex"
+                    :value="$active->gender ? Str::headline(str_replace('_', ' ', $active->gender)) : null"
+                    :fallback-url="$editUrl" fallback-label="Set" />
             </div>
+            <p class="hidden flex-shrink-0 font-mono text-xs tracking-tight text-nivayalife-muted lg:block">{{ $active->unique_health_id }}</p>
         </div>
 
         {{-- Needs attention — renders only when something actually needs it.
