@@ -146,65 +146,59 @@
                 </div>
             </div>
 
-            {{-- Miniature of the real dashboard — sample data, not a real user --}}
-            <div class="relative">
+            {{-- Live preview: a real report being explained, not a personal ID
+                 card — this is the thing the product actually does. --}}
+            <div class="relative"
+                x-data="{
+                    lang: 'en',
+                    langs: {
+                        en: { label: 'English', text: 'Your haemoglobin is in the normal range. Vitamin D is a little low — worth discussing supplements with your doctor.' },
+                        hi: { label: 'हिंदी', text: 'आपका हीमोग्लोबिन सामान्य सीमा में है। विटामिन डी थोड़ा कम है — अपने डॉक्टर से सप्लीमेंट के बारे में बात करें।' },
+                        gu: { label: 'ગુજરાતી', text: 'તમારું હીમોગ્લોબિન સામાન્ય શ્રેણીમાં છે. વિટામિન ડી થોડું ઓછું છે — તમારા ડૉક્ટર સાથે સપ્લિમેન્ટ વિશે વાત કરો.' },
+                    },
+                }">
                 <p class="mb-2 text-center text-xs font-medium uppercase tracking-wide text-nivayalife-muted lg:text-left">
                     Preview with sample data
                 </p>
-                <div class="rounded-nivayalife bg-white p-4 shadow-nivayalife sm:p-5" aria-hidden="true">
-                    {{-- identity card --}}
-                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark p-4 text-white">
-                        <div class="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/5"></div>
-                        <div class="relative flex items-center gap-3">
-                            <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border-2 border-white/25 bg-white/10">
-                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 21v-1a7 7 0 0 1 14 0v1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-                            </span>
-                            <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-bold">Aarav Shah</p>
-                                <p class="font-mono text-[10px] tracking-tight text-nivayalife-gold-light">NVX-8FK2M &middot; Self</p>
-                            </div>
-                            <span class="rounded-lg bg-white px-2.5 py-1.5 text-[10px] font-bold text-nivayalife-green">Emergency card</span>
+                <div class="overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife">
+                    <div class="flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5">
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-bold text-nivayalife-ink">Blood Test &middot; AI summary</p>
+                            <p class="text-[11px] text-nivayalife-muted">Sample report</p>
                         </div>
-                        <div class="relative mt-3 grid grid-cols-4 gap-1.5 text-center">
-                            @foreach ([['Age', '34 yrs'], ['Blood', 'O+'], ['BMI', '22.4'], ['Sex', 'Male']] as [$label, $value])
-                                <div class="rounded-lg bg-white/10 px-1 py-1.5">
-                                    <p class="text-[8px] font-semibold uppercase tracking-wider text-white/60">{{ $label }}</p>
-                                    <p class="text-[11px] font-bold">{{ $value }}</p>
-                                </div>
-                            @endforeach
+                        <div class="flex flex-shrink-0 gap-1 rounded-full bg-nivayalife-cream p-1" role="group" aria-label="Summary language">
+                            <template x-for="(meta, code) in langs" :key="code">
+                                <button type="button" @click="lang = code"
+                                    class="rounded-full px-2.5 py-1 text-[11px] font-bold transition"
+                                    :class="lang === code ? 'bg-nivayalife-green text-white' : 'text-nivayalife-muted hover:text-nivayalife-green'"
+                                    :aria-pressed="(lang === code).toString()"
+                                    x-text="meta.label"></button>
+                            </template>
                         </div>
                     </div>
-
-                    {{-- today's doses --}}
-                    <div class="mt-3 rounded-2xl border border-nivayalife-green/10 p-3">
-                        <p class="text-[10px] font-bold uppercase tracking-wide text-nivayalife-muted">Today's doses</p>
-                        <div class="mt-2 flex items-center justify-between gap-2">
-                            <div class="min-w-0">
-                                <p class="truncate text-xs font-semibold text-nivayalife-ink">Metformin <span class="font-normal text-nivayalife-muted">· 500 mg</span></p>
-                            </div>
-                            <div class="flex gap-1">
-                                <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[9px] font-bold text-nivayalife-green line-through">08:00</span>
-                                <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">14:00</span>
-                                <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">21:00</span>
-                            </div>
-                        </div>
+                    <div class="border-t border-nivayalife-green/10 px-4 py-4 sm:px-5">
+                        <p class="min-h-[3.25rem] text-sm leading-relaxed text-nivayalife-ink" x-text="langs[lang].text"></p>
                     </div>
-
-                    {{-- report + AI summary --}}
-                    <div class="mt-3 rounded-2xl border border-nivayalife-green/10 p-3">
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="flex min-w-0 items-center gap-2">
-                                <span class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-xs">🩸</span>
-                                <div class="min-w-0">
-                                    <p class="truncate text-xs font-semibold text-nivayalife-ink">Blood Test</p>
-                                    <p class="text-[10px] text-nivayalife-muted">Explained in plain language by AI</p>
-                                </div>
+                    <div class="grid grid-cols-4 divide-x divide-nivayalife-green/10 border-t border-nivayalife-green/10">
+                        @foreach ([['10+', 'Reports'], ['3', 'Languages'], ['1', 'Account'], ['0', 'Paper']] as [$n, $label])
+                            <div class="px-2 py-3 text-center">
+                                <p class="text-lg font-extrabold tracking-tight text-nivayalife-green">{{ $n }}</p>
+                                <p class="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-nivayalife-muted">{{ $label }}</p>
                             </div>
-                            <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[9px] font-semibold text-nivayalife-green">Ready</span>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- today's doses --}}
+                <div class="mt-4 rounded-nivayalife bg-white p-4 shadow-nivayalife-sm" aria-hidden="true">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-nivayalife-muted">Today's doses</p>
+                    <div class="mt-2 flex items-center justify-between gap-2">
+                        <p class="truncate text-xs font-semibold text-nivayalife-ink">Metformin <span class="font-normal text-nivayalife-muted">&middot; 500 mg</span></p>
+                        <div class="flex gap-1">
+                            <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[9px] font-bold text-nivayalife-green line-through">08:00</span>
+                            <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">14:00</span>
+                            <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">21:00</span>
                         </div>
-                        <p class="mt-2 rounded-lg bg-nivayalife-green/5 px-2.5 py-2 text-[10px] leading-relaxed text-nivayalife-green">
-                            "Haemoglobin is in the normal range. Vitamin D is slightly low — worth discussing supplements with your doctor."
-                        </p>
                     </div>
                 </div>
 
@@ -320,52 +314,6 @@
         </div>
     </section>
 
-    {{-- ============ MULTILINGUAL DEMO ============ --}}
-    <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="lang-heading">
-        <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="lang-heading" class="text-3xl font-extrabold text-nivayalife-ink">Read in the language you think in</h2>
-            <p class="mt-3 text-nivayalife-ink/70">
-                The same report, explained plainly — switch languages and watch it change.
-            </p>
-        </div>
-
-        <div class="mx-auto mt-10 max-w-2xl overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife"
-            data-reveal
-            x-data="{
-                lang: 'en',
-                langs: {
-                    en: { label: 'English', text: 'Your haemoglobin is in the normal range. Vitamin D is a little low — worth discussing supplements with your doctor.' },
-                    hi: { label: 'हिंदी', text: 'आपका हीमोग्लोबिन सामान्य सीमा में है। विटामिन डी थोड़ा कम है — अपने डॉक्टर से सप्लीमेंट के बारे में बात करें।' },
-                    gu: { label: 'ગુજરાતી', text: 'તમારું હીમોગ્લોબિન સામાન્ય શ્રેણીમાં છે. વિટામિન ડી થોડું ઓછું છે — તમારા ડૉક્ટર સાથે સપ્લિમેન્ટ વિશે વાત કરો.' },
-                },
-            }">
-            <div class="flex items-center justify-between gap-3 border-b border-nivayalife-green/10 px-5 py-4">
-                <div class="flex min-w-0 items-center gap-2.5">
-                    <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-base" aria-hidden="true">🩸</span>
-                    <div class="min-w-0">
-                        <p class="truncate text-sm font-semibold text-nivayalife-ink">Blood Test &middot; AI summary</p>
-                        <p class="text-xs text-nivayalife-muted">Sample report</p>
-                    </div>
-                </div>
-                <div class="flex flex-shrink-0 gap-1 rounded-full bg-nivayalife-cream p-1" role="group" aria-label="Summary language">
-                    <template x-for="(meta, code) in langs" :key="code">
-                        <button type="button" @click="lang = code"
-                            class="rounded-full px-3 py-1 text-xs font-bold transition"
-                            :class="lang === code ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-muted hover:text-nivayalife-green'"
-                            :aria-pressed="(lang === code).toString()"
-                            x-text="meta.label"></button>
-                    </template>
-                </div>
-            </div>
-            <div class="p-6">
-                <p class="min-h-[3.5rem] text-[15px] leading-relaxed text-nivayalife-ink" x-text="langs[lang].text"></p>
-                <p class="mt-4 border-t border-nivayalife-green/10 pt-3 text-xs text-nivayalife-ink/50">
-                    Illustrative example. Nivaya Life explains reports — it never diagnoses.
-                </p>
-            </div>
-        </div>
-    </section>
-
     {{-- ============ PAPER VS NIVAYA ============ --}}
     <section class="mx-auto max-w-5xl px-6 pb-20 lg:px-8" aria-labelledby="compare-heading">
         <div class="mx-auto max-w-2xl text-center" data-reveal>
@@ -453,300 +401,6 @@
             </div>
         </div>
     </section>
-
-    {{-- ============ LIVE AI DEMO ============ --}}
-    <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="demo-heading">
-        <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="demo-heading" class="text-3xl font-extrabold text-nivayalife-ink">Watch it read a report</h2>
-            <p class="mt-3 text-nivayalife-ink/70">
-                Press play on a sample lab report and see what you would get back.
-            </p>
-        </div>
-
-        <div class="mt-10 overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife" data-reveal
-            x-data="{
-                state: 'idle',
-                typed: '',
-                timers: [],
-                summary: 'Haemoglobin is 13.2 g/dL, within the normal range. Vitamin D is low at 18 ng/mL against a 30-100 reference. Everything else on this panel is unremarkable. Worth raising the vitamin D with your doctor.',
-                rows: [
-                    { name: 'Haemoglobin', value: '13.2', unit: 'g/dL', range: '12.0-15.5', flag: 'normal' },
-                    { name: 'Vitamin D (25-OH)', value: '18', unit: 'ng/mL', range: '30-100', flag: 'low' },
-                    { name: 'Total Cholesterol', value: '172', unit: 'mg/dL', range: '<200', flag: 'normal' },
-                    { name: 'HbA1c', value: '5.4', unit: '%', range: '4.0-5.6', flag: 'normal' },
-                ],
-                reset() {
-                    this.timers.forEach(clearTimeout);
-                    this.timers = [];
-                    this.typed = '';
-                    this.state = 'idle';
-                },
-                play() {
-                    this.reset();
-                    this.state = 'scanning';
-                    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-                    // Reduced motion still gets the result, just without the show.
-                    if (reduce) {
-                        this.state = 'done';
-                        this.typed = this.summary;
-                        return;
-                    }
-
-                    this.timers.push(setTimeout(() => {
-                        this.state = 'typing';
-                        let i = 0;
-                        const tick = () => {
-                            i += 2;
-                            this.typed = this.summary.slice(0, i);
-                            if (i < this.summary.length) {
-                                this.timers.push(setTimeout(tick, 18));
-                            } else {
-                                this.state = 'done';
-                            }
-                        };
-                        tick();
-                    }, 3800));
-                },
-            }">
-            <div class="grid gap-0 md:grid-cols-2">
-                {{-- The document being read --}}
-                <div class="relative overflow-hidden border-b border-nivayalife-green/10 bg-nivayalife-cream/50 p-6 md:border-b-0 md:border-r">
-                    <div class="flex items-center justify-between">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-nivayalife-muted">Sample lab report</p>
-                        <span class="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-nivayalife-muted shadow-sm">PDF</span>
-                    </div>
-
-                    <div class="relative mt-4 overflow-hidden rounded-xl bg-white p-4 shadow-sm">
-                        {{-- The sweep only exists while the AI is "reading". --}}
-                        <template x-if="state === 'scanning'">
-                            <div class="pointer-events-none absolute inset-x-0 top-0 z-10">
-                                <div class="nivayalife-scanline absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-nivayalife-green/20 to-transparent"></div>
-                                <div class="nivayalife-scanline absolute inset-x-0 h-0.5 bg-nivayalife-green/70"></div>
-                            </div>
-                        </template>
-
-                        <p class="text-[10px] font-bold text-nivayalife-ink">HAEMATOLOGY &amp; BIOCHEMISTRY</p>
-                        <p class="text-[9px] text-nivayalife-muted">Sample Diagnostics · 12 Mar 2026</p>
-                        <div class="mt-3 space-y-1.5">
-                            <template x-for="(row, idx) in rows" :key="row.name">
-                                <div class="flex items-center justify-between gap-2 border-b border-dashed border-gray-100 pb-1.5 text-[10px] last:border-0">
-                                    <span class="min-w-0 flex-1 truncate text-nivayalife-ink" x-text="row.name"></span>
-                                    <span class="font-mono font-bold"
-                                        :class="state !== 'idle' && row.flag === 'low' ? 'text-nivayalife-pink-dark' : 'text-nivayalife-ink'">
-                                        <span x-text="row.value"></span><span class="font-normal text-nivayalife-muted" x-text="' ' + row.unit"></span>
-                                    </span>
-                                    <span class="w-16 text-right font-mono text-[9px] text-nivayalife-muted" x-text="row.range"></span>
-                                    {{-- The flag only appears once it has been read. --}}
-                                    <span class="w-3 text-right">
-                                        <template x-if="state !== 'idle' && row.flag === 'low'">
-                                            <span class="text-nivayalife-pink-dark" aria-hidden="true">&#9660;</span>
-                                        </template>
-                                    </span>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-
-                    <button type="button" @click="state === 'idle' ? play() : reset()"
-                        class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-nivayalife-green py-2.5 text-sm font-bold text-white shadow-nivayalife-sm transition hover:bg-nivayalife-green-dark active:scale-95">
-                        <template x-if="state === 'idle'">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg>
-                        </template>
-                        <template x-if="state !== 'idle'">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.3 5.6M4 20v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </template>
-                        <span x-text="state === 'idle' ? 'Read this report' : 'Start again'"></span>
-                    </button>
-                </div>
-
-                {{-- What comes back --}}
-                <div class="flex flex-col p-6">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-nivayalife-muted">What you get back</p>
-
-                    <div class="mt-4 flex-1">
-                        <template x-if="state === 'idle'">
-                            <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-nivayalife-green/25 text-center">
-                                <svg class="h-7 w-7 text-nivayalife-green/40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v2.2M8.5 6.2h7a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="10" cy="11.5" r="1.1" fill="currentColor"/><circle cx="14" cy="11.5" r="1.1" fill="currentColor"/></svg>
-                                <p class="text-xs text-nivayalife-muted">Press <span class="font-semibold text-nivayalife-green">Read this report</span></p>
-                            </div>
-                        </template>
-
-                        <template x-if="state === 'scanning'">
-                            <div class="flex h-full min-h-[9rem] flex-col items-center justify-center gap-3 text-center">
-                                <div class="flex gap-1.5">
-                                    <span class="h-2 w-2 animate-bounce rounded-full bg-nivayalife-green [animation-delay:-0.3s]"></span>
-                                    <span class="h-2 w-2 animate-bounce rounded-full bg-nivayalife-green [animation-delay:-0.15s]"></span>
-                                    <span class="h-2 w-2 animate-bounce rounded-full bg-nivayalife-green"></span>
-                                </div>
-                                <p class="text-xs font-semibold text-nivayalife-green">Reading the document…</p>
-                            </div>
-                        </template>
-
-                        <template x-if="state === 'typing' || state === 'done'">
-                            <div>
-                                <div class="rounded-xl bg-nivayalife-green/5 p-4">
-                                    <p class="text-sm leading-relaxed text-nivayalife-ink" :class="state === 'typing' ? 'nivayalife-caret' : ''" x-text="typed"></p>
-                                </div>
-                                <div x-cloak x-show="state === 'done'" x-transition class="mt-3 flex flex-wrap gap-2">
-                                    <span class="rounded-full bg-nivayalife-pink/20 px-2.5 py-1 text-[11px] font-bold text-nivayalife-pink-dark">1 value flagged low</span>
-                                    <span class="rounded-full bg-nivayalife-mint px-2.5 py-1 text-[11px] font-bold text-nivayalife-green">3 in range</span>
-                                    <span class="rounded-full bg-nivayalife-gold/20 px-2.5 py-1 text-[11px] font-bold text-amber-700">Filed automatically</span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-
-                    <p class="mt-4 border-t border-nivayalife-green/10 pt-3 text-[11px] leading-relaxed text-nivayalife-ink/50">
-                        Illustrative sample, not a real patient. Nivaya Life explains and organizes reports — it never diagnoses.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ============ HEALTH BREAK (interactive) ============ --}}
-    <section class="mx-auto max-w-5xl px-6 py-20 lg:px-8" aria-labelledby="break-heading">
-        <x-confetti />
-        <div class="mx-auto max-w-2xl text-center" data-reveal>
-            <h2 id="break-heading" class="text-3xl font-extrabold text-nivayalife-ink">Take a 10-second health break</h2>
-            <p class="mt-3 text-nivayalife-ink/70">Try the real thing before you sign up for anything.</p>
-        </div>
-
-        {{-- Live BMI check leads: it is the actual gauge component from inside
-             the app, so the strongest demo gets the most prominent slot. --}}
-        <div class="mt-10 overflow-hidden rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white shadow-nivayalife-sm" data-reveal>
-            <div class="grid items-center gap-8 p-8 md:grid-cols-2 md:p-10">
-                <div class="order-2 md:order-1">
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-nivayalife-mint px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-nivayalife-green">
-                        <span class="h-1.5 w-1.5 rounded-full bg-nivayalife-gold" aria-hidden="true"></span>
-                        Live demo
-                    </span>
-                    <h3 class="mt-3 text-2xl font-extrabold text-nivayalife-ink">Check your BMI right now</h3>
-                    <p class="mt-2 text-sm leading-relaxed text-nivayalife-ink/70">
-                        Enter a height and weight and the needle moves instantly. This is the very
-                        same gauge that sits on your dashboard and tracks every reading over time
-                        once you have an account.
-                    </p>
-                    <p class="mt-4 flex items-start gap-2 text-xs text-nivayalife-ink/50">
-                        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-nivayalife-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 1 0-8 0v4h8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                        Runs entirely in your browser — nothing is saved, sent, or shared.
-                    </p>
-                </div>
-                <div class="order-1 md:order-2">
-                    <x-bmi-gauge :size="190" hole-class="bg-white" />
-                </div>
-            </div>
-        </div>
-
-        {{-- Emergency card, flippable. It is the feature people understand
-             fastest once they see the QR on the back. --}}
-        <div class="mt-6 grid gap-6 md:grid-cols-2">
-            <div class="rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-6 shadow-nivayalife-sm" data-reveal>
-                <h3 class="font-semibold text-nivayalife-ink">Your emergency card</h3>
-                <p class="mt-1 text-sm leading-relaxed text-nivayalife-ink/60">
-                    Blood group, allergies and who to call — on one card a paramedic can read
-                    without unlocking your phone. Tap it to see the back.
-                </p>
-
-                <div class="nivayalife-flip mt-5" x-data="{ flipped: false }" :class="flipped ? 'is-flipped' : ''">
-                    <button type="button" @click="flipped = !flipped" class="nivayalife-flip-inner block w-full text-left"
-                        :aria-pressed="flipped.toString()" aria-label="Flip the emergency card">
-
-                        {{-- Front --}}
-                        <div class="nivayalife-flip-face overflow-hidden rounded-2xl bg-gradient-to-br from-nivayalife-green to-nivayalife-green-dark p-5 text-white shadow-nivayalife ring-1 ring-nivayalife-gold/40">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <p class="text-[10px] font-bold uppercase tracking-widest text-white/60">Emergency card</p>
-                                    <p class="mt-1 text-lg font-bold">Aarav Shah</p>
-                                    <p class="font-mono text-[10px] text-nivayalife-gold-light">NVX-8FK2M</p>
-                                </div>
-                                <svg class="h-8 w-8 opacity-30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <path d="M6.5 18.5v-13l9 13" stroke="#FFFFFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M17.5 18.5V9.4" stroke="#C9941A" stroke-width="2.7" stroke-linecap="round"/>
-                                    <circle cx="17.5" cy="5.4" r="1.85" fill="#C9941A"/>
-                                </svg>
-                            </div>
-                            <div class="mt-4 grid grid-cols-2 gap-2">
-                                <div class="rounded-xl bg-white/10 px-3 py-2">
-                                    <p class="text-[9px] font-semibold uppercase tracking-wider text-white/60">Blood group</p>
-                                    <p class="text-xl font-extrabold">O+</p>
-                                </div>
-                                <div class="rounded-xl bg-nivayalife-pink-dark px-3 py-2">
-                                    <p class="text-[9px] font-semibold uppercase tracking-wider text-white/80">Severe allergy</p>
-                                    <p class="text-base font-extrabold leading-tight">Penicillin</p>
-                                </div>
-                            </div>
-                            <p class="mt-3 text-center text-[10px] text-white/50">Tap to flip</p>
-                        </div>
-
-                        {{-- Back --}}
-                        <div class="nivayalife-flip-face nivayalife-flip-back flex flex-col items-center justify-center rounded-2xl bg-white p-5 shadow-nivayalife ring-1 ring-nivayalife-green/15">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-nivayalife-muted">Scan for full card</p>
-                            {{-- A drawn stand-in, not a working code. --}}
-                            <div class="mt-3 grid grid-cols-7 gap-1" aria-hidden="true">
-                                @foreach([1,1,1,0,1,1,1, 1,0,1,0,1,0,1, 1,1,1,0,1,1,1, 0,0,0,1,0,0,0, 1,1,0,1,0,1,1, 1,0,1,0,1,0,1, 1,1,1,0,1,1,1] as $cell)
-                                    <span class="h-2.5 w-2.5 rounded-[2px] {{ $cell ? 'bg-nivayalife-green' : 'bg-nivayalife-cream' }}"></span>
-                                @endforeach
-                            </div>
-                            <p class="mt-3 text-center text-[11px] leading-relaxed text-nivayalife-ink/60">
-                                Works without an account, and without unlocking the phone.
-                            </p>
-                            <p class="mt-2 text-[10px] text-nivayalife-muted">Tap to flip back</p>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-        {{-- Tap-the-heart: a synthesized lub-dub on every tap, confetti at ten.
-             Pure WebAudio — no audio file, and silent until the visitor asks. --}}
-            <div class="flex flex-col items-center justify-center gap-6 rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white p-8 text-center shadow-nivayalife-sm"
-                data-reveal
-            x-data="{
-                beats: 0,
-                bumping: false,
-                tap() {
-                    this.beats++;
-                    this.bumping = true;
-                    setTimeout(() => this.bumping = false, 200);
-                    try {
-                        const C = window.AudioContext || window.webkitAudioContext;
-                        this._ctx = this._ctx || new C();
-                        const c = this._ctx, t = c.currentTime;
-                        const thump = (at, freq, gain) => {
-                            const o = c.createOscillator(), g = c.createGain();
-                            o.type = 'sine';
-                            o.frequency.setValueAtTime(freq, at);
-                            g.gain.setValueAtTime(0.0001, at);
-                            g.gain.exponentialRampToValueAtTime(gain, at + 0.02);
-                            g.gain.exponentialRampToValueAtTime(0.0001, at + 0.25);
-                            o.connect(g); g.connect(c.destination);
-                            o.start(at); o.stop(at + 0.3);
-                        };
-                        thump(t, 60, 0.5);
-                        thump(t + 0.22, 48, 0.35);
-                    } catch (e) { /* audio blocked — the visual bump still lands */ }
-                    if (this.beats === 10) window.dispatchEvent(new CustomEvent('nivayalife:confetti'));
-                },
-            }">
-            <button type="button" @click="tap()" aria-label="Tap to hear a heartbeat"
-                class="relative flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-pink/20 transition hover:bg-nivayalife-pink/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-nivayalife-green"
-                :class="bumping ? 'scale-110' : 'scale-100'" style="transition: transform 0.15s ease">
-                <svg class="h-10 w-10 text-nivayalife-pink-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 21s-7-4.35-9.5-8.5C.83 9.1 2.3 5.5 6 5c2-.27 3.5 1 4 2 .5-1 2-2.27 4-2 3.7.5 5.17 4.1 3.5 7.5C19 16.65 12 21 12 21Z"/>
-                </svg>
-            </button>
-            <div class="min-w-0">
-                <h3 class="font-semibold text-nivayalife-ink">Tap the heart</h3>
-                <p class="mt-1 text-sm text-nivayalife-ink/60">Hear a real lub-dub — sound on. Ten beats earns a small celebration.</p>
-                    <p class="mt-2 h-5 text-xs font-bold text-nivayalife-gold" x-cloak x-show="beats > 0"
-                        x-text="beats < 10 ? beats + (beats === 1 ? ' beat' : ' beats') + ' with you' : 'Your heart, our priority 💛'"></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="mx-auto max-w-3xl px-6 lg:px-8"><div class="nivayalife-rule-gold" aria-hidden="true"></div></div>
 
     {{-- ============ FAQ ============ --}}
     <section id="faq" class="scroll-mt-20 mx-auto max-w-3xl px-6 py-20 lg:px-8" aria-labelledby="faq-heading">
