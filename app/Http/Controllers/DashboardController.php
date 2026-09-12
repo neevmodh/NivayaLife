@@ -36,6 +36,8 @@ class DashboardController extends Controller
         $latestBmi = $bmiLogs->first();
         $previousBmi = $bmiLogs->skip(1)->first();
 
+        $bmiHistory = $active->bmiLogs()->orderBy('recorded_date')->orderBy('id')->get();
+
         $trend = null;
         if ($latestBmi && $previousBmi) {
             $trend = match (true) {
@@ -84,6 +86,7 @@ class DashboardController extends Controller
             'familyMembers' => $familyMembers,
             'latestBmi' => $latestBmi,
             'trend' => $trend,
+            'bmiHistory' => $bmiHistory,
             'recentReports' => $recentReports,
             'activeMedications' => $activeMedications,
             'doseStatuses' => $doseStatuses,

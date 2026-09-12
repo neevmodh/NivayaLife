@@ -388,6 +388,22 @@
                             action-label="Add height & weight"
                             :action-url="$editUrl" />
                     @endif
+
+                    @if($bmiHistory->count() > 1)
+                        <div class="mt-4 border-t border-gray-100 pt-4 dark:border-white/10" x-data="adminChart({
+                            type: 'line',
+                            series: [{ name: 'BMI', data: @js($bmiHistory->map(fn ($log) => ['x' => $log->recorded_date->toDateString(), 'y' => $log->bmi_value])) }],
+                            options: {
+                                height: 160,
+                                colors: ['#14503F'],
+                                stroke: { curve: 'smooth', width: 2 },
+                                dataLabels: { enabled: false },
+                                xaxis: { type: 'datetime', labels: { format: 'MMM d' } },
+                                yaxis: { title: { text: 'BMI' } },
+                                grid: { borderColor: 'rgba(148,163,184,0.2)' },
+                            },
+                        })"></div>
+                    @endif
                 </section>
 
                 {{-- Vaccinations --}}
