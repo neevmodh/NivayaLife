@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasValidation;
+use App\Services\Ai\SummaryFactChecker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class Report extends Model
 {
@@ -144,6 +146,18 @@ class Report extends Model
             'content' => $content,
             'language' => $language,
         ]);
+
+        if ($responseType === 'summary' && $this->ocr_text) {
+            $unverified = SummaryFactChecker::unverifiedNumbers($content, $this->ocr_text);
+
+            if ($unverified !== []) {
+                Log::warning('AI summary states numbers not found in source OCR text', [
+                    'report_id' => $this->id,
+                    'ai_job_id' => $aiJob?->id,
+                    'unverified_numbers' => $unverified,
+                ]);
+            }
+        }
 
         if ($responseType === 'summary' && $updateSummaryCache) {
             $this->update([

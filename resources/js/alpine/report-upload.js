@@ -103,9 +103,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
                     doctor: '',
                     touched: { type: false, reportDate: false, hospital: false, doctor: false },
                     detecting: true,
-                    ocrPreview: '',
-                    ocrMethod: null,
-                    showOcrPreview: false,
+                    autoDetected: false,
                     blobPromise: null,
                     progress: 0,
                     status: 'draft', // draft | uploading | done | error | duplicate
@@ -168,13 +166,10 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
                 const json = await response.json();
                 const detected = json.detected || {};
 
-                if (detected.type && !entry.touched.type) entry.type = detected.type;
-                if (detected.report_date && !entry.touched.reportDate) entry.reportDate = detected.report_date;
-                if (detected.hospital_or_clinic_name && !entry.touched.hospital) entry.hospital = detected.hospital_or_clinic_name;
-                if (detected.doctor_name && !entry.touched.doctor) entry.doctor = detected.doctor_name;
-
-                entry.ocrPreview = json.text_preview || '';
-                entry.ocrMethod = json.method || null;
+                if (detected.type && !entry.touched.type) { entry.type = detected.type; entry.autoDetected = true; }
+                if (detected.report_date && !entry.touched.reportDate) { entry.reportDate = detected.report_date; entry.autoDetected = true; }
+                if (detected.hospital_or_clinic_name && !entry.touched.hospital) { entry.hospital = detected.hospital_or_clinic_name; entry.autoDetected = true; }
+                if (detected.doctor_name && !entry.touched.doctor) { entry.doctor = detected.doctor_name; entry.autoDetected = true; }
             } catch (e) {
                 // Detection is a nice-to-have; the form is still fully usable manually.
             } finally {

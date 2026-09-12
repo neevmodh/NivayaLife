@@ -128,7 +128,10 @@
 
             <p x-show="aiSummary && analysisMethod === 'vision'" x-cloak class="mt-3 inline-block rounded-full bg-nivayalife-mint/60 px-2.5 py-0.5 text-xs font-semibold text-nivayalife-green dark:bg-nivayalife-green/15 dark:text-nivayalife-mint">AI visual analysis — no readable text found, described from the image</p>
             <p x-show="aiSummary" x-cloak class="mt-3 whitespace-pre-line text-sm text-nivayalife-ink dark:text-white" x-text="displayedSummary"></p>
-            <p x-show="aiSummary && currentLanguage === 'en'" x-cloak class="mt-2 text-xs text-nivayalife-muted" x-text="aiSummaryGeneratedAt ? 'Generated ' + new Date(aiSummaryGeneratedAt).toLocaleString() : ''"></p>
+            <div x-show="aiSummary && currentLanguage === 'en'" x-cloak class="mt-2 flex items-center justify-between gap-2">
+                <p class="text-xs text-nivayalife-muted" x-text="aiSummaryGeneratedAt ? 'Generated ' + new Date(aiSummaryGeneratedAt).toLocaleString() : ''"></p>
+                <button type="button" @click="startEditOcr()" x-show="!editingOcr" class="flex-shrink-0 text-xs font-semibold text-nivayalife-muted hover:text-nivayalife-green hover:underline">Something misread?</button>
+            </div>
 
             <div x-show="xrayFindings && xrayFindings.length" x-cloak class="mt-3 rounded-xl bg-nivayalife-cream/60 p-3 dark:bg-white/5">
                 <p class="text-xs font-semibold text-nivayalife-ink dark:text-white">Model findings (chest X-ray classifier)</p>
@@ -268,33 +271,18 @@
             </div>
         </div>
 
-        {{-- Extracted text --}}
-        <div class="mt-6 rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5" x-data="{ open: false }" x-init="$watch('editingOcr', (value) => { if (value) open = true })">
-            <button type="button" @click="open = !open" class="flex w-full items-center justify-between p-5 text-left">
-                <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Extracted Text</h3>
-                <svg class="h-4 w-4 text-nivayalife-muted transition-transform" :class="open ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-
-            <div x-show="open" x-cloak x-transition class="border-t border-gray-100 p-5 dark:border-white/10">
-                <template x-if="!editingOcr">
-                    <div>
-                        <p class="whitespace-pre-line text-sm text-nivayalife-ink dark:text-white" x-text="ocrText || 'No text extracted yet.'"></p>
-                        <button type="button" @click="startEditOcr()" class="mt-3 text-xs font-semibold text-nivayalife-green hover:underline">Edit / correct text</button>
-                    </div>
-                </template>
-                <template x-if="editingOcr">
-                    <div>
-                        <textarea x-model="ocrDraft" rows="10" class="w-full rounded-xl border border-gray-200 bg-nivayalife-cream/40 p-3 text-sm text-nivayalife-ink focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white"></textarea>
-                        <p x-show="ocrSaveError" x-cloak x-text="ocrSaveError" class="mt-2 text-xs font-semibold text-nivayalife-pink-dark"></p>
-                        <div class="mt-3 flex justify-end gap-2">
-                            <button type="button" @click="editingOcr = false" class="rounded-lg px-4 py-2 text-xs font-semibold text-nivayalife-muted hover:text-nivayalife-ink">Cancel</button>
-                            <button type="button" @click="saveOcr()" :disabled="savingOcr" class="rounded-lg bg-nivayalife-green px-4 py-2 text-xs font-semibold text-white hover:bg-nivayalife-green-dark disabled:opacity-50">
-                                <span x-show="!savingOcr">Save</span>
-                                <span x-show="savingOcr">Saving&hellip;</span>
-                            </button>
-                        </div>
-                    </div>
-                </template>
+        {{-- Correct a misread — no raw OCR dump shown; this only opens on request --}}
+        <div x-show="editingOcr" x-cloak class="mt-6 rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+            <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Correct the report text</h3>
+            <p class="mt-1 text-xs text-nivayalife-muted">Fix anything the reader got wrong — the summary above will use your correction next time it's regenerated.</p>
+            <textarea x-model="ocrDraft" rows="10" class="mt-3 w-full rounded-xl border border-gray-200 bg-nivayalife-cream/40 p-3 text-sm text-nivayalife-ink focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white"></textarea>
+            <p x-show="ocrSaveError" x-cloak x-text="ocrSaveError" class="mt-2 text-xs font-semibold text-nivayalife-pink-dark"></p>
+            <div class="mt-3 flex justify-end gap-2">
+                <button type="button" @click="editingOcr = false" class="rounded-lg px-4 py-2 text-xs font-semibold text-nivayalife-muted hover:text-nivayalife-ink">Cancel</button>
+                <button type="button" @click="saveOcr()" :disabled="savingOcr" class="rounded-lg bg-nivayalife-green px-4 py-2 text-xs font-semibold text-white hover:bg-nivayalife-green-dark disabled:opacity-50">
+                    <span x-show="!savingOcr">Save</span>
+                    <span x-show="savingOcr">Saving&hellip;</span>
+                </button>
             </div>
         </div>
 
