@@ -70,6 +70,13 @@ class GenerateShortSummaryJob implements ShouldQueue
             ]);
 
             $this->detectEntities($report, $clinicalNlp);
+
+            EmbedRecordJob::dispatch(
+                $report->family_member_id,
+                'report',
+                $report->id,
+                "{$report->typeLabel()} ({$report->report_date?->toDateString()}): {$content}",
+            );
         } catch (Throwable $e) {
             report($e);
 

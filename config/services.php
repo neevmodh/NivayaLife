@@ -94,4 +94,13 @@ return [
         'scheme' => env('MOBILE_APP_SCHEME', 'nivayalife'),
     ],
 
+    // Self-hosted Ollama instance for the Assistant's RAG pipeline. Unset
+    // means the assistant behaves exactly as before — falls straight back
+    // to the Gemini/Groq full-context prompt (see AiChatController).
+    'ollama' => [
+        'url' => env('OLLAMA_URL'),
+        'chat_model' => env('OLLAMA_CHAT_MODEL', 'qwen2.5:3b-instruct'),
+        'embed_model' => env('OLLAMA_EMBED_MODEL', 'nomic-embed-text'),
+    ],
+
 ];

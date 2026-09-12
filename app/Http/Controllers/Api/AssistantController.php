@@ -8,6 +8,8 @@ use App\Models\ChatMessage;
 use App\Services\Ai\AiClient;
 use App\Services\Assistant\AssistantContextBuilder;
 use App\Services\Assistant\AssistantSafety;
+use App\Services\Assistant\RagRetriever;
+use App\Services\Ollama\OllamaClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
@@ -48,6 +50,8 @@ class AssistantController extends Controller
         AiClient $ai,
         AssistantContextBuilder $contextBuilder,
         AssistantSafety $safety,
+        OllamaClient $ollama,
+        RagRetriever $ragRetriever,
     ): JsonResponse {
         $user = $request->user();
 
@@ -84,7 +88,7 @@ class AssistantController extends Controller
             ]);
         }
 
-        if (! $ai->hasAvailableCredential()) {
+        if (! $ollama->isConfigured() && ! $ai->hasAvailableCredential()) {
             $reply = $this->store($member->id, $user->id, "AI features aren't available right now — please try again later.");
 
             return response()->json([
@@ -96,15 +100,33 @@ class AssistantController extends Controller
 
         $inputTokens = null;
         $outputTokens = null;
+        $content = null;
 
-        try {
-            $result = $ai->generate($contextBuilder->build($member, $recent, $validated['message']));
-            $content = $result['text'];
-            $inputTokens = $result['input_tokens'];
-            $outputTokens = $result['output_tokens'];
-        } catch (Throwable $e) {
-            report($e);
-            $content = "Sorry, I couldn't process that just now. Please try again in a moment.";
+        // Same RAG-via-Ollama-first, Gemini/Groq-fallback pattern as the web
+        // AiChatController — see its comment for the reasoning.
+        if ($ollama->isConfigured()) {
+            try {
+                $chunks = $ragRetriever->retrieve($member, $validated['message']);
+                $prompt = $contextBuilder->buildWithRetrieval($member, $recent, $validated['message'], $chunks);
+                $result = $ollama->generate($prompt);
+                $content = $result['text'];
+                $inputTokens = $result['input_tokens'];
+                $outputTokens = $result['output_tokens'];
+            } catch (Throwable $e) {
+                report($e);
+            }
+        }
+
+        if ($content === null) {
+            try {
+                $result = $ai->generate($contextBuilder->build($member, $recent, $validated['message']));
+                $content = $result['text'];
+                $inputTokens = $result['input_tokens'];
+                $outputTokens = $result['output_tokens'];
+            } catch (Throwable $e) {
+                report($e);
+                $content = "Sorry, I couldn't process that just now. Please try again in a moment.";
+            }
         }
 
         $reply = $this->store($member->id, $user->id, $content, $inputTokens, $outputTokens);

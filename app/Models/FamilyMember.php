@@ -134,6 +134,11 @@ class FamilyMember extends Model
         return $this->hasMany(BmiLog::class);
     }
 
+    public function assistantEmbeddings(): HasMany
+    {
+        return $this->hasMany(AssistantEmbedding::class);
+    }
+
     public function healthMetrics(): HasMany
     {
         return $this->hasMany(HealthMetric::class);

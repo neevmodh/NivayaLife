@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesActiveFamilyMember;
+use App\Jobs\EmbedRecordJob;
 use App\Models\FamilyMember;
 use App\Models\Medication;
 use App\Models\MedicationLog;
@@ -54,6 +55,7 @@ class MedicationController extends Controller
 
         $medication = Medication::create($validated);
         $medication->generateTodaysLogs();
+        $this->embedForAssistant($medication);
 
         return redirect()->route('medications.index', ['member' => $familyMember->id])->with('status', 'Medication added.');
     }
@@ -74,8 +76,20 @@ class MedicationController extends Controller
 
         $medication->update($this->validated($request));
         $medication->generateTodaysLogs();
+        $this->embedForAssistant($medication);
 
         return redirect()->route('medications.index', ['member' => $medication->family_member_id])->with('status', 'Medication updated.');
+    }
+
+    /** Feeds the Assistant's RAG retrieval index — no-op if Ollama isn't configured. */
+    private function embedForAssistant(Medication $medication): void
+    {
+        $chunk = "Medication: {$medication->medicine_name}".
+            ($medication->dosage ? " ({$medication->dosage})" : '').
+            ($medication->frequency ? ", {$medication->frequency}" : '').
+            ($medication->active ? '' : ' [inactive]');
+
+        EmbedRecordJob::dispatch($medication->family_member_id, 'medication', $medication->id, $chunk);
     }
 
     public function destroy(Request $request, Medication $medication): RedirectResponse

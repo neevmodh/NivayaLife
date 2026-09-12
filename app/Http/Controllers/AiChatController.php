@@ -8,6 +8,8 @@ use App\Models\FamilyMember;
 use App\Services\Ai\AiClient;
 use App\Services\Assistant\AssistantContextBuilder;
 use App\Services\Assistant\AssistantSafety;
+use App\Services\Assistant\RagRetriever;
+use App\Services\Ollama\OllamaClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -36,8 +38,14 @@ class AiChatController extends Controller
         ]);
     }
 
-    public function send(Request $request, AiClient $ai, AssistantContextBuilder $contextBuilder, AssistantSafety $safety): JsonResponse
-    {
+    public function send(
+        Request $request,
+        AiClient $ai,
+        AssistantContextBuilder $contextBuilder,
+        AssistantSafety $safety,
+        OllamaClient $ollama,
+        RagRetriever $ragRetriever,
+    ): JsonResponse {
         $user = $request->user();
 
         $validated = $request->validate([
@@ -81,7 +89,7 @@ class AiChatController extends Controller
             ]);
         }
 
-        if (! $ai->hasAvailableCredential()) {
+        if (! $ollama->isConfigured() && ! $ai->hasAvailableCredential()) {
             $reply = ChatMessage::create([
                 'family_member_id' => $active->id,
                 'asked_by_user_id' => $user->id,
@@ -94,16 +102,37 @@ class AiChatController extends Controller
 
         $inputTokens = null;
         $outputTokens = null;
+        $content = null;
 
-        try {
-            $prompt = $contextBuilder->build($active, $recentMessages, $validated['message']);
-            $result = $ai->generate($prompt);
-            $content = $result['text'];
-            $inputTokens = $result['input_tokens'];
-            $outputTokens = $result['output_tokens'];
-        } catch (Throwable $e) {
-            report($e);
-            $content = "Sorry, I couldn't process that just now. Please try again in a moment.";
+        // RAG-via-Ollama is tried first when configured (see RagRetriever /
+        // AssistantContextBuilder::buildWithRetrieval) — any failure here
+        // (Ollama unreachable, model not pulled yet, etc.) falls straight
+        // through to the existing Gemini/Groq full-context path below,
+        // exactly like AiClient's own Gemini→Groq fallback chain.
+        if ($ollama->isConfigured()) {
+            try {
+                $chunks = $ragRetriever->retrieve($active, $validated['message']);
+                $prompt = $contextBuilder->buildWithRetrieval($active, $recentMessages, $validated['message'], $chunks);
+                $result = $ollama->generate($prompt);
+                $content = $result['text'];
+                $inputTokens = $result['input_tokens'];
+                $outputTokens = $result['output_tokens'];
+            } catch (Throwable $e) {
+                report($e);
+            }
+        }
+
+        if ($content === null) {
+            try {
+                $prompt = $contextBuilder->build($active, $recentMessages, $validated['message']);
+                $result = $ai->generate($prompt);
+                $content = $result['text'];
+                $inputTokens = $result['input_tokens'];
+                $outputTokens = $result['output_tokens'];
+            } catch (Throwable $e) {
+                report($e);
+                $content = "Sorry, I couldn't process that just now. Please try again in a moment.";
+            }
         }
 
         $reply = ChatMessage::create([

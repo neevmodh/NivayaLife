@@ -31,6 +31,41 @@ class AssistantContextBuilder
 
     public function build(FamilyMember $member, Collection $recentMessages, string $question): string
     {
+        return $this->assemble(
+            $member,
+            $recentMessages,
+            $question,
+            "=== RECENT REPORTS ===\n{$this->reportsSummary($member)}\n\n".
+            "=== MEDICATIONS ===\n{$this->medicationsSummary($member)}\n\n".
+            "=== VACCINATIONS ===\n{$this->vaccinationsSummary($member)}\n\n".
+            "=== LATEST VITALS / LAB VALUES ===\n{$this->metricsSummary($member)}",
+        );
+    }
+
+    /**
+     * Same prompt shape as build(), but the exhaustive records dump is
+     * replaced by RagRetriever's top-K relevant chunks — used when Ollama is
+     * configured. Falls back to build() automatically at the call site
+     * (AiChatController) if retrieval finds nothing or Ollama is unreachable.
+     *
+     * @param  string[]  $retrievedChunks
+     */
+    public function buildWithRetrieval(FamilyMember $member, Collection $recentMessages, string $question, array $retrievedChunks): string
+    {
+        $recordsSection = $retrievedChunks === []
+            ? 'No relevant records found for this question.'
+            : collect($retrievedChunks)->map(fn ($chunk) => "- {$chunk}")->implode("\n");
+
+        return $this->assemble(
+            $member,
+            $recentMessages,
+            $question,
+            "=== RELEVANT RECORDS (retrieved for this question) ===\n{$recordsSection}",
+        );
+    }
+
+    private function assemble(FamilyMember $member, Collection $recentMessages, string $question, string $recordsSection): string
+    {
         return <<<PROMPT
         You are the in-app assistant inside Nivaya Life, a personal family health-record app. You are answering someone with legitimate access to {$member->full_name}'s records. Their question may be about {$member->full_name}'s own health data below, or about how to use the Nivaya Life app itself (see the app guide) — answer whichever the question actually calls for.
 
@@ -53,17 +88,7 @@ class AssistantContextBuilder
         === {$member->full_name}'S PROFILE ===
         {$this->profileSummary($member)}
 
-        === RECENT REPORTS ===
-        {$this->reportsSummary($member)}
-
-        === MEDICATIONS ===
-        {$this->medicationsSummary($member)}
-
-        === VACCINATIONS ===
-        {$this->vaccinationsSummary($member)}
-
-        === LATEST VITALS / LAB VALUES ===
-        {$this->metricsSummary($member)}
+        {$recordsSection}
 
         === RECENT CONVERSATION ===
         {$this->historySummary($recentMessages)}

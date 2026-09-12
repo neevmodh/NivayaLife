@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesActiveFamilyMember;
+use App\Jobs\EmbedRecordJob;
 use App\Models\FamilyMember;
 use App\Models\Vaccination;
 use Illuminate\Http\RedirectResponse;
@@ -49,7 +50,8 @@ class VaccinationController extends Controller
         $familyMember = FamilyMember::findOrFail($validated['family_member_id']);
         abort_unless($familyMember->canBeEditedBy($request->user()), 403);
 
-        Vaccination::create($validated);
+        $vaccination = Vaccination::create($validated);
+        $this->embedForAssistant($vaccination);
 
         return redirect()->route('vaccinations.index', ['member' => $familyMember->id])->with('status', 'Vaccination added.');
     }
@@ -69,8 +71,18 @@ class VaccinationController extends Controller
         abort_unless($vaccination->familyMember->canBeEditedBy($request->user()), 403);
 
         $vaccination->update($this->validated($request));
+        $this->embedForAssistant($vaccination);
 
         return redirect()->route('vaccinations.index', ['member' => $vaccination->family_member_id])->with('status', 'Vaccination updated.');
+    }
+
+    /** Feeds the Assistant's RAG retrieval index — no-op if Ollama isn't configured. */
+    private function embedForAssistant(Vaccination $vaccination): void
+    {
+        $chunk = "Vaccination: {$vaccination->vaccine_name} dose {$vaccination->dose_number} on {$vaccination->date_administered->toDateString()}".
+            ($vaccination->next_due_date ? ", next dose due {$vaccination->next_due_date->toDateString()}" : '');
+
+        EmbedRecordJob::dispatch($vaccination->family_member_id, 'vaccination', $vaccination->id, $chunk);
     }
 
     public function destroy(Request $request, Vaccination $vaccination): RedirectResponse
