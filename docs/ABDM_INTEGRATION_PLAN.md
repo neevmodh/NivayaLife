@@ -13,21 +13,23 @@ comparison this decision came out of.
 
 ## What ABDM actually requires (per NHA's own developer docs)
 
-ABDM (Ayushman Bharat Digital Mission) has two integrator roles:
-**HIP** (Health Information Provider — you *push* records you hold, e.g.
-a hospital) and **HIU** (Health Information User — you *pull* records a
-patient consents to share from other providers). NivayaLife wants **HIU**:
-we're not a care provider generating original records, we want to fetch a
-user's existing records from ABDM-connected hospitals/labs once they
-consent.
+ABDM (Ayushman Bharat Digital Mission) has three integrator/solution
+types: **HIP** (Health Information Provider — you *push* records you
+hold, e.g. a hospital), **HIU** (Health Information User — an entity like
+an insurer that *pulls* records), and **PHR** (Personal Health Record app
+— ABHA creation/linking plus letting an individual or family manage and
+view their own records). NivayaLife is a **PHR** app: we're not a care
+provider generating original records, and we're not a third party like an
+insurer requesting someone else's data — we're the tool a family uses to
+hold and view their own ABHA-linked records once they consent.
 
 Realistic phases (a commonly-cited timeline is ~90 days end to end, most
 of it process/compliance time, not raw coding):
 
-1. **Sandbox registration** (org-level, one-time) — register on the ABDM
-   sandbox portal, declare integrator type (HIU), get a sandbox
-   `clientId`/`clientSecret`, register 6 callback URLs, pass ABDM's
-   connectivity ping (all 6 must respond).
+1. **Sandbox registration** (one-time) — register on the ABDM sandbox
+   portal, declare solution type **PHR**, get a sandbox
+   `clientId`/`clientSecret`, register callback URLs, pass ABDM's
+   connectivity ping.
 2. **ABHA identity flows** — let a user link their existing ABHA (the
    14-digit national health ID) to their NivayaLife profile, or create a
    new one via Aadhaar/mobile OTP.
@@ -55,11 +57,11 @@ of it process/compliance time, not raw coding):
 
 ## What to do right now
 
-Go to **sandbox.abdm.gov.in** and register NivayaLife as an integrator
-with **HIU** as the integrator type. You'll likely need:
-- Organization/entity name and details (this can start as an individual
-  developer registration in sandbox — production later may require a
-  registered business entity, confirm on the portal).
+Go to **sandbox.abdm.gov.in** and register NivayaLife with **PHR** as the
+solution type. You'll likely need:
+- Entity details — registering as an individual (no company/GSTIN) is
+  fine for sandbox; production later may require a registered business
+  entity, confirm on the portal as you go.
 - A technical contact email (use whichever inbox you want ABDM
   correspondence to go to).
 - Your app's planned callback URL base — for sandbox testing this can be
@@ -85,6 +87,12 @@ to the repo) and I'll start on step 2.
   `ABDM_CLIENT_ID` / `ABDM_CLIENT_SECRET` / `ABDM_BASE_URL` env vars —
   nullable/optional, so the rest of the app is completely unaffected
   until sandbox credentials exist.
+
+## Registration decision log
+
+- 2026-09-12: Registering as an **individual** (no registered company/
+  GSTIN), entity name = the account holder's own legal name, product
+  name = NivayaLife, solution type = **PHR**.
 
 ## Sources
 
