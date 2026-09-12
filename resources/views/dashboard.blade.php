@@ -1,10 +1,4 @@
 @php
-    $reportTypeIcons = [
-        'blood_test' => '&#129656;', 'prescription' => '&#128138;', 'xray' => '&#129460;',
-        'sonography' => '&#128266;', 'mri_ct' => '&#129504;', 'insurance' => '&#128737;', 'bill' => '&#129534;',
-        'ecg' => '&#128147;', 'dental' => '&#129463;', 'discharge_summary' => '&#127973;',
-        'pathology' => '&#129514;', 'eye_care' => '&#128065;', 'other' => '&#128196;',
-    ];
     $ocrBadge = [
         'pending' => ['label' => 'Pending', 'class' => 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60'],
         'processing' => ['label' => 'Processing', 'class' => 'bg-nivayalife-yellow/30 text-amber-700 dark:text-nivayalife-yellow'],
@@ -333,7 +327,9 @@
                                     @unless($loop->last)
                                         <span class="absolute left-[18px] top-9 bottom-0 w-px bg-gray-100 dark:bg-white/10" aria-hidden="true"></span>
                                     @endunless
-                                    <span class="relative z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-base dark:bg-white/10">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
+                                    <span class="relative z-10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-nivayalife-cream text-nivayalife-green dark:bg-white/10 dark:text-nivayalife-mint">
+                                        <x-report-type-icon :type="$report->type" class="h-4.5 w-4.5" />
+                                    </span>
                                     <a href="{{ route('reports.show', $report) }}" class="-mt-1 min-w-0 flex-1 rounded-xl px-3 py-2 transition hover:bg-nivayalife-cream/70 dark:hover:bg-white/5">
                                         <div class="flex items-start justify-between gap-2">
                                             <div class="min-w-0">

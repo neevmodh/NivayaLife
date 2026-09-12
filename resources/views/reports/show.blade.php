@@ -9,12 +9,6 @@
     $isImage = str_starts_with($report->mime_type ?? '', 'image/');
     $isPdf = ($report->mime_type ?? '') === 'application/pdf';
 
-    $reportTypeIcons = [
-        'blood_test' => '&#129656;', 'prescription' => '&#128138;', 'xray' => '&#129460;',
-        'sonography' => '&#128266;', 'mri_ct' => '&#129504;', 'insurance' => '&#128737;', 'bill' => '&#129534;',
-        'ecg' => '&#128147;', 'dental' => '&#129463;', 'discharge_summary' => '&#127973;',
-        'pathology' => '&#129514;', 'eye_care' => '&#128065;', 'other' => '&#128196;',
-    ];
     $ocrBadge = [
         'pending' => ['label' => 'Queued', 'class' => 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60'],
         'processing' => ['label' => 'Reading…', 'class' => 'bg-nivayalife-yellow/30 text-amber-700 dark:text-nivayalife-yellow'],
@@ -27,8 +21,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-3.5">
-            <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-nivayalife-sm dark:bg-white/10" aria-hidden="true">
-                {!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}
+            <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white text-nivayalife-green shadow-nivayalife-sm dark:bg-white/10 dark:text-nivayalife-mint" aria-hidden="true">
+                <x-report-type-icon :type="$report->type" class="h-6 w-6" />
             </span>
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">

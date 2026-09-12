@@ -1,10 +1,4 @@
 @php
-    $reportTypeIcons = [
-        'blood_test' => '&#129656;', 'prescription' => '&#128138;', 'xray' => '&#129460;',
-        'sonography' => '&#128266;', 'mri_ct' => '&#129504;', 'insurance' => '&#128737;', 'bill' => '&#129534;',
-        'ecg' => '&#128147;', 'dental' => '&#129463;', 'discharge_summary' => '&#127973;',
-        'pathology' => '&#129514;', 'eye_care' => '&#128065;', 'other' => '&#128196;',
-    ];
     $ocrBadge = [
         'pending' => ['label' => 'Queued', 'class' => 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60'],
         'processing' => ['label' => 'Reading…', 'class' => 'bg-nivayalife-yellow/30 text-amber-700 dark:text-nivayalife-yellow'],
@@ -173,7 +167,9 @@
                         <a href="{{ route('reports.show', $report) }}"
                             class="group flex gap-4 rounded-nivayalife border-t-2 border-transparent bg-white p-4 shadow-nivayalife-sm transition hover:-translate-y-0.5 hover:border-nivayalife-gold/50 hover:shadow-nivayalife active:translate-y-0 dark:bg-white/5"
                             :class="view === 'grid' ? 'h-full items-start' : 'items-center'">
-                            <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-nivayalife-cream text-xl transition group-hover:scale-110 dark:bg-white/10">{!! $reportTypeIcons[$report->type] ?? '&#128196;' !!}</span>
+                            <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-nivayalife-cream text-nivayalife-green transition group-hover:scale-110 dark:bg-white/10 dark:text-nivayalife-mint">
+                                <x-report-type-icon :type="$report->type" class="h-5 w-5" />
+                            </span>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center gap-2">
                                     <p class="truncate text-sm font-bold text-nivayalife-ink dark:text-white">{{ $report->typeLabel() }}</p>

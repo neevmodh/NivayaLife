@@ -1,5 +1,10 @@
 @php
-    $typeIcons = ['report' => '&#128196;', 'medication' => '&#128138;', 'vaccination' => '&#128137;', 'metric' => '&#128200;'];
+    $typeIcons = [
+        'report' => 'M9 12h6m-6 4h6m1 5H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z',
+        'medication' => 'M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7ZM7 10l7 7',
+        'vaccination' => 'M19 8 8 19l-5-5M14 3l7 7-3 3-7-7 3-3Z',
+        'metric' => 'M4 20V10m5 10V4m5 16v-7m5 7V8',
+    ];
     $years = $grouped->keys()->sortDesc()->values();
 
     // Each kind of event gets its own colour, so a year's worth of history is
@@ -163,7 +168,9 @@
                                                         class="mt-1.5 h-4 w-4 flex-shrink-0 rounded border-gray-300 text-nivayalife-green focus:ring-nivayalife-green">
                                                 @endif
 
-                                                <span class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-nivayalife-cream text-base transition group-hover:scale-110 dark:bg-white/10">{!! $typeIcons[$entry['type']] !!}</span>
+                                                <span class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-nivayalife-cream text-nivayalife-green transition group-hover:scale-110 dark:bg-white/10 dark:text-nivayalife-mint">
+                                                    <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ $typeIcons[$entry['type']] }}"/></svg>
+                                                </span>
 
                                                 <button type="button" @click="open = !open" class="min-w-0 flex-1 text-left">
                                                     <p class="truncate text-sm font-semibold capitalize text-nivayalife-ink dark:text-white">{{ $entry['title'] }}</p>

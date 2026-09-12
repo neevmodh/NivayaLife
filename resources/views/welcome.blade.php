@@ -189,19 +189,6 @@
                     </div>
                 </div>
 
-                {{-- today's doses --}}
-                <div class="mt-4 rounded-nivayalife bg-white p-4 shadow-nivayalife-sm" aria-hidden="true">
-                    <p class="text-[10px] font-bold uppercase tracking-wide text-nivayalife-muted">Today's doses</p>
-                    <div class="mt-2 flex items-center justify-between gap-2">
-                        <p class="truncate text-xs font-semibold text-nivayalife-ink">Metformin <span class="font-normal text-nivayalife-muted">&middot; 500 mg</span></p>
-                        <div class="flex gap-1">
-                            <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[9px] font-bold text-nivayalife-green line-through">08:00</span>
-                            <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">14:00</span>
-                            <span class="rounded-full bg-nivayalife-cream px-2 py-0.5 text-[9px] font-bold text-nivayalife-muted">21:00</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="pointer-events-none absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-nivayalife-gold/25 blur-2xl"></div>
             </div>
         </div>
