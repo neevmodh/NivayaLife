@@ -83,7 +83,22 @@
 
                             <p class="mt-3 font-mono text-[11px] text-nivayalife-muted">{{ $member->unique_health_id }}</p>
 
-                            <div class="mt-4 flex flex-wrap gap-3 border-t border-gray-100 pt-3 text-xs font-semibold dark:border-white/10">
+                            <div class="mt-3 grid grid-cols-3 divide-x divide-gray-100 border-t border-gray-100 pt-3 text-center dark:divide-white/10 dark:border-white/10">
+                                <div>
+                                    <p class="text-sm font-extrabold text-nivayalife-ink dark:text-white">{{ $member->reports_count }}</p>
+                                    <p class="text-[10px] font-semibold uppercase tracking-wide text-nivayalife-muted">Reports</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-nivayalife-ink dark:text-white">{{ $member->medications_count }}</p>
+                                    <p class="text-[10px] font-semibold uppercase tracking-wide text-nivayalife-muted">Meds</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-nivayalife-ink dark:text-white">{{ $member->vaccinations_count }}</p>
+                                    <p class="text-[10px] font-semibold uppercase tracking-wide text-nivayalife-muted">Vaccines</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 flex flex-wrap gap-3 border-t border-gray-100 pt-3 text-xs font-semibold dark:border-white/10">
                                 <a href="{{ route('family.show', $member) }}" class="text-nivayalife-green hover:underline">View profile</a>
 
                                 @if($member->access_type === 'dependent')

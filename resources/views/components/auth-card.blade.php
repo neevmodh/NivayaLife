@@ -42,7 +42,19 @@
                             in plain language.
                         </p>
 
-                        <ul class="mt-8 space-y-3 text-sm text-white/90">
+                        {{-- Same stat grid as the landing hero's preview card — a
+                             deliberate visual through-line from marketing to auth,
+                             rather than a second, different way of saying the same thing. --}}
+                        <div class="mt-8 grid grid-cols-4 gap-2 rounded-nivayalife bg-white/10 p-3">
+                            @foreach ([['10+', 'Reports'], ['3', 'Languages'], ['1', 'Account'], ['0', 'Paper']] as [$n, $label])
+                                <div class="text-center">
+                                    <p class="text-lg font-extrabold tracking-tight text-white">{{ $n }}</p>
+                                    <p class="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-white/60">{{ $label }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <ul class="mt-6 space-y-3 text-sm text-white/90">
                             <li class="flex items-center gap-2">
                                 <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
                                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>

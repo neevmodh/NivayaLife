@@ -20,6 +20,7 @@ class FamilyController extends Controller
             ->orWhere('linked_user_id', $user->id)
             ->orWhereHas('sharingPermissions', fn ($q) => $q->where('granted_to_user_id', $user->id)->whereNull('revoked_at'))
             ->with(['invitations' => fn ($q) => $q->latest('id'), 'sharingPermissions' => fn ($q) => $q->whereNull('revoked_at')])
+            ->withCount(['reports', 'medications', 'vaccinations'])
             ->orderBy('full_name')
             ->get();
 

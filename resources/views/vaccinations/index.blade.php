@@ -26,6 +26,27 @@
             </div>
         @endif
 
+        @if($vaccinations->isNotEmpty())
+            @php
+                $overdueCount = $vaccinations->filter(fn ($v) => $v->next_due_date && $v->next_due_date->toDateString() < $today)->count();
+                $dueSoonCount = $vaccinations->filter(fn ($v) => $v->next_due_date && $v->next_due_date->toDateString() >= $today && $v->next_due_date->toDateString() <= now()->addDays(7)->toDateString())->count();
+            @endphp
+            <div class="mb-4 grid grid-cols-3 gap-3">
+                <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xl font-extrabold text-nivayalife-ink dark:text-white">{{ $vaccinations->count() }}</p>
+                    <p class="text-[11px] font-semibold text-nivayalife-muted">Doses recorded</p>
+                </div>
+                <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xl font-extrabold {{ $dueSoonCount > 0 ? 'text-amber-600 dark:text-nivayalife-yellow' : 'text-nivayalife-ink dark:text-white' }}">{{ $dueSoonCount }}</p>
+                    <p class="text-[11px] font-semibold text-nivayalife-muted">Due within 7 days</p>
+                </div>
+                <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xl font-extrabold {{ $overdueCount > 0 ? 'text-nivayalife-pink-dark' : 'text-nivayalife-ink dark:text-white' }}">{{ $overdueCount }}</p>
+                    <p class="text-[11px] font-semibold text-nivayalife-muted">Overdue</p>
+                </div>
+            </div>
+        @endif
+
         @if($vaccinations->isEmpty())
             <div class="rounded-nivayalife bg-white p-10 text-center shadow-nivayalife-sm dark:bg-white/5">
                 <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-nivayalife-cream text-nivayalife-muted dark:bg-white/10" aria-hidden="true">

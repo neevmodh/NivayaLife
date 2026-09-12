@@ -22,6 +22,27 @@
             </div>
         @endif
 
+        @if($medications->isNotEmpty())
+            @php
+                $activeCount = $medications->where('active', true)->count();
+                $remindersCount = $medications->where('reminder_enabled', true)->count();
+            @endphp
+            <div class="mb-4 grid grid-cols-3 gap-3">
+                <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xl font-extrabold text-nivayalife-ink dark:text-white">{{ $medications->count() }}</p>
+                    <p class="text-[11px] font-semibold text-nivayalife-muted">Total</p>
+                </div>
+                <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xl font-extrabold text-nivayalife-green dark:text-nivayalife-mint">{{ $activeCount }}</p>
+                    <p class="text-[11px] font-semibold text-nivayalife-muted">Active</p>
+                </div>
+                <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
+                    <p class="text-xl font-extrabold text-nivayalife-ink dark:text-white">{{ $remindersCount }}</p>
+                    <p class="text-[11px] font-semibold text-nivayalife-muted">Reminders on</p>
+                </div>
+            </div>
+        @endif
+
         @if($medications->isEmpty())
             <div class="rounded-nivayalife bg-white p-10 text-center shadow-nivayalife-sm dark:bg-white/5">
                 <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-nivayalife-cream text-nivayalife-muted dark:bg-white/10" aria-hidden="true">
