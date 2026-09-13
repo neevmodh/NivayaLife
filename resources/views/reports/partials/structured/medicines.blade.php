@@ -1,7 +1,7 @@
 @props(['data'])
 @php($rows = $data['medicines'] ?? [])
 @if($rows)
-    <div class="mt-6 rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+    <x-report-card>
         <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">Medicines on this prescription</h3>
         <div class="mt-3 space-y-2.5">
             @foreach($rows as $med)
@@ -23,5 +23,5 @@
             @endforeach
         </div>
         <p class="mt-3 text-xs text-nivayalife-muted">Read automatically from the document — always confirm against the original above before taking anything.</p>
-    </div>
+    </x-report-card>
 @endif

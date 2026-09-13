@@ -1,7 +1,7 @@
 @props(['data', 'title' => 'Details'])
 @php($pairs = $data['pairs'] ?? [])
 @if($pairs)
-    <div class="mt-6 rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+    <x-report-card>
         <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">{{ $title }}</h3>
         <dl class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             @foreach($pairs as $pair)
@@ -11,5 +11,5 @@
                 </div>
             @endforeach
         </dl>
-    </div>
+    </x-report-card>
 @endif
