@@ -69,7 +69,7 @@
                                 </p>
                                 @if($vaccination->next_due_date)
                                     <p class="mt-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold {{ $overdue ? 'bg-nivayalife-pink/30 text-nivayalife-pink-dark' : ($dueSoon ? 'bg-nivayalife-yellow/30 text-nivayalife-yellow' : 'bg-nivayalife-cream text-nivayalife-muted dark:bg-white/10') }}">
-                                        {{ $overdue ? 'Overdue since' : 'Next dose due' }} {{ $vaccination->next_due_date->format('M j, Y') }}
+                                        {{ $overdue ? 'Overdue since' : 'Next dose due' }} {{ $vaccination->next_due_date->format('M j, Y') }} ({{ $vaccination->next_due_date->diffForHumans() }})
                                     </p>
                                 @endif
                             </div>
