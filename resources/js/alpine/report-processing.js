@@ -251,5 +251,15 @@ export default function reportProcessing({
                 this.translatingLang = null;
             }
         },
+
+        flagClass(flag) {
+            return {
+                'bg-nivayalife-pink/20 text-nivayalife-pink-dark': flag === 'low' || flag === 'abnormal',
+                'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300': flag === 'high',
+                'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300': flag === 'borderline',
+                'bg-nivayalife-mint/60 text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint': flag === 'normal',
+                'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-white/60': flag === 'unknown',
+            };
+        },
     };
 }
