@@ -1,7 +1,7 @@
 @props(['data'])
 @php($findings = $data['findings'] ?? [])
 @if($findings || ($data['impression'] ?? null))
-    <div class="mt-6 rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+    <x-report-card>
         <h3 class="text-sm font-bold text-nivayalife-ink dark:text-white">
             Findings @if($data['body_part'] ?? null)<span class="font-normal text-nivayalife-muted">· {{ $data['body_part'] }}</span>@endif
         </h3>
@@ -21,5 +21,5 @@
                 <p class="mt-1 text-sm text-nivayalife-ink dark:text-white">{{ $data['impression'] }}</p>
             </div>
         @endif
-    </div>
+    </x-report-card>
 @endif
