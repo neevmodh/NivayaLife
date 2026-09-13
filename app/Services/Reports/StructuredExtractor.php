@@ -179,6 +179,36 @@ class StructuredExtractor
         return [$key => array_values($data)];
     }
 
+    /**
+     * Removes the angle brackets the schema uses to mark placeholders, when
+     * the model wraps a real answer in them.
+     *
+     * The prompt says never to copy the placeholders, and mostly it doesn't —
+     * it fills in the right content but keeps the punctuation around it, so a
+     * dental report came back as "<benign dentigerous cyst, left mandible>".
+     * The value is correct; the brackets would render literally in the UI.
+     * Measured across 30 real reports, this hit 2 of them — concentrated in
+     * the types whose placeholders are longest and most sentence-like.
+     *
+     * Only strips a matched pair wrapping the whole string, so a reference
+     * range like "<200" (no closing bracket) is untouched.
+     */
+    private static function stripPlaceholderBrackets(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = self::stripPlaceholderBrackets($value);
+            } elseif (is_string($value)) {
+                $trimmed = trim($value);
+                if (strlen($trimmed) > 2 && str_starts_with($trimmed, '<') && str_ends_with($trimmed, '>')) {
+                    $data[$key] = trim(substr($trimmed, 1, -1));
+                }
+            }
+        }
+
+        return $data;
+    }
+
     /** Nothing worth storing — every schema key is absent or an empty array. */
     private static function isEmpty(array $data): bool
     {
@@ -248,7 +278,9 @@ class StructuredExtractor
      */
     private function normalize(string $type, array $data): array
     {
-        $data = self::flattenSingletonEntries(self::rewrapBareList($type, $data));
+        $data = self::stripPlaceholderBrackets(
+            self::flattenSingletonEntries(self::rewrapBareList($type, $data))
+        );
 
         if (! ReportSchema::hasMeasuredResults($type)) {
             return $data;
