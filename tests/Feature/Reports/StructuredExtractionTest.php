@@ -224,4 +224,26 @@ class StructuredExtractionTest extends TestCase
 
         $this->assertFalse($report->refresh()->structured_data['scan_quality_warning']);
     }
+
+    /**
+     * Observed during a full report-type sweep: a blood test came back as a
+     * bare list rather than {"results": [...]}, and every row was silently
+     * dropped. Tolerating the shape is cheaper than losing the data.
+     */
+    public function test_a_bare_list_response_is_rewrapped_rather_than_dropped(): void
+    {
+        $this->fakeGemini(json_encode([
+            ['test' => 'Haemoglobin', 'value' => '11.2', 'unit' => 'g/dL', 'reference_range' => '13.0 - 17.0', 'flag' => 'normal'],
+            ['test' => 'HbA1c', 'value' => '7.8', 'unit' => '%', 'reference_range' => '4.0 - 5.6', 'flag' => 'normal'],
+        ]));
+
+        $report = $this->makeReport('blood_test', 'Haemoglobin 11.2');
+        ExtractStructuredDataJob::dispatchSync($report);
+        $rows = $report->refresh()->structured_data['results'];
+
+        $this->assertCount(2, $rows);
+        // And the numeric recheck still applies to the recovered rows.
+        $this->assertSame('low', $rows[0]['flag']);
+        $this->assertSame('high', $rows[1]['flag']);
+    }
 }

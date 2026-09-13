@@ -82,6 +82,54 @@ class StructuredExtractor
         ];
     }
 
+    /**
+     * Unwraps list entries the model nested one level too deep — a dental
+     * report returned [["Deep caries in tooth 36"], ...] instead of
+     * ["Deep caries in tooth 36", ...], which renders as raw JSON in the UI.
+     * Only touches single-element arrays holding a scalar, so genuine object
+     * rows (lab results, medicines) are untouched.
+     */
+    private static function flattenSingletonEntries(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (! is_array($value)) {
+                continue;
+            }
+
+            foreach ($value as $i => $entry) {
+                if (is_array($entry) && count($entry) === 1 && is_scalar(reset($entry))) {
+                    $data[$key][$i] = reset($entry);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Recovers a response that returned the bare list instead of the wrapper
+     * object — a blood test came back as [{test,value,…}, …] rather than
+     * {"results":[…]}, and every row was silently dropped because the expected
+     * key was missing. Cheap to tolerate, and invisible data loss otherwise.
+     */
+    private static function rewrapBareList(string $type, array $data): array
+    {
+        $key = ReportSchema::primaryListKey($type);
+
+        if ($key === null || isset($data[$key]) || $data === []) {
+            return $data;
+        }
+
+        // A bare list looks like sequential integer keys holding arrays.
+        foreach ($data as $k => $value) {
+            if (! is_numeric($k) || ! is_array($value)) {
+                return $data;
+            }
+        }
+
+        return [$key => array_values($data)];
+    }
+
     /** Nothing worth storing — every schema key is absent or an empty array. */
     private static function isEmpty(array $data): bool
     {
@@ -151,6 +199,8 @@ class StructuredExtractor
      */
     private function normalize(string $type, array $data): array
     {
+        $data = self::flattenSingletonEntries(self::rewrapBareList($type, $data));
+
         if (! ReportSchema::hasMeasuredResults($type)) {
             return $data;
         }

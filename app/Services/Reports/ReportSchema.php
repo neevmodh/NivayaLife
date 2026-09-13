@@ -35,6 +35,26 @@ class ReportSchema
         return self::shapeFor($type) === 'results';
     }
 
+    /**
+     * The key holding this shape's main list, if it has one.
+     *
+     * Used to recover from a model that returns the bare list instead of the
+     * wrapper object — observed in testing, where a blood test came back as
+     * [{test,value,...}, ...] rather than {"results":[...]}, and every row was
+     * silently dropped because the expected key was absent.
+     */
+    public static function primaryListKey(string $type): ?string
+    {
+        return match (self::shapeFor($type)) {
+            'results' => 'results',
+            'medicines' => 'medicines',
+            'imaging', 'findings' => 'findings',
+            'bill' => 'line_items',
+            'key_values' => 'key_values',
+            default => null,
+        };
+    }
+
     private const SCHEMAS = [
         'blood_test' => [
             'shape' => 'results',
@@ -43,7 +63,12 @@ class ReportSchema
         ],
         'pathology' => [
             'shape' => 'results',
-            'instruction' => 'Extract EVERY measured parameter into "results" — do not stop after the first — with "test", "value", "unit", "reference_range", "flag" (low|high|normal|unknown). If the report is descriptive rather than numeric, return an empty "results" array and put the microscopic/gross findings in "notes" as an array of short strings.',
+            // A pathology report is usually BOTH a table and a narrative. An
+            // earlier wording offered "if the report is descriptive, return an
+            // empty results array", and the model took that escape hatch the
+            // moment it saw a Microscopy line — discarding a perfectly OCR'd
+            // table of values. The two are now independent instructions.
+            'instruction' => 'Do BOTH of the following. (1) Extract EVERY measured parameter that has a numeric value into "results" — do not stop after the first — with "test", "value", "unit", "reference_range", "flag" (low|high|normal|unknown). Include these rows even when the report also contains descriptive text. (2) Separately, put any microscopic, gross or impression narrative into "notes" as an array of short strings. Only leave "results" empty if the report genuinely contains no measured values at all.',
             'example' => '{"results":[{"test":"<parameter name>","value":"<value only>","unit":"<unit or null>","reference_range":"<range or null>","flag":"low|high|normal|unknown"}],"notes":["<finding sentence>"]}',
         ],
         'prescription' => [
@@ -53,17 +78,17 @@ class ReportSchema
         ],
         'xray' => [
             'shape' => 'imaging',
-            'instruction' => 'Extract "body_part" (what was imaged), "findings" (array of short factual observation strings, exactly as reported), and "impression" (the radiologist\'s summary line, or null).',
+            'instruction' => 'Extract "body_part" (what was imaged) and "findings" (array of short factual observation strings, exactly as reported). Then find the concluding verdict — the text after a label such as IMPRESSION, CONCLUSION, OPINION or DIAGNOSIS — and put it in "impression"; it is a separate field and must NOT be left null when such a line exists, nor merged into findings. Use null only if the report truly has no concluding line.',
             'example' => '{"body_part":"<region imaged>","findings":["<one observation per element>"],"impression":"<concluding line or null>"}',
         ],
         'sonography' => [
             'shape' => 'imaging',
-            'instruction' => 'Extract "body_part" (region scanned), "findings" (array of short factual observation strings, including any measurements exactly as printed), and "impression" (the concluding line, or null).',
+            'instruction' => 'Extract "body_part" (region scanned) and "findings" (array of short factual observation strings, including any measurements exactly as printed). Then find the concluding verdict — the text after a label such as IMPRESSION, CONCLUSION, OPINION or DIAGNOSIS — and put it in "impression"; it is a separate field and must NOT be left null when such a line exists, nor merged into findings. Use null only if the report truly has no concluding line.',
             'example' => '{"body_part":"<region scanned>","findings":["<one observation per element, measurements exactly as printed>"],"impression":"<concluding line or null>"}',
         ],
         'mri_ct' => [
             'shape' => 'imaging',
-            'instruction' => 'Extract "body_part" (region and modality), "findings" (array of short factual observation strings), and "impression" (the concluding line, or null).',
+            'instruction' => 'Extract "body_part" (region and modality) and "findings" (array of short factual observation strings). Then find the concluding verdict — the text after a label such as IMPRESSION, CONCLUSION, OPINION or DIAGNOSIS — and put it in "impression"; it is a separate field and must NOT be left null when such a line exists, nor merged into findings. Use null only if the report truly has no concluding line.',
             'example' => '{"body_part":"<modality and region>","findings":["<one observation per element>"],"impression":"<concluding line or null>"}',
         ],
         'ecg' => [
@@ -88,8 +113,8 @@ class ReportSchema
         ],
         'dental' => [
             'shape' => 'findings',
-            'instruction' => 'Extract "findings" (array of short strings, including tooth numbers where stated) and "procedures" (array of treatments done or advised).',
-            'example' => '{"findings":["<one finding per element, include tooth numbers>"],"procedures":["<one per element>"]}',
+            'instruction' => 'Extract "findings" (conditions observed, including complaints, clinical findings and x-ray findings) and "procedures" (treatments done or advised). Each element must be a complete short phrase describing the condition or treatment together with the tooth number it refers to — never a tooth number on its own.',
+            'example' => '{"findings":["<condition and the tooth it affects, one per element>"],"procedures":["<treatment and the tooth it affects, one per element>"]}',
         ],
         'eye_care' => [
             'shape' => 'eye',
