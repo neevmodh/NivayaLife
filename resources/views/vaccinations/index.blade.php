@@ -1,7 +1,3 @@
-@php
-    $today = now()->toDateString();
-@endphp
-
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
@@ -28,8 +24,8 @@
 
         @if($vaccinations->isNotEmpty())
             @php
-                $overdueCount = $vaccinations->filter(fn ($v) => $v->next_due_date && $v->next_due_date->toDateString() < $today)->count();
-                $dueSoonCount = $vaccinations->filter(fn ($v) => $v->next_due_date && $v->next_due_date->toDateString() >= $today && $v->next_due_date->toDateString() <= now()->addDays(7)->toDateString())->count();
+                $overdueCount = $vaccinations->filter(fn ($v) => $v->isOverdue())->count();
+                $dueSoonCount = $vaccinations->filter(fn ($v) => $v->isDueSoon())->count();
             @endphp
             <div class="mb-4 grid grid-cols-3 gap-3">
                 <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
@@ -60,8 +56,8 @@
             <div class="space-y-3">
                 @foreach($vaccinations as $vaccination)
                     @php
-                        $overdue = $vaccination->next_due_date && $vaccination->next_due_date->toDateString() < $today;
-                        $dueSoon = $vaccination->next_due_date && ! $overdue && $vaccination->next_due_date->toDateString() <= now()->addDays(7)->toDateString();
+                        $overdue = $vaccination->isOverdue();
+                        $dueSoon = $vaccination->isDueSoon();
                     @endphp
                     <div class="rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
                         <div class="flex items-start justify-between gap-3">

@@ -37,7 +37,7 @@
     // nothing at all rather than a card that says "nothing to see".
     $attention = [];
 
-    $overdueVaccinations = $upcomingVaccinations->filter(fn ($v) => $v->next_due_date->toDateString() < now()->toDateString());
+    $overdueVaccinations = $upcomingVaccinations->filter(fn ($v) => $v->isOverdue());
     if ($overdueVaccinations->isNotEmpty()) {
         $attention[] = [
             'tone' => 'urgent',
@@ -423,8 +423,8 @@
                         <ul class="mt-3 divide-y divide-gray-100 dark:divide-white/10">
                             @foreach($upcomingVaccinations as $vaccination)
                                 @php
-                                    $overdue = $vaccination->next_due_date->toDateString() < now()->toDateString();
-                                    $dueSoon = ! $overdue && $vaccination->next_due_date->toDateString() <= now()->addDays(7)->toDateString();
+                                    $overdue = $vaccination->isOverdue();
+                                    $dueSoon = $vaccination->isDueSoon();
                                 @endphp
                                 <li class="flex items-center justify-between gap-3 py-3">
                                     <div class="min-w-0">
