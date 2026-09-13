@@ -25,10 +25,7 @@ class NotificationFeed
      */
     public static function for(User $user): Collection
     {
-        $memberIds = FamilyMember::query()
-            ->where('primary_account_id', $user->id)
-            ->orWhere('linked_user_id', $user->id)
-            ->pluck('id');
+        $memberIds = self::memberIds($user);
 
         if ($memberIds->isEmpty()) {
             return collect();
@@ -43,6 +40,33 @@ class NotificationFeed
             // thing that matters most is the thing you see without scrolling.
             ->sortBy(fn ($item) => ['urgent' => 0, 'warn' => 1, 'info' => 2][$item['tone']] ?? 3)
             ->values();
+    }
+
+    /**
+     * Whether there's at least one report still being read for this user's
+     * family — used by the mobile bottom nav's Records badge, which needs
+     * just a yes/no rather than the full feed.
+     */
+    public static function hasPendingReports(User $user): bool
+    {
+        $memberIds = self::memberIds($user);
+
+        if ($memberIds->isEmpty()) {
+            return false;
+        }
+
+        return Report::query()
+            ->whereIn('family_member_id', $memberIds)
+            ->whereIn('ocr_status', ['pending', 'processing'])
+            ->exists();
+    }
+
+    private static function memberIds(User $user): Collection
+    {
+        return FamilyMember::query()
+            ->where('primary_account_id', $user->id)
+            ->orWhere('linked_user_id', $user->id)
+            ->pluck('id');
     }
 
     private static function pendingInvitations(User $user): Collection
