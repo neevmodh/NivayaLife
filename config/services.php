@@ -101,6 +101,9 @@ return [
         'url' => env('OLLAMA_URL'),
         'chat_model' => env('OLLAMA_CHAT_MODEL', 'qwen2.5:3b-instruct'),
         'embed_model' => env('OLLAMA_EMBED_MODEL', 'nomic-embed-text'),
+        // Match the container's CPU quota — see OllamaClient::generate(). Unset
+        // locally, where Ollama detects cores correctly.
+        'num_thread' => env('OLLAMA_NUM_THREAD'),
     ],
 
 ];

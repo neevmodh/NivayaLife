@@ -7,9 +7,13 @@ use RuntimeException;
 
 /**
  * Thin wrapper around a self-hosted Ollama instance — mirrors GeminiClient/
- * GroqClient's generate() shape so AiChatController can try this first and
- * fall back to the existing Gemini→Groq chain unchanged. Ollama's chat
- * endpoint is OpenAI-compatible, so this is nearly identical to GroqClient.
+ * GroqClient's generate() shape so callers can try this first and fall back
+ * to the existing Gemini→Groq chain unchanged.
+ *
+ * Uses Ollama's native /api/chat rather than its OpenAI-compatible endpoint,
+ * because the latter has nowhere to pass `options` — and `options.num_thread`
+ * turned out to be the difference between 1.5 and 48 tokens/sec in a
+ * container (see generate()).
  */
 class OllamaClient
 {
@@ -19,11 +23,14 @@ class OllamaClient
 
     private readonly string $embedModel;
 
-    public function __construct(?string $url = null, ?string $chatModel = null, ?string $embedModel = null)
+    private readonly ?int $numThread;
+
+    public function __construct(?string $url = null, ?string $chatModel = null, ?string $embedModel = null, ?int $numThread = null)
     {
         $this->url = rtrim($url ?? (string) config('services.ollama.url'), '/');
         $this->chatModel = $chatModel ?? (string) config('services.ollama.chat_model', 'qwen2.5:3b-instruct');
         $this->embedModel = $embedModel ?? (string) config('services.ollama.embed_model', 'nomic-embed-text');
+        $this->numThread = $numThread ?? (config('services.ollama.num_thread') ? (int) config('services.ollama.num_thread') : null);
     }
 
     public function isConfigured(): bool
@@ -51,18 +58,31 @@ class OllamaClient
             throw new RuntimeException('OLLAMA_URL is not configured.');
         }
 
-        $payload = [
+        $options = [];
+
+        if ($temperature !== null) {
+            $options['temperature'] = $temperature;
+        }
+
+        // Ollama sizes its thread pool from nproc, which inside a container
+        // reports the HOST's core count, not the cgroup quota. On Railway that
+        // meant ~48 threads fighting over an 8-CPU quota: measured 165s and
+        // 1.5 tok/s, versus 6.4s and 48 tok/s once threads matched the quota.
+        // Left unset locally, where Ollama's own detection is already correct.
+        if ($this->numThread !== null) {
+            $options['num_thread'] = $this->numThread;
+        }
+
+        // The native endpoint is used rather than the OpenAI-compatible one
+        // purely because /v1/chat/completions has nowhere to put `options`.
+        $response = Http::timeout($timeout)->post("{$this->url}/api/chat", [
             'model' => $this->chatModel,
+            'stream' => false,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt],
             ],
-        ];
-
-        if ($temperature !== null) {
-            $payload['temperature'] = $temperature;
-        }
-
-        $response = Http::timeout($timeout)->post("{$this->url}/v1/chat/completions", $payload);
+            'options' => (object) $options,
+        ]);
 
         if ($response->failed()) {
             throw new RuntimeException('Ollama request failed: '.$response->body());
@@ -71,9 +91,9 @@ class OllamaClient
         $json = $response->json();
 
         return [
-            'text' => trim($json['choices'][0]['message']['content'] ?? ''),
-            'input_tokens' => $json['usage']['prompt_tokens'] ?? null,
-            'output_tokens' => $json['usage']['completion_tokens'] ?? null,
+            'text' => trim($json['message']['content'] ?? ''),
+            'input_tokens' => $json['prompt_eval_count'] ?? null,
+            'output_tokens' => $json['eval_count'] ?? null,
         ];
     }
 
