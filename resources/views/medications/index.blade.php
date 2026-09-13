@@ -44,14 +44,13 @@
         @endif
 
         @if($medications->isEmpty())
-            <div class="rounded-nivayalife bg-white p-10 text-center shadow-nivayalife-sm dark:bg-white/5">
-                <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-nivayalife-cream text-nivayalife-muted dark:bg-white/10" aria-hidden="true">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 1 1 7-7l1 1 1-1a4.95 4.95 0 0 1 7 7l-7 7-1.5-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <p class="mt-3 text-sm text-nivayalife-muted">No medications recorded yet.</p>
-                @if($canEdit)
-                    <a href="{{ route('medications.create') }}?member={{ $active->id }}" class="mt-2 inline-block text-xs font-semibold text-nivayalife-green hover:underline">Add the first one</a>
-                @endif
+            <div class="rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5">
+                <x-empty-state
+                    icon="pill"
+                    title="No medications recorded yet."
+                    :action-label="$canEdit ? 'Add the first one' : null"
+                    :action-url="$canEdit ? route('medications.create').'?member='.$active->id : null"
+                    class="py-10" />
             </div>
         @else
             <div class="space-y-3">
