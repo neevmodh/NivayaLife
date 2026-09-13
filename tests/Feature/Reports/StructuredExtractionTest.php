@@ -186,4 +186,42 @@ class StructuredExtractionTest extends TestCase
 
         Queue::assertPushed(GenerateShortSummaryJob::class);
     }
+
+    /**
+     * Reconstructed from two real production runs of the same lab report at
+     * different resolutions. At low resolution OCR dropped decimals from both
+     * the value AND its range ("7.8"/"4.0 - 5.6" became "78"/"40-56"), so the
+     * impossible value still looked consistent with its own range — only the
+     * proportion of rows that lost their range distinguishes the two.
+     */
+    public function test_a_poorly_scanned_report_is_flagged(): void
+    {
+        $this->fakeGemini(json_encode(['results' => [
+            ['test' => 'Haemoglobin', 'value' => '12', 'unit' => 'gid.', 'reference_range' => '13.0-17.0', 'flag' => 'low'],
+            ['test' => 'Total Leucocyte Count', 'value' => '9800', 'unit' => null, 'reference_range' => '4000 - 10000', 'flag' => 'normal'],
+            ['test' => 'Platelet Count', 'value' => '19', 'unit' => null, 'reference_range' => null, 'flag' => 'unknown'],
+            ['test' => 'Serum Creatinine', 'value' => '14', 'unit' => null, 'reference_range' => null, 'flag' => 'unknown'],
+            ['test' => 'HbAtc', 'value' => '78', 'unit' => '%', 'reference_range' => '40-56', 'flag' => 'high'],
+        ]]));
+
+        $report = $this->makeReport('blood_test', 'garbled scan');
+        ExtractStructuredDataJob::dispatchSync($report);
+
+        $this->assertTrue($report->refresh()->structured_data['scan_quality_warning']);
+    }
+
+    public function test_a_clean_scan_is_not_flagged(): void
+    {
+        $this->fakeGemini(json_encode(['results' => [
+            ['test' => 'Haemoglobin', 'value' => '11.2', 'unit' => 'g/dL', 'reference_range' => '13.0 - 17.0', 'flag' => 'low'],
+            ['test' => 'Total Cholesterol', 'value' => '248', 'unit' => 'mg/dL', 'reference_range' => '< 200', 'flag' => 'high'],
+            ['test' => 'HbA1c', 'value' => '7.8', 'unit' => '%', 'reference_range' => '4.0 - 5.6', 'flag' => 'high'],
+            ['test' => 'Serum Creatinine', 'value' => '1.1', 'unit' => 'mg/dL', 'reference_range' => '0.7 - 1.3', 'flag' => 'normal'],
+        ]]));
+
+        $report = $this->makeReport('blood_test', 'clean scan');
+        ExtractStructuredDataJob::dispatchSync($report);
+
+        $this->assertFalse($report->refresh()->structured_data['scan_quality_warning']);
+    }
 }

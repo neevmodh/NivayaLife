@@ -198,6 +198,17 @@
             @include($structured['partial'], $structured['props'])
         @endif
 
+        @if(($report->structured_data['scan_quality_warning'] ?? false))
+            {{-- Enough rows came back without a usable reference range that the
+                 scan itself is suspect — at low resolution OCR can drop decimal
+                 points from BOTH the value and its range, so an impossible
+                 number still looks internally consistent. --}}
+            <div class="mt-6 rounded-nivayalife bg-nivayalife-yellow/15 p-5 dark:bg-white/5">
+                <p class="text-sm font-bold text-nivayalife-ink dark:text-white">This scan was hard to read</p>
+                <p class="mt-1 text-sm text-nivayalife-muted">Some values below may have been misread. Please check them against the original document before relying on them — and if you can, re-upload a sharper photo or scan.</p>
+            </div>
+        @endif
+
         {{-- Structured lab results table --}}
         <div x-show="labResults && labResults.length" x-cloak class="mt-6 overflow-hidden rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5">
             <h3 class="p-5 pb-0 text-sm font-bold text-nivayalife-ink dark:text-white">Lab Results</h3>

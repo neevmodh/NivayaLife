@@ -184,8 +184,43 @@ class StructuredExtractor
         }
 
         $data['results'] = $rows;
+        $data['scan_quality_warning'] = self::scanLooksPoor($rows);
 
         return $data;
+    }
+
+    /**
+     * Whether the scan was too poor to trust the numbers.
+     *
+     * Measured on the same lab report at two resolutions through the live
+     * pipeline. At 2.5x every row came back with a parseable range and a
+     * definite flag. At low resolution Tesseract dropped decimal points and
+     * merged columns — "7.8" became "78" and, crucially, its range "4.0 - 5.6"
+     * became "40-56", so the value still looked consistent with its own
+     * (equally corrupted) range. Per-value plausibility cannot catch that.
+     *
+     * What does differ is how many rows survive intact: 0/10 unusable at high
+     * resolution versus 2/10 at low. A report where a fifth of the rows lost
+     * their reference range is a report whose other numbers should not be
+     * presented as confident fact either.
+     *
+     * @param  array<int, array{reference_range: ?string, flag: string}>  $rows
+     */
+    private static function scanLooksPoor(array $rows): bool
+    {
+        if (count($rows) < 3) {
+            return false;
+        }
+
+        $unusable = 0;
+
+        foreach ($rows as $row) {
+            if (($row['reference_range'] ?? null) === null || $row['flag'] === 'unknown') {
+                $unusable++;
+            }
+        }
+
+        return ($unusable / count($rows)) >= 0.2;
     }
 
     /**
