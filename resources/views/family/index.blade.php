@@ -179,7 +179,7 @@
                 </h3>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($sharedWith as $grant)
-                        <div class="rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
+                        <div class="nivayalife-gold-edge rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
                             <div class="flex items-center gap-3">
                                 <x-avatar :photo-path="$grant->grantedToUser?->avatar_path" :full-name="$grant->grantedToUser->name ?? '?'" size="h-12 w-12" />
                                 <div class="min-w-0 flex-1">
