@@ -20,7 +20,7 @@
         <span class="text-base font-bold leading-tight text-nivayalife-ink dark:text-white">{{ $value }}</span>
     </div>
 @elseif($fallbackUrl)
-    <a href="{{ $fallbackUrl }}" class="{{ $base }} border border-dashed border-nivayalife-green/25 bg-white hover:border-nivayalife-green/50 hover:bg-nivayalife-cream dark:bg-white/5 dark:hover:bg-white/10">
+    <a href="{{ $fallbackUrl }}" class="{{ $base }} border border-dashed border-nivayalife-green/25 bg-white hover:border-nivayalife-green/50 hover:bg-nivayalife-cream active:scale-95 dark:bg-white/5 dark:hover:bg-white/10">
         <span class="text-[10px] font-semibold uppercase tracking-wider text-nivayalife-muted">{{ $label }}</span>
         <span class="flex items-center gap-1 text-sm font-semibold leading-tight text-nivayalife-green dark:text-nivayalife-mint">
             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
