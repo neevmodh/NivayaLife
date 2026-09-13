@@ -288,11 +288,79 @@ class OcrExtractor
         return $images;
     }
 
+    /**
+     * Tesseract needs roughly 300 DPI to resolve small glyphs, and an A4 page
+     * at 300 DPI is about 2480px wide. Below that, it starts losing decimal
+     * points — measured on a real 900px-wide lab report, every decimal was
+     * dropped: "7.8" became "78", "1.1" became "14". The pipeline then reported
+     * an HbA1c of 78% as fact.
+     *
+     * Upscaling that same image before OCR recovered all of them:
+     *   900px (as uploaded)   0/4 decimals preserved, read "HbAtc 78"
+     *   2x upscale            4/4 preserved, read "HbA1c 7.8"
+     *   3x upscale            4/4 preserved
+     *
+     * Interpolation invents no detail, but it does give Tesseract's classifier
+     * enough pixels per glyph to separate "7.8" from "78". PDFs skip this —
+     * they are already rasterized at 300 DPI by pdfToImages().
+     */
+    private const MIN_OCR_WIDTH = 2000;
+
+    /**
+     * Hard ceiling on the upscaled result. The OCR worker runs with a 96MB
+     * memory limit, so an unbounded resize would trade a decimal-point bug for
+     * an OOM that strands the report in `processing` forever.
+     */
+    private const MAX_OCR_PIXELS = 8_000_000;
+
     private function preprocessImage(string $imagePath, array &$tempFiles): string
     {
         $imagick = new Imagick($imagePath);
 
+        $this->upscaleIfTooSmallToRead($imagick);
+
         return $this->cleanedUp($imagick, $tempFiles, full: true);
+    }
+
+    private function upscaleIfTooSmallToRead(Imagick $imagick): void
+    {
+        $target = self::targetOcrDimensions($imagick->getImageWidth(), $imagick->getImageHeight());
+
+        if ($target === null) {
+            return;
+        }
+
+        $imagick->resizeImage($target[0], $target[1], Imagick::FILTER_LANCZOS, 1);
+    }
+
+    /**
+     * Dimensions to upscale to before OCR, or null to leave the image alone.
+     *
+     * Separated from the Imagick call so the sizing rules — including the
+     * memory ceiling that stops this trading a decimal-point bug for an
+     * OOM-killed job — are testable without a real image.
+     *
+     * @return array{0: int, 1: int}|null
+     */
+    public static function targetOcrDimensions(int $width, int $height): ?array
+    {
+        if ($width <= 0 || $height <= 0 || $width >= self::MIN_OCR_WIDTH) {
+            return null;
+        }
+
+        $scale = self::MIN_OCR_WIDTH / $width;
+
+        // Never exceed the pixel ceiling, even if that leaves the image below
+        // the target width — a smaller gain beats an OOM-killed job.
+        if ($width * $height * $scale ** 2 > self::MAX_OCR_PIXELS) {
+            $scale = sqrt(self::MAX_OCR_PIXELS / ($width * $height));
+        }
+
+        if ($scale <= 1.0) {
+            return null;
+        }
+
+        return [(int) round($width * $scale), (int) round($height * $scale)];
     }
 
     /**
