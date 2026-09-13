@@ -35,6 +35,55 @@ class StructuredExtractor
     ) {}
 
     /**
+     * Extracts from the document IMAGE rather than its OCR text.
+     *
+     * For handwriting, OCR text is not merely noisy — it is confidently wrong
+     * in ways that matter. Measured on a handwritten prescription, Tesseract
+     * read "30 days" as "80 days" and lost a 500mg dose entirely, and the
+     * structured medicines list inherited both. A patient told to take a drug
+     * for 80 days instead of 30 is a real safety problem, so these documents
+     * are read visually instead.
+     *
+     * The OCR text still goes along as a cross-check — it is usually right
+     * about the printed letterhead even when it mangles the handwriting.
+     *
+     * @param  array<int, array{data: string, mimeType: string}>  $images
+     * @return array{data: array, provider: string, input_tokens: ?int, output_tokens: ?int}
+     */
+    public function extractFromImages(string $type, array $images, string $ocrText = ''): array
+    {
+        $schema = ReportSchema::for($type);
+        $hint = trim(OcrCleaner::clean($ocrText)) !== ''
+            ? "\n\nAutomatic text extraction produced the following. It is UNRELIABLE for handwriting — prefer what you can see in the image, and use this only as a cross-check for printed text:\n".Str::limit(OcrCleaner::clean($ocrText), 2000, '')
+            : '';
+
+        $prompt = <<<PROMPT
+        Read the attached medical document image directly, including any handwritten portions, and extract structured data from it.
+
+        {$schema['instruction']}
+
+        Return ONLY a single raw JSON object matching this shape — no markdown, no code fence, no commentary:
+        {$schema['example']}
+
+        Rules:
+        - The angle-bracket entries above are PLACEHOLDERS describing each field. Never copy them; replace them with values read from the document.
+        - Produce one array element for every matching row in the document. Do not stop after the first.
+        - Never invent a value. Use null when something is absent or genuinely illegible.
+        - Where an item's handwriting is unclear, still include the item and mark it uncertain rather than guessing a plausible value.
+        {$hint}
+        PROMPT;
+
+        $result = $this->ai->generateWithImage($prompt, $images);
+
+        return [
+            'data' => $this->normalize($type, $this->decode($result['text'])),
+            'provider' => $result['provider'].'-vision',
+            'input_tokens' => $result['input_tokens'],
+            'output_tokens' => $result['output_tokens'],
+        ];
+    }
+
+    /**
      * @return array{data: array, provider: string, input_tokens: ?int, output_tokens: ?int}
      */
     public function extract(string $type, string $ocrText): array

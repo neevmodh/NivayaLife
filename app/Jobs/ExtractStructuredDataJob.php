@@ -4,8 +4,10 @@ namespace App\Jobs;
 
 use App\Models\AiJob;
 use App\Models\Report;
+use App\Services\Ocr\OcrExtractor;
 use App\Services\Reports\ReportSchema;
 use App\Services\Reports\StructuredExtractor;
+use App\Support\TempFile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -39,7 +41,7 @@ class ExtractStructuredDataJob implements ShouldQueue
 
     public function __construct(public Report $report) {}
 
-    public function handle(StructuredExtractor $extractor): void
+    public function handle(StructuredExtractor $extractor, OcrExtractor $ocrExtractor): void
     {
         $report = $this->report->fresh();
 
@@ -56,7 +58,7 @@ class ExtractStructuredDataJob implements ShouldQueue
         ]);
 
         try {
-            $result = $extractor->extract($report->type, $report->ocr_text);
+            $result = $this->extractFor($report, $extractor, $ocrExtractor);
 
             $update = [
                 'structured_data' => $result['data'],
@@ -93,5 +95,36 @@ class ExtractStructuredDataJob implements ShouldQueue
             // worked, from cleaned OCR text if it didn't.
             GenerateShortSummaryJob::dispatch($report);
         }
+    }
+
+    /**
+     * Handwriting goes to the vision model, everything else to the cheap local
+     * text path.
+     *
+     * The summary job has always read handwritten prescriptions from the image;
+     * extraction did not, and inherited OCR's mistakes — measured on a real
+     * handwritten prescription, "30 days" became "80 days" and a 500mg dose
+     * vanished. Both halves now make the same routing decision, from the same
+     * method, so a report is never summarised from the image and structured
+     * from garbled text.
+     *
+     * Any failure loading the image falls back to the text path rather than
+     * losing the extraction entirely.
+     *
+     * @return array{data: array, provider: string, input_tokens: ?int, output_tokens: ?int}
+     */
+    private function extractFor(Report $report, StructuredExtractor $extractor, OcrExtractor $ocrExtractor): array
+    {
+        if ($ocrExtractor->needsVisualReading($report->type, $report->mime_type, $report->ocr_text)) {
+            try {
+                $images = TempFile::fromDisk('local', $report->file_path, fn (string $absolutePath) => $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? ''));
+
+                return $extractor->extractFromImages($report->type, $images, $report->ocr_text);
+            } catch (Throwable $e) {
+                report($e);
+            }
+        }
+
+        return $extractor->extract($report->type, $report->ocr_text);
     }
 }

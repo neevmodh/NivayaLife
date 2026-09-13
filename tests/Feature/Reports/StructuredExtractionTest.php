@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
@@ -56,6 +57,18 @@ class StructuredExtractionTest extends TestCase
             'ocr_status' => 'completed',
             'ocr_text' => $ocrText,
         ]);
+    }
+
+    /** As makeReport(), but with a real image actually present on the disk for the vision path to load. */
+    private function makeStoredImageReport(string $type, string $ocrText): Report
+    {
+        Storage::fake('local');
+
+        $report = $this->makeReport($type, $ocrText);
+        $report->update(['file_path' => "reports/{$type}.png", 'mime_type' => 'image/png']);
+        Storage::disk('local')->put($report->file_path, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='));
+
+        return $report;
     }
 
     private function fakeGemini(string $payload): void
@@ -245,5 +258,53 @@ class StructuredExtractionTest extends TestCase
         // And the numeric recheck still applies to the recovered rows.
         $this->assertSame('low', $rows[0]['flag']);
         $this->assertSame('high', $rows[1]['flag']);
+    }
+
+    /**
+     * The handwriting regression. The summary job already read prescriptions
+     * from the image, but extraction read the OCR text — so a report could be
+     * summarised correctly and structured wrongly from the same upload. On a
+     * real handwritten prescription that turned "30 days" into "80 days".
+     */
+    public function test_a_prescription_is_extracted_from_the_image_not_the_ocr_text(): void
+    {
+        $this->fakeGemini(json_encode(['medicines' => [
+            ['name' => 'Metformin', 'dosage' => '500mg', 'frequency' => '1-0-1', 'duration' => '30 days', 'instructions' => null, 'uncertain' => false],
+        ]]));
+
+        $report = $this->makeStoredImageReport('prescription', 'Tab Metformin 500 my 1-0-1 x 80 days');
+        ExtractStructuredDataJob::dispatchSync($report);
+        $report->refresh();
+
+        $this->assertSame('30 days', $report->structured_data['medicines'][0]['duration']);
+        $this->assertSame('gemini-vision', $report->structured_provider);
+        Http::assertSent(fn ($request) => isset($request->data()['contents'][0]['parts'][1]['inlineData']));
+    }
+
+    /** A missing or unreadable file must not lose the extraction entirely. */
+    public function test_a_prescription_falls_back_to_the_text_path_when_the_image_cannot_be_read(): void
+    {
+        $this->fakeGemini(json_encode(['medicines' => [
+            ['name' => 'Metformin', 'dosage' => '500mg', 'frequency' => '1-0-1', 'duration' => '30 days', 'instructions' => null, 'uncertain' => false],
+        ]]));
+
+        // makeReport() points at a file that was never written to the disk.
+        $report = $this->makeReport('prescription', 'Tab Metformin 500mg 1-0-1');
+        ExtractStructuredDataJob::dispatchSync($report);
+        $report->refresh();
+
+        $this->assertSame('Metformin', $report->structured_data['medicines'][0]['name']);
+        $this->assertSame('gemini', $report->structured_provider);
+    }
+
+    /** Any type whose OCR came back unusable is treated as handwriting too. */
+    public function test_unusable_ocr_routes_any_type_through_vision(): void
+    {
+        $this->fakeGemini(json_encode(['findings' => ['Deep caries in tooth 36'], 'procedures' => []]));
+
+        $report = $this->makeStoredImageReport('dental', '|| ~ ,,');
+        ExtractStructuredDataJob::dispatchSync($report);
+
+        $this->assertSame('gemini-vision', $report->refresh()->structured_provider);
     }
 }

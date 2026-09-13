@@ -106,7 +106,7 @@ class GenerateShortSummaryJob implements ShouldQueue
      */
     private function generateSummary(Report $report, AiClient $ai, OcrExtractor $ocrExtractor): array
     {
-        if ($this->needsVision($report, $ocrExtractor)) {
+        if ($ocrExtractor->needsVisualReading($report->type, $report->mime_type, $report->ocr_text)) {
             try {
                 $images = TempFile::fromDisk('local', $report->file_path, fn (string $absolutePath) => $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? ''));
 
@@ -117,26 +117,6 @@ class GenerateShortSummaryJob implements ShouldQueue
         }
 
         return $ai->generate($this->buildPrompt($report));
-    }
-
-    /**
-     * Prescriptions always go to vision — they are handwritten by default, and
-     * OCR routinely returns just enough clean letterhead text to pass
-     * looksUsable() while losing the actual handwritten instructions.
-     *
-     * Beyond that, ANY type whose OCR text came back unusable is very likely a
-     * handwritten or photographed note, so it gets the same treatment rather
-     * than being summarised from near-empty text. This is what makes
-     * handwriting work across all report types instead of prescriptions only.
-     */
-    private function needsVision(Report $report, OcrExtractor $ocrExtractor): bool
-    {
-        if (! $ocrExtractor->isVisionEligible($report->mime_type ?? '')) {
-            return false;
-        }
-
-        return $report->type === 'prescription'
-            || ! $ocrExtractor->looksUsable((string) $report->ocr_text);
     }
 
     /**

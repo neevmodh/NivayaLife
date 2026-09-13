@@ -45,6 +45,28 @@ class OcrExtractor
     }
 
     /**
+     * Whether this document should be read from the image rather than its OCR
+     * text — by both the summariser and the structured extractor.
+     *
+     * Prescriptions always qualify: they are handwritten by default, and OCR
+     * routinely returns just enough clean letterhead to pass looksUsable()
+     * while mangling the part that matters. Measured on a handwritten
+     * prescription, Tesseract read "30 days" as "80 days" and dropped a 500mg
+     * dose — errors that then propagated into the structured medicines list.
+     *
+     * Beyond that, any document whose OCR came back unusable is very likely a
+     * handwritten or badly photographed note, so it gets the same treatment.
+     */
+    public function needsVisualReading(string $type, ?string $mimeType, ?string $ocrText): bool
+    {
+        if (! $this->isVisionEligible((string) $mimeType)) {
+            return false;
+        }
+
+        return $type === 'prescription' || ! $this->looksUsable((string) $ocrText);
+    }
+
+    /**
      * Produces base64-encoded images for a vision model to look at directly.
      * Deliberately skips preprocessImage()'s despeckle/deskew/grayscale pass
      * — that cleanup is tuned to make text easier for Tesseract to read, and
