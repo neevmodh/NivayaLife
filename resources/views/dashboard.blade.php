@@ -87,7 +87,7 @@
     {{-- Greeting and the family switcher share one row. They used to be two
          stacked blocks saying roughly the same thing about who you're viewing. --}}
     <x-slot name="header">
-        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div x-data="{
                 greeting: @js($greeting),
                 init() {
@@ -108,7 +108,7 @@
                 </p>
             </div>
 
-            <div class="flex flex-col items-stretch gap-3 lg:items-end">
+            <div class="flex flex-col items-stretch gap-3 md:items-end">
                 <div class="flex flex-shrink-0 items-center justify-end gap-2">
                     <a href="{{ route('id-card.show') }}"
                         class="flex items-center gap-2 rounded-xl border border-nivayalife-green/20 bg-white px-4 py-2.5 text-sm font-semibold text-nivayalife-green shadow-nivayalife-sm transition hover:bg-nivayalife-mint/40 dark:border-white/10 dark:bg-white/5 dark:text-nivayalife-mint">

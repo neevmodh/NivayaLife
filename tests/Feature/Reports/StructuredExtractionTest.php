@@ -297,6 +297,40 @@ class StructuredExtractionTest extends TestCase
         $this->assertSame('gemini', $report->structured_provider);
     }
 
+    /**
+     * Found while running 30 real reports: the model fills in the right answer
+     * but keeps the angle brackets the schema uses to mark placeholders, so a
+     * dental report came back as "<benign dentigerous cyst, left mandible>".
+     * The content is correct; the brackets would render literally in the UI.
+     */
+    public function test_placeholder_brackets_around_a_real_answer_are_stripped(): void
+    {
+        $this->fakeGemini(json_encode([
+            'findings' => ['<benign dentigerous cyst, left mandible>'],
+            'procedures' => ['<extraction of impacted tooth #17>'],
+        ]));
+
+        $report = $this->makeReport('dental', 'Dentigerous cyst, left mandible. Extraction of tooth #17.');
+        ExtractStructuredDataJob::dispatchSync($report);
+        $data = $report->refresh()->structured_data;
+
+        $this->assertSame('benign dentigerous cyst, left mandible', $data['findings'][0]);
+        $this->assertSame('extraction of impacted tooth #17', $data['procedures'][0]);
+    }
+
+    /** But a one-sided reference range is not a placeholder and must survive intact. */
+    public function test_a_less_than_range_is_not_mistaken_for_a_placeholder(): void
+    {
+        $this->fakeGemini(json_encode(['results' => [
+            ['test' => 'Total Cholesterol', 'value' => '248', 'unit' => 'mg/dL', 'reference_range' => '<200', 'flag' => 'high'],
+        ]]));
+
+        $report = $this->makeReport('blood_test', 'Total Cholesterol 248');
+        ExtractStructuredDataJob::dispatchSync($report);
+
+        $this->assertSame('<200', $report->refresh()->structured_data['results'][0]['reference_range']);
+    }
+
     /** Any type whose OCR came back unusable is treated as handwriting too. */
     public function test_unusable_ocr_routes_any_type_through_vision(): void
     {
