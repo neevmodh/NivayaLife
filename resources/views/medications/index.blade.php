@@ -37,7 +37,7 @@
                     <p class="text-[11px] font-semibold text-nivayalife-muted">Active</p>
                 </div>
                 <div class="rounded-nivayalife bg-white p-3.5 text-center shadow-nivayalife-sm dark:bg-white/5">
-                    <p class="text-xl font-extrabold text-nivayalife-ink dark:text-white">{{ $remindersCount }}</p>
+                    <p class="text-xl font-extrabold text-nivayalife-green dark:text-nivayalife-mint">{{ $remindersCount }}</p>
                     <p class="text-[11px] font-semibold text-nivayalife-muted">Reminders on</p>
                 </div>
             </div>
