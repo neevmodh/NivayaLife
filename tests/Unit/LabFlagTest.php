@@ -90,4 +90,29 @@ class LabFlagTest extends TestCase
     {
         $this->assertSame('normal', LabFlag::for('9,800', '4000-10000'));
     }
+
+    /**
+     * Found by running a real low-resolution lab report through the live
+     * pipeline: Tesseract read HbA1c "7.8" as "78" and the summary then stated
+     * "HbA1c at 78%" as fact. These pin the detector that flags it.
+     */
+    #[DataProvider('lostDecimalCases')]
+    public function test_detects_a_value_that_lost_its_decimal_point(string $value, ?string $range, bool $expected): void
+    {
+        $this->assertSame($expected, LabFlag::looksLikeLostDecimal($value, $range));
+    }
+
+    public static function lostDecimalCases(): array
+    {
+        return [
+            'hba1c 7.8 read as 78' => ['78', '4.0 - 5.6', true],
+            'creatinine 1.1 read as 14' => ['14', '0.7 - 1.3', true],
+            'platelets 1.9 read as 19' => ['19', '1.5 - 4.1', true],
+            'correct decimal value that is genuinely high' => ['7.8', '4.0 - 5.6', false],
+            'integer analyte with an integer range' => ['9800', '4000 - 10000', false],
+            'integer value under a one-sided integer range' => ['248', '< 200', false],
+            'integer below the range maximum' => ['12', '13.0 - 17.0', false],
+            'no range to compare against' => ['78', null, false],
+        ];
+    }
 }

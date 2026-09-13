@@ -215,7 +215,14 @@
                         <template x-for="row in (labResults || [])" :key="row.test + row.value">
                             <tr class="border-b border-gray-50 last:border-0 dark:border-white/5">
                                 <td class="px-5 py-2.5 font-medium text-nivayalife-ink dark:text-white" x-text="row.test"></td>
-                                <td class="px-3 py-2.5 text-nivayalife-ink dark:text-white" x-text="row.value + (row.unit ? ' ' + row.unit : '')"></td>
+                                <td class="px-3 py-2.5 text-nivayalife-ink dark:text-white">
+                                    <span x-text="row.value + (row.unit ? ' ' + row.unit : '')"></span>
+                                    {{-- Scanning can drop a decimal point ("7.8" read as "78"), which
+                                         would otherwise be presented as a confident, impossible result. --}}
+                                    <span x-show="row.suspect_ocr" x-cloak
+                                        class="ml-1.5 inline-flex items-center rounded-full bg-nivayalife-yellow/30 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-nivayalife-yellow"
+                                        title="This number may have been misread from the scan — please check it against the original document.">Check original</span>
+                                </td>
                                 <td class="px-3 py-2.5 text-nivayalife-muted" x-text="row.reference_range || '—'"></td>
                                 <td class="px-5 py-2.5 text-right">
                                     <span class="rounded-full px-2 py-0.5 text-[11px] font-semibold"

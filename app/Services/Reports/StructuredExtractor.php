@@ -176,6 +176,10 @@ class StructuredExtractor
                 // Numeric comparison wins over the model's arithmetic; the
                 // model's answer only survives for genuinely qualitative ranges.
                 'flag' => LabFlag::for($value, $range) ?? $this->normalizeFlag((string) ($row['flag'] ?? 'unknown')),
+                // Set when the value looks like OCR dropped a decimal point —
+                // surfaced in the UI as "check the original" rather than
+                // silently presenting an impossible number as fact.
+                'suspect_ocr' => LabFlag::looksLikeLostDecimal($value, $range),
             ];
         }
 

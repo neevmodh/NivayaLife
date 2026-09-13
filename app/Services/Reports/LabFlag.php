@@ -22,6 +22,52 @@ class LabFlag
 
     private const GTE = ['≥', '>=', '&ge;'];
 
+    /**
+     * Whether a value looks like OCR dropped its decimal point.
+     *
+     * Found by uploading a real low-resolution lab report end to end: Tesseract
+     * read HbA1c "7.8" as "78", creatinine "1.1" as "14". The summary then
+     * confidently reported "HbA1c at 78%", which is physiologically impossible
+     * and alarming. Nothing downstream could catch it, because the OCR text
+     * itself was wrong.
+     *
+     * The signal is precision mismatch: the lab printed a decimal range, so it
+     * measures this analyte to a decimal — yet the value came back as a bare
+     * integer that also exceeds the range maximum. A genuinely high result
+     * normally keeps its precision.
+     *
+     * Deliberately only ever raises a "verify this" flag; it never alters a
+     * value. A false positive costs a user one glance at the original.
+     */
+    public static function looksLikeLostDecimal(string $value, ?string $range): bool
+    {
+        if ($range === null) {
+            return false;
+        }
+
+        $trimmedValue = trim(str_replace(',', '', $value));
+
+        // Only bare integers are candidates — a value that kept its decimal is fine.
+        if (! preg_match('/^-?\d+$/', $trimmedValue)) {
+            return false;
+        }
+
+        $normalized = self::normalize($range);
+
+        // The range must itself be decimal-precision, or there was no decimal to lose.
+        if (! str_contains($normalized, '.')) {
+            return false;
+        }
+
+        $max = match (true) {
+            (bool) preg_match('/^(-?[\d.]+)\s*-\s*(-?[\d.]+)$/', $normalized, $m) => (float) $m[2],
+            (bool) preg_match('/^(?:<=|<)\s*(-?[\d.]+)$/', $normalized, $m) => (float) $m[1],
+            default => null,
+        };
+
+        return $max !== null && (float) $trimmedValue > $max;
+    }
+
     public static function for(string $value, ?string $range): ?string
     {
         if ($range === null) {
