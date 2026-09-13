@@ -119,8 +119,8 @@
                     </p>
                     <p class="mt-1 text-sm font-semibold"
                         :class="group.direction === 'up' ? 'text-nivayalife-pink-dark' : (group.direction === 'down' ? 'text-nivayalife-blue' : 'text-nivayalife-muted')">
-                        <span x-show="group.direction === 'up'">&#8593; Up</span>
-                        <span x-show="group.direction === 'down'">&#8595; Down</span>
+                        <span x-show="group.direction === 'up'" class="inline-flex items-center gap-0.5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5m0 0-6 6m6-6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Up</span>
+                        <span x-show="group.direction === 'down'" class="inline-flex items-center gap-0.5"><svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14m0 0-6-6m6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Down</span>
                         <span x-show="group.direction === 'unchanged'">No change</span>
                         <span x-show="group.direction !== 'unchanged'" x-text="Math.abs(group.pctChange) + '%'"></span>
                         since <span x-text="group.oldest.dateLabel"></span>
