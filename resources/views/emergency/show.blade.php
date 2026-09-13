@@ -12,10 +12,10 @@
 <div class="mx-auto max-w-xl px-4 py-8 sm:py-12">
     <a href="{{ url('/') }}" class="mb-6 flex justify-center"><x-nivayalife-logo /></a>
 
-    <div class="mb-4 flex justify-center gap-2">
-        <button type="button" @click="lang = 'en'" :class="lang === 'en' ? 'bg-nivayalife-green text-white' : 'bg-white text-nivayalife-ink'" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">English</button>
-        <button type="button" @click="lang = 'hi'" :class="lang === 'hi' ? 'bg-nivayalife-green text-white' : 'bg-white text-nivayalife-ink'" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">हिंदी</button>
-        <button type="button" @click="lang = 'gu'" :class="lang === 'gu' ? 'bg-nivayalife-green text-white' : 'bg-white text-nivayalife-ink'" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">ગુજરાતી</button>
+    <div class="mb-4 flex justify-center gap-2" role="group" aria-label="Language">
+        <button type="button" @click="lang = 'en'" :class="lang === 'en' ? 'bg-nivayalife-green text-white' : 'bg-white text-nivayalife-ink'" :aria-pressed="lang === 'en'" aria-label="English" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">English</button>
+        <button type="button" @click="lang = 'hi'" :class="lang === 'hi' ? 'bg-nivayalife-green text-white' : 'bg-white text-nivayalife-ink'" :aria-pressed="lang === 'hi'" aria-label="Hindi" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">हिंदी</button>
+        <button type="button" @click="lang = 'gu'" :class="lang === 'gu' ? 'bg-nivayalife-green text-white' : 'bg-white text-nivayalife-ink'" :aria-pressed="lang === 'gu'" aria-label="Gujarati" class="rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm transition">ગુજરાતી</button>
     </div>
 
     @php
