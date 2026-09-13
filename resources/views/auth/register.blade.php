@@ -76,7 +76,7 @@
                         <div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
                             <div class="h-full rounded-full transition-all duration-300" :style="`width: ${widthPercent}%; background: ${color}`"></div>
                         </div>
-                        <p x-cloak x-show="password" class="mt-1 text-xs" :style="`color: ${color}`" x-text="label"></p>
+                        <p x-cloak x-show="password" role="status" aria-live="polite" class="mt-1 text-xs" :style="`color: ${color}`" x-text="label"></p>
                         <p x-cloak x-show="errorFor('password')" x-text="errorFor('password')" class="mt-1 text-xs text-nivayalife-pink-dark"></p>
                     </div>
 
