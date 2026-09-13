@@ -30,9 +30,44 @@ function countUp(el) {
     requestAnimationFrame(tick);
 }
 
+function initNavHighlight() {
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    if (!navLinks.length || !('IntersectionObserver' in window)) return;
+
+    const linksByHash = new Map();
+    navLinks.forEach((link) => {
+        const hash = link.getAttribute('href');
+        if (!linksByHash.has(hash)) linksByHash.set(hash, []);
+        linksByHash.get(hash).push(link);
+    });
+
+    const sections = [...linksByHash.keys()]
+        .map((hash) => document.querySelector(hash))
+        .filter(Boolean);
+    if (!sections.length) return;
+
+    const setActive = (hash) => {
+        navLinks.forEach((link) => link.classList.toggle('nivayalife-nav-active', link.getAttribute('href') === hash));
+    };
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            const visible = entries.filter((e) => e.isIntersecting);
+            if (visible.length > 0) setActive('#' + visible[0].target.id);
+        },
+        // A thin band near the top of the viewport — the section crossing it
+        // is what the reader is actually looking at right now.
+        { rootMargin: '-20% 0px -70% 0px' },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+}
+
 export default function initScrollEffects() {
     const revealables = document.querySelectorAll('[data-reveal]');
     const counters = document.querySelectorAll('[data-count-to]');
+
+    initNavHighlight();
 
     // Without IntersectionObserver (or with reduced motion) everything simply
     // renders in its final state rather than staying invisible.
