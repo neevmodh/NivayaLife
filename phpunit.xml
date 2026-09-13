@@ -29,5 +29,21 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+
+        <!--
+            Keep the suite hermetic. Without these, tests inherit the developer's
+            .env: a locally-running Ollama really did serve an extraction during
+            a test that asserts the provider failed, so the suite passed on CI
+            and failed on the machine that had Ollama up. Real API keys leaking
+            in the same way would mean tests quietly billing a live provider.
+            Tests that need a provider set it via config() themselves.
+        -->
+        <env name="OLLAMA_URL" value=""/>
+        <env name="GEMINI_API_KEY" value=""/>
+        <env name="GEMINI_API_KEY_2" value=""/>
+        <env name="GEMINI_API_KEY_3" value=""/>
+        <env name="GROQ_API_KEY" value=""/>
+        <env name="XRAY_VISION_URL" value=""/>
+        <env name="CLINICAL_NLP_URL" value=""/>
     </php>
 </phpunit>
