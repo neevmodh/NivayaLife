@@ -208,7 +208,7 @@
     {{-- Archive confirmation modal --}}
     <div
         x-data="{ open: false, name: '', url: '', linked: false }"
-        @open-archive-modal.window="open = true; name = $event.detail.name; url = $event.detail.url; linked = $event.detail.linked ?? false"
+        @open-archive-modal.window="open = true; name = $event.detail.name; url = $event.detail.url; linked = $event.detail.linked ?? false; $nextTick(() => $refs.cancelBtn.focus())"
         x-show="open" x-cloak
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
         @keydown.escape.window="open = false"
@@ -221,7 +221,7 @@
             </p>
             <form method="POST" :action="url" class="mt-5 flex justify-end gap-3">
                 @csrf
-                <button type="button" @click="open = false" class="rounded-xl px-4 py-2 text-sm font-semibold text-nivayalife-muted hover:text-nivayalife-ink">Cancel</button>
+                <button type="button" x-ref="cancelBtn" @click="open = false" class="rounded-xl px-4 py-2 text-sm font-semibold text-nivayalife-muted hover:text-nivayalife-ink">Cancel</button>
                 <button type="submit" class="rounded-xl bg-nivayalife-pink-dark px-5 py-2 text-sm font-semibold text-white hover:bg-nivayalife-pink-dark/90">Confirm</button>
             </form>
         </div>
