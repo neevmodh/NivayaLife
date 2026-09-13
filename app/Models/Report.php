@@ -49,6 +49,8 @@ class Report extends Model
         'xray_findings',
         'detected_entities',
         'lab_results',
+        'structured_data',
+        'structured_provider',
         'ai_summary',
         'ai_summary_language',
         'ai_summary_generated_at',
@@ -64,6 +66,7 @@ class Report extends Model
             'xray_findings' => 'array',
             'detected_entities' => 'array',
             'lab_results' => 'array',
+            'structured_data' => 'array',
             'file_size' => 'integer',
             'is_archived' => 'boolean',
         ];

@@ -7,6 +7,7 @@ use App\Models\Report;
 use App\Services\Ai\AiClient;
 use App\Services\ClinicalNlp\ClinicalNlpClient;
 use App\Services\Ocr\OcrExtractor;
+use App\Services\Reports\OcrCleaner;
 use App\Support\TempFile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -105,7 +106,7 @@ class GenerateShortSummaryJob implements ShouldQueue
      */
     private function generateSummary(Report $report, AiClient $ai, OcrExtractor $ocrExtractor): array
     {
-        if ($report->type === 'prescription') {
+        if ($this->needsVision($report, $ocrExtractor)) {
             try {
                 $images = TempFile::fromDisk('local', $report->file_path, fn (string $absolutePath) => $ocrExtractor->visionImages($absolutePath, $report->mime_type ?? ''));
 
@@ -116,6 +117,26 @@ class GenerateShortSummaryJob implements ShouldQueue
         }
 
         return $ai->generate($this->buildPrompt($report));
+    }
+
+    /**
+     * Prescriptions always go to vision — they are handwritten by default, and
+     * OCR routinely returns just enough clean letterhead text to pass
+     * looksUsable() while losing the actual handwritten instructions.
+     *
+     * Beyond that, ANY type whose OCR text came back unusable is very likely a
+     * handwritten or photographed note, so it gets the same treatment rather
+     * than being summarised from near-empty text. This is what makes
+     * handwriting work across all report types instead of prescriptions only.
+     */
+    private function needsVision(Report $report, OcrExtractor $ocrExtractor): bool
+    {
+        if (! $ocrExtractor->isVisionEligible($report->mime_type ?? '')) {
+            return false;
+        }
+
+        return $report->type === 'prescription'
+            || ! $ocrExtractor->looksUsable((string) $report->ocr_text);
     }
 
     /**
@@ -137,12 +158,33 @@ class GenerateShortSummaryJob implements ShouldQueue
         }
     }
 
+    /**
+     * Prefers the structured data ExtractStructuredDataJob already produced.
+     *
+     * This is where the token saving lands: a compact verified structure is a
+     * fraction of the 8000 OCR characters this used to send, and the flags in
+     * it have already been recomputed numerically by LabFlag — so the model is
+     * describing checked data rather than re-deriving it from noisy text and
+     * potentially getting the arithmetic wrong.
+     *
+     * Falls back to cleaned OCR text when extraction produced nothing.
+     */
     private function buildPrompt(Report $report): string
     {
-        $ocrText = Str::limit($report->ocr_text, self::MAX_OCR_CHARS, '');
+        $structured = $report->structured_data;
+
+        $source = $structured
+            ? "ALREADY-EXTRACTED, ALREADY-VERIFIED DATA (JSON):\n".json_encode($structured, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            : "OCR TEXT (may contain minor OCR errors):\n".Str::limit(OcrCleaner::clean($report->ocr_text), self::MAX_OCR_CHARS, '');
+
+        $provenance = $structured
+            ? 'Every value below was extracted and range-checked already — describe it, do not recalculate it, and never mention a value that is not present below.'
+            : 'This is raw extracted text and may contain errors.';
 
         return <<<PROMPT
-        You are generating a brief glance-level teaser for a {$report->typeLabel()} inside a personal family health-record app. Below is text extracted via OCR from the document — it may contain minor OCR errors.
+        You are generating a brief glance-level teaser for a {$report->typeLabel()} inside a personal family health-record app.
+
+        {$provenance}
 
         In 2-3 short sentences, state:
         1. What kind of report this is.
@@ -150,8 +192,7 @@ class GenerateShortSummaryJob implements ShouldQueue
 
         Be brief and plain — this is a teaser someone reads at a glance, not a full explanation. Do not use markdown formatting, headings, or bullet points. Do not include any disclaimer — one is appended separately.
 
-        OCR TEXT:
-        {$ocrText}
+        {$source}
         PROMPT;
     }
 

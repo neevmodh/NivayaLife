@@ -182,6 +182,22 @@
             </template>
         </div>
 
+        {{-- Structured extraction, rendered per report type --}}
+        @if(($report->structured_data['not_a_medical_report'] ?? false))
+            {{-- Extraction decided this isn't a medical document (e.g. a saved
+                 email or receipt). Say so plainly instead of letting the AI
+                 summary imply it read a real report. --}}
+            <div class="mt-6 rounded-nivayalife bg-nivayalife-yellow/15 p-5 dark:bg-white/5">
+                <p class="text-sm font-bold text-nivayalife-ink dark:text-white">This doesn't look like a medical report</p>
+                <p class="mt-1 text-sm text-nivayalife-muted">We couldn't find medical information in this file. It's still saved and you can open the original above — but you may want to re-upload the right document, or change its type.</p>
+            </div>
+        @endif
+
+        @php($structured = \App\Services\Reports\StructuredPresenter::for($report))
+        @if($structured)
+            @include($structured['partial'], $structured['props'])
+        @endif
+
         {{-- Structured lab results table --}}
         <div x-show="labResults && labResults.length" x-cloak class="mt-6 overflow-hidden rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5">
             <h3 class="p-5 pb-0 text-sm font-bold text-nivayalife-ink dark:text-white">Lab Results</h3>

@@ -95,15 +95,13 @@ class ProcessReportOcrJob implements ShouldQueue
             $aiJob->update(['status' => 'completed', 'completed_at' => now(), 'provider' => $analysisMethod]);
 
             ExtractHealthMetricsJob::dispatch($report);
-            GenerateShortSummaryJob::dispatch($report);
 
-            // Structured table extraction only makes sense for text-based
-            // lab reports — there's no table to parse from a narrative
-            // vision description, and other report types don't have this
-            // row/reference-range/flag shape.
-            if ($report->type === 'blood_test') {
-                ExtractLabResultsJob::dispatch($report);
-            }
+            // Structured extraction runs for EVERY type now (ReportSchema
+            // defines a shape per type), and it runs *first* — it dispatches
+            // GenerateShortSummaryJob itself when it finishes, so the summary
+            // can be written from the compact verified structure rather than
+            // re-sending the whole OCR text to a paid provider.
+            ExtractStructuredDataJob::dispatch($report);
         } catch (Throwable $e) {
             report($e);
 

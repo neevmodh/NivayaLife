@@ -20,7 +20,7 @@ class GroqClient
     public function __construct(?string $apiKey = null, ?string $model = null)
     {
         $this->apiKey = $apiKey ?? (string) config('services.groq.key');
-        $this->model = $model ?? (string) config('services.groq.model', 'llama-3.3-70b-versatile');
+        $this->model = $model ?? (string) config('services.groq.model', 'qwen/qwen3.8-27b');
     }
 
     /**

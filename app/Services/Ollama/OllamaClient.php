@@ -31,20 +31,31 @@ class OllamaClient
         return $this->url !== '';
     }
 
-    /** @return array{text: string, input_tokens: ?int, output_tokens: ?int} */
-    public function generate(string $prompt): array
+    /**
+     * @param  float|null  $temperature  Pass 0 for extraction-style calls where
+     *                                   the same document should yield the same
+     *                                   structure every time. Null leaves the
+     *                                   model's own default in place.
+     * @return array{text: string, input_tokens: ?int, output_tokens: ?int}
+     */
+    public function generate(string $prompt, ?float $temperature = null): array
     {
         if (! $this->isConfigured()) {
             throw new RuntimeException('OLLAMA_URL is not configured.');
         }
 
-        $response = Http::timeout(60)
-            ->post("{$this->url}/v1/chat/completions", [
-                'model' => $this->chatModel,
-                'messages' => [
-                    ['role' => 'user', 'content' => $prompt],
-                ],
-            ]);
+        $payload = [
+            'model' => $this->chatModel,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt],
+            ],
+        ];
+
+        if ($temperature !== null) {
+            $payload['temperature'] = $temperature;
+        }
+
+        $response = Http::timeout(60)->post("{$this->url}/v1/chat/completions", $payload);
 
         if ($response->failed()) {
             throw new RuntimeException('Ollama request failed: '.$response->body());
