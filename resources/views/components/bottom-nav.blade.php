@@ -1,4 +1,6 @@
 @php
+    use App\Support\NotificationFeed;
+
     // Primary destinations for the installed/mobile experience, mirroring the
     // reference app designs: Home, Records, a raised Upload action in the
     // thumb-reachable centre, Family, Profile. Medications and the assistant
@@ -15,6 +17,7 @@
             'url' => route('reports.index'),
             'active' => request()->routeIs('reports.*') || request()->routeIs('timeline*'),
             'icon' => '<path d="M8 3h6.6L19 7.4V19a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14.5 3v4.5H19M9.5 12.5h6M9.5 16h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+            'badge' => NotificationFeed::hasPendingReports(auth()->user()),
         ],
         [
             'label' => 'Family',
@@ -53,7 +56,12 @@
                     'text-nivayalife-muted' => ! $tab['active'],
                 ])
                 @if($tab['active']) aria-current="page" @endif>
-                <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" aria-hidden="true">{!! $tab['icon'] !!}</svg>
+                <span class="relative">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" aria-hidden="true">{!! $tab['icon'] !!}</svg>
+                    @if($tab['badge'] ?? false)
+                        <span class="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-nivayalife-blue ring-2 ring-white dark:ring-nivayalife-night" aria-hidden="true"></span>
+                    @endif
+                </span>
                 <span class="text-[10px] font-semibold leading-none">{{ $tab['label'] }}</span>
                 {{-- Gold dot echoes the "i" dot in the brand mark. --}}
                 <span @class([
