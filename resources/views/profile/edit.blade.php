@@ -28,7 +28,15 @@
         };
     @endphp
 
-    <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8" x-data="{ tab: @js($initialTab) }">
+    <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8" x-data="{
+        tab: @js($initialTab),
+        setTab(key) {
+            this.tab = key;
+            const url = new URL(window.location);
+            url.searchParams.set('tab', key);
+            window.history.replaceState({}, '', url);
+        },
+    }">
 
         @if($isDependentEdit)
             <a href="{{ route('family.index') }}" class="mb-4 flex items-center gap-1 text-sm font-semibold text-nivayalife-green hover:underline">
@@ -41,7 +49,7 @@
             <div x-ref="tabScroll" @scroll="tabsOverflow = ($el.scrollWidth - $el.scrollLeft - $el.clientWidth) > 4"
                 class="flex gap-1 overflow-x-auto rounded-full bg-nivayalife-mint/50 p-1 text-sm font-medium dark:bg-white/10">
                 @foreach($tabs as $key => $label)
-                    <button type="button" @click="tab = '{{ $key }}'"
+                    <button type="button" @click="setTab('{{ $key }}')"
                         :class="tab === '{{ $key }}' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green dark:text-white/60'"
                         class="whitespace-nowrap rounded-full px-4 py-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nivayalife-green">
                         {{ $label }}
