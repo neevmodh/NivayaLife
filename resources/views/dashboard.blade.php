@@ -234,7 +234,7 @@
                                 @endif
                                 <span class="relative inline-flex h-2.5 w-2.5 rounded-full {{ $attentionTones[$item['tone']] }}"></span>
                             </span>
-                            <p class="min-w-0 flex-1 text-sm font-medium text-nivayalife-ink dark:text-white">{{ $item['text'] }}</p>
+                            <p class="min-w-0 flex-1 truncate text-sm font-medium text-nivayalife-ink dark:text-white" title="{{ $item['text'] }}">{{ $item['text'] }}</p>
                             <a href="{{ $item['url'] }}" class="flex-shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold text-nivayalife-green transition hover:bg-nivayalife-mint/50 active:scale-95 dark:text-nivayalife-mint dark:hover:bg-white/10">{{ $item['label'] }}</a>
                         </li>
                     @endforeach
