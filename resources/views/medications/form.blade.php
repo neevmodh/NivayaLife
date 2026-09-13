@@ -26,23 +26,11 @@
                 </div>
             @endif
 
-            <div>
-                <label class="mb-1 block text-xs font-semibold text-nivayalife-muted">Medicine name</label>
-                <input type="text" name="medicine_name" value="{{ old('medicine_name', $medication->medicine_name) }}" required
-                    class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
-            </div>
+            <x-floating-input name="medicine_name" label="Medicine name" :value="old('medicine_name', $medication->medicine_name)" :required="true" />
 
             <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-nivayalife-muted">Dosage</label>
-                    <input type="text" name="dosage" value="{{ old('dosage', $medication->dosage) }}" placeholder="e.g. 500mg"
-                        class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
-                </div>
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-nivayalife-muted">Frequency</label>
-                    <input type="text" name="frequency" value="{{ old('frequency', $medication->frequency) }}" placeholder="e.g. Twice daily"
-                        class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
-                </div>
+                <x-floating-input name="dosage" label="Dosage" :value="old('dosage', $medication->dosage)" />
+                <x-floating-input name="frequency" label="Frequency" :value="old('frequency', $medication->frequency)" />
             </div>
 
             <div>
@@ -65,23 +53,11 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-nivayalife-muted">Start date</label>
-                    <input type="date" name="start_date" value="{{ old('start_date', $medication->start_date?->toDateString()) }}"
-                        class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
-                </div>
-                <div>
-                    <label class="mb-1 block text-xs font-semibold text-nivayalife-muted">End date</label>
-                    <input type="date" name="end_date" value="{{ old('end_date', $medication->end_date?->toDateString()) }}"
-                        class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
-                </div>
+                <x-floating-input type="date" name="start_date" label="Start date" :value="old('start_date', $medication->start_date?->toDateString())" />
+                <x-floating-input type="date" name="end_date" label="End date" :value="old('end_date', $medication->end_date?->toDateString())" />
             </div>
 
-            <div>
-                <label class="mb-1 block text-xs font-semibold text-nivayalife-muted">Prescribing doctor</label>
-                <input type="text" name="prescribing_doctor" value="{{ old('prescribing_doctor', $medication->prescribing_doctor) }}"
-                    class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-nivayalife-green focus:outline-none focus:ring-2 focus:ring-nivayalife-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white">
-            </div>
+            <x-floating-input name="prescribing_doctor" label="Prescribing doctor" :value="old('prescribing_doctor', $medication->prescribing_doctor)" />
 
             <div class="flex flex-wrap gap-6">
                 <label class="flex items-center gap-2 text-sm font-medium text-nivayalife-ink dark:text-white">
