@@ -73,13 +73,12 @@
         </div>
 
         @if($count === 0)
-            <div class="flex flex-col items-center gap-2 px-6 py-10 text-center">
-                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-nivayalife-mint text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint" aria-hidden="true">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <p class="text-sm font-medium text-nivayalife-ink dark:text-white">You're all caught up</p>
-                <p class="text-xs text-nivayalife-muted">Due doses, vaccinations and invitations show up here.</p>
-            </div>
+            <x-empty-state
+                tone="positive"
+                icon="check"
+                title="You're all caught up"
+                hint="Due doses, vaccinations and invitations show up here."
+                class="py-10" />
         @else
             <ul class="max-h-96 divide-y divide-gray-100 overflow-y-auto dark:divide-white/10">
                 @foreach($items as $item)

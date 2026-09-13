@@ -18,7 +18,7 @@ class NotificationBellTest extends TestCase
 
         $this->actingAs($user)->get('/dashboard')
             ->assertOk()
-            ->assertSee("You're all caught up", false);
+            ->assertSee("You're all caught up");
     }
 
     public function test_an_overdue_vaccination_appears_in_the_bell(): void
@@ -39,6 +39,6 @@ class NotificationBellTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Tetanus booster is overdue', false);
-        $response->assertDontSee("You're all caught up", false);
+        $response->assertDontSee("You're all caught up");
     }
 }
