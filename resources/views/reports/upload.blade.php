@@ -71,7 +71,7 @@
                         <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-nivayalife-cream dark:bg-white/10">
                             <img x-show="!f.isDocument" :src="f.previewUrl" class="h-full w-full object-cover" alt="">
                             <div x-show="f.isDocument" class="flex h-full w-full items-center justify-center text-nivayalife-green dark:text-nivayalife-mint" aria-hidden="true">
-                                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6m-6 4h6m1 5H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z"/></svg>
+                                <x-report-type-icon type="" class="h-8 w-8" />
                             </div>
                         </div>
 
