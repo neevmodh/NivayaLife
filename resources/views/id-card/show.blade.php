@@ -78,7 +78,7 @@
                 @endif
             </div>
 
-            <div class="flex items-center justify-between border-t border-white/10 bg-black/10 px-6 py-3 text-[11px] text-white/60">
+            <div class="flex items-center justify-between border-t border-white/10 bg-black/10 px-6 py-3 text-[11px] text-white/70">
                 <span>Card {{ $card->card_number }}</span>
                 <span>Issued {{ $card->issued_at->format('M j, Y') }}</span>
             </div>
