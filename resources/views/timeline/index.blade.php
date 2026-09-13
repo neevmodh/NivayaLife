@@ -144,7 +144,7 @@
             @foreach($years as $year)
                 @php($isRecentYear = $loop->first)
                 <div x-data="{ open: {{ $isRecentYear ? 'true' : 'false' }} }">
-                    <button type="button" @click="open = !open" class="flex w-full items-center gap-2 text-left">
+                    <button type="button" @click="open = !open" class="flex w-full items-center gap-2 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nivayalife-green">
                         <svg class="h-4 w-4 text-nivayalife-muted transition-transform" :class="open ? 'rotate-90' : ''" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <h3 class="text-lg font-bold text-nivayalife-ink dark:text-white">{{ $year }}</h3>
                         <span class="rounded-full bg-nivayalife-mint px-2 py-0.5 text-[11px] font-bold text-nivayalife-green dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">{{ $grouped[$year]->flatten(1)->count() }}</span>
