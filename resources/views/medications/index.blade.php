@@ -92,7 +92,7 @@
                             @if($canEdit)
                                 <div class="flex flex-shrink-0 items-start gap-1">
                                     <a href="{{ route('medications.edit', $medication) }}" class="rounded-lg px-3 py-2 text-xs font-semibold text-nivayalife-green hover:bg-nivayalife-mint/40 dark:hover:bg-white/10">Edit</a>
-                                    <form method="POST" action="{{ route('medications.destroy', $medication) }}" onsubmit="return confirm('Remove {{ addslashes($medication->medicine_name) }}?');">
+                                    <form method="POST" action="{{ route('medications.destroy', $medication) }}" onsubmit="return confirm('Remove {{ addslashes($medication->medicine_name) }}? Its dose history and reminders will be removed too.');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="rounded-lg px-3 py-2 text-xs font-semibold text-nivayalife-pink-dark hover:bg-nivayalife-pink/10">Remove</button>
