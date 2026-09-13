@@ -97,7 +97,7 @@
             <h3 class="text-xs font-bold uppercase tracking-wide text-nivayalife-muted" x-text="labels[lang].allergies"></h3>
             @php($otherAllergies = $allergies->where('severity', '!=', 'severe'))
             @if($otherAllergies->isEmpty())
-                <p class="mt-2 text-sm text-nivayalife-muted">{{ $allergies->isEmpty() ? '' : '' }}<span x-text="labels[lang].no_allergies"></span></p>
+                <p class="mt-2 text-sm text-nivayalife-muted"><span x-text="labels[lang].no_allergies"></span></p>
             @else
                 <ul class="mt-2 space-y-1.5">
                     @foreach($otherAllergies as $allergy)
