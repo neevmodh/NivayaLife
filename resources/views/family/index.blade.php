@@ -99,7 +99,7 @@
                             </div>
 
                             <div class="mt-3 flex flex-wrap gap-3 border-t border-gray-100 pt-3 text-xs font-semibold dark:border-white/10">
-                                <a href="{{ route('family.show', $member) }}" class="text-nivayalife-green hover:underline">View profile</a>
+                                <a href="{{ route('family.show', $member) }}" class="rounded-full bg-nivayalife-mint px-3 py-1 text-nivayalife-green transition hover:bg-nivayalife-mint/70 active:scale-95 dark:bg-nivayalife-green/20 dark:text-nivayalife-mint">View profile</a>
 
                                 @if($member->access_type === 'dependent')
                                     <a href="{{ route('family.member.edit', $member) }}" class="text-nivayalife-green hover:underline">Edit</a>
