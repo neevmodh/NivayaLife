@@ -13,9 +13,7 @@
         </div>
 
         <div>
-            <label class="mb-1.5 block text-xs font-semibold text-nivayalife-muted">Relation</label>
-            <input type="text" value="{{ Str::headline($member->relation) }}" disabled
-                class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm text-gray-500">
+            <x-floating-input name="relation" label="Relation" :value="Str::headline($member->relation)" disabled class="cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-white/5" />
             <p class="mt-1 text-xs text-nivayalife-muted">
                 {{ $isDependentEdit ? 'Set when they were added — remove and re-add to change this.' : 'Set when your account was linked — not editable here.' }}
             </p>
