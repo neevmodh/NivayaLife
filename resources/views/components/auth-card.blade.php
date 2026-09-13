@@ -1,4 +1,4 @@
-@props(['active' => 'login'])
+@props(['active' => 'login', 'showTabs' => true])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -85,18 +85,20 @@
                     </div>
 
                     <div class="mx-auto w-full max-w-sm">
-                        <div class="flex rounded-full bg-nivayalife-mint/60 p-1 text-sm font-medium">
-                            <a href="{{ route('login') }}"
-                                class="flex-1 text-center rounded-full py-2 transition {{ $active === 'login' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green' }}">
-                                Login
-                            </a>
-                            <a href="{{ route('register') }}"
-                                class="flex-1 text-center rounded-full py-2 transition {{ $active === 'register' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green' }}">
-                                Create Account
-                            </a>
-                        </div>
+                        @if($showTabs)
+                            <div class="flex rounded-full bg-nivayalife-mint/60 p-1 text-sm font-medium">
+                                <a href="{{ route('login') }}"
+                                    class="flex-1 text-center rounded-full py-2 transition {{ $active === 'login' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green' }}">
+                                    Login
+                                </a>
+                                <a href="{{ route('register') }}"
+                                    class="flex-1 text-center rounded-full py-2 transition {{ $active === 'register' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green' }}">
+                                    Create Account
+                                </a>
+                            </div>
+                        @endif
 
-                        <div class="mt-8">
+                        <div class="{{ $showTabs ? 'mt-8' : '' }}">
                             {{ $slot }}
                         </div>
                     </div>
