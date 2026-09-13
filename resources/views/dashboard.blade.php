@@ -386,7 +386,7 @@
                         <x-empty-state
                             title="No measurement yet"
                             hint="Add a height and weight to track BMI over time."
-                            icon="clock"
+                            icon="chart"
                             action-label="Add height & weight"
                             :action-url="$editUrl" />
                     @endif
