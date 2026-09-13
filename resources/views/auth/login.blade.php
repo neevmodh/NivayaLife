@@ -23,7 +23,7 @@
             <x-floating-input type="email" name="email" label="Email" :value="old('email')" :required="true" autocomplete="username" :error="$errors->first('email')" />
             <x-floating-input type="password" name="password" label="Password" :required="true" autocomplete="current-password" :error="$errors->first('password')" />
 
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between rounded-lg bg-nivayalife-cream/40 px-3 py-2 dark:bg-white/5">
                 <label for="remember_me" class="inline-flex items-center">
                     <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-nivayalife-green shadow-sm focus:ring-nivayalife-green">
                     <span class="ms-2 text-sm text-nivayalife-muted">Remember me</span>
