@@ -40,7 +40,7 @@
                         <span class="flex items-center gap-1.5 rounded-full bg-nivayalife-cream px-3 py-1.5 text-xs font-semibold text-nivayalife-ink dark:bg-white/10 dark:text-white">
                             <span x-text="time"></span>
                             <input type="hidden" name="schedule_times[]" :value="time">
-                            <button type="button" @click="times.splice(index, 1)" class="text-nivayalife-muted hover:text-nivayalife-pink-dark" aria-label="Remove time">&times;</button>
+                            <button type="button" @click="times.splice(index, 1)" class="text-nivayalife-muted hover:text-nivayalife-pink-dark" :aria-label="`Remove ${time}`">&times;</button>
                         </span>
                     </template>
                 </div>
