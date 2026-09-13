@@ -98,11 +98,11 @@
                 </button>
 
                 <div class="hidden rounded-xl border border-gray-200 p-0.5 dark:border-white/10 sm:flex" role="group" aria-label="View">
-                    <button type="button" @click="setView('list')" aria-label="List view"
+                    <button type="button" @click="setView('list')" aria-label="List view" :aria-pressed="view === 'list'"
                         class="rounded-lg p-1.5 transition" :class="view === 'list' ? 'bg-nivayalife-mint text-nivayalife-green dark:bg-white/10 dark:text-nivayalife-mint' : 'text-nivayalife-muted hover:text-nivayalife-green'">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
                     </button>
-                    <button type="button" @click="setView('grid')" aria-label="Grid view"
+                    <button type="button" @click="setView('grid')" aria-label="Grid view" :aria-pressed="view === 'grid'"
                         class="rounded-lg p-1.5 transition" :class="view === 'grid' ? 'bg-nivayalife-mint text-nivayalife-green dark:bg-white/10 dark:text-nivayalife-mint' : 'text-nivayalife-muted hover:text-nivayalife-green'">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
                     </button>
