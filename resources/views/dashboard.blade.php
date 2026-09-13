@@ -6,17 +6,22 @@
         'failed' => ['label' => 'Failed', 'class' => 'bg-nivayalife-pink/30 text-nivayalife-pink-dark'],
     ];
 
+    // Single source for the greeting boundaries — used for both the
+    // server-rendered fallback and the client-side recompute below (see
+    // x-data), so the two can't drift apart.
+    $greetingBoundaries = [
+        ['before' => 5, 'label' => 'Good night'],
+        ['before' => 12, 'label' => 'Good morning'],
+        ['before' => 17, 'label' => 'Good afternoon'],
+        ['before' => 22, 'label' => 'Good evening'],
+        ['before' => 24, 'label' => 'Good night'],
+    ];
+
     // Server-rendered fallback only. The real greeting is computed from the
     // visitor's own clock (see the x-data below) — the server sits in a single
     // fixed timezone, so it can't know whether it's morning where they are.
     $hour = now()->hour;
-    $greeting = match (true) {
-        $hour < 5 => 'Good night',
-        $hour < 12 => 'Good morning',
-        $hour < 17 => 'Good afternoon',
-        $hour < 22 => 'Good evening',
-        default => 'Good night',
-    };
+    $greeting = collect($greetingBoundaries)->first(fn ($b) => $hour < $b['before'])['label'];
     $firstName = Str::of(auth()->user()->name)->words(1, '');
     $isSelf = $active->full_name === auth()->user()->name;
 
@@ -90,16 +95,13 @@
         <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div x-data="{
                 greeting: @js($greeting),
+                boundaries: @js($greetingBoundaries),
                 init() {
                     // Recomputed from the browser's clock, so the greeting is
                     // right wherever the person actually is — and midnight
                     // reads as night rather than morning.
                     const h = new Date().getHours();
-                    this.greeting = h < 5 ? 'Good night'
-                        : h < 12 ? 'Good morning'
-                        : h < 17 ? 'Good afternoon'
-                        : h < 22 ? 'Good evening'
-                        : 'Good night';
+                    this.greeting = this.boundaries.find(b => h < b.before).label;
                 },
             }">
                 <h2 class="text-2xl font-bold leading-tight tracking-tight text-nivayalife-ink dark:text-white"><span x-text="greeting">{{ $greeting }}</span>, {{ $firstName }} 👋</h2>
