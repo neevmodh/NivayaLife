@@ -292,7 +292,7 @@
                         'An emergency card ready before you need it',
                     ] as $line)
                         <li class="flex gap-2.5">
-                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-nivayalife-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-nivayalife-green" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             {{ $line }}
                         </li>
                     @endforeach
