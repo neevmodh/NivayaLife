@@ -325,7 +325,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-8 rounded-nivayalife border-2 border-nivayalife-green/15 bg-white px-6 py-5 text-center shadow-nivayalife-sm">
+            <div class="mt-8 rounded-nivayalife border-t-2 border-nivayalife-gold/50 bg-white px-6 py-5 text-center shadow-nivayalife-sm">
                 <p class="font-medium text-nivayalife-ink">
                     "Nivaya Life is a personal health companion. It explains and organizes your records —
                     it does not diagnose, prescribe, or replace your doctor."
