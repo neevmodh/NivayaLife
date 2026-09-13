@@ -48,14 +48,13 @@
         @endif
 
         @if($vaccinations->isEmpty())
-            <div class="rounded-nivayalife bg-white p-10 text-center shadow-nivayalife-sm dark:bg-white/5">
-                <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-nivayalife-cream text-nivayalife-muted dark:bg-white/10" aria-hidden="true">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="M19 8 8 19l-5-5M14 3l7 7-3 3-7-7 3-3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <p class="mt-3 text-sm text-nivayalife-muted">No vaccinations recorded yet.</p>
-                @if($canEdit)
-                    <a href="{{ route('vaccinations.create') }}?member={{ $active->id }}" class="mt-2 inline-block text-xs font-semibold text-nivayalife-green hover:underline">Add the first one</a>
-                @endif
+            <div class="rounded-nivayalife bg-white shadow-nivayalife-sm dark:bg-white/5">
+                <x-empty-state
+                    icon="shield"
+                    title="No vaccinations recorded yet."
+                    :action-label="$canEdit ? 'Add the first one' : null"
+                    :action-url="$canEdit ? route('vaccinations.create').'?member='.$active->id : null"
+                    class="py-10" />
             </div>
         @else
             <div class="space-y-3">
