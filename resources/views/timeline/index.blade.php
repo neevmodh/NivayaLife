@@ -165,6 +165,8 @@
                                                     <input type="checkbox"
                                                         @change="toggle(@js($entry['compare']))"
                                                         :checked="isSelected({{ $entry['compare']['id'] }})"
+                                                        title="Compare this value with another of the same metric"
+                                                        aria-label="Compare this value"
                                                         class="mt-1.5 h-4 w-4 flex-shrink-0 rounded border-gray-300 text-nivayalife-green focus:ring-nivayalife-green">
                                                 @endif
 
