@@ -59,9 +59,26 @@ function compressImage(file) {
     });
 }
 
+
+// Mirrors App\Rules\ReadableDocumentImage. Rejecting here means the user finds
+// out immediately instead of after a full upload round-trip. The server still
+// enforces it — this is convenience, not the guard.
+const MIN_SHORTER_SIDE = 600;
+
+function imageDimensions(file) {
+    return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve({ width: img.naturalWidth, height: img.naturalHeight }); };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+        img.src = url;
+    });
+}
+
 export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csrfToken, reportsIndexUrl }) {
     return {
         files: [],
+        rejected: [],
         dragging: false,
         submitting: false,
         typeOptions: [
@@ -80,7 +97,7 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
             { value: 'other', label: 'Other', icon: '\u{1F4CB}' },
         ],
 
-        onFilesSelected(fileList) {
+        async onFilesSelected(fileList) {
             const today = new Date().toISOString().slice(0, 10);
 
             for (const file of Array.from(fileList)) {
@@ -90,6 +107,21 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
                 const isDocument = isPdf || isDocx;
                 if (!isDocument && !isImage) continue;
                 if (file.size > 10 * 1024 * 1024) continue;
+
+                // A photo below the readable floor makes OCR drop decimal
+                // points — "7.8" becomes "78" — so stop it here rather than
+                // letting it through and reporting an impossible value.
+                if (isImage) {
+                    const dims = await imageDimensions(file);
+                    if (dims && Math.min(dims.width, dims.height) < MIN_SHORTER_SIDE) {
+                        this.rejected.push({
+                            id: crypto.randomUUID(),
+                            name: file.name,
+                            reason: `Too small to read reliably (${dims.width}\u00d7${dims.height}). Retake the photo closer to the document, or use a scan of at least ${MIN_SHORTER_SIDE}px on the shorter side.`,
+                        });
+                        continue;
+                    }
+                }
 
                 const entry = {
                     id: crypto.randomUUID(),
@@ -128,6 +160,10 @@ export default function reportUpload({ familyMemberId, uploadUrl, detectUrl, csr
         onDrop(event) {
             this.dragging = false;
             this.onFilesSelected(event.dataTransfer.files);
+        },
+
+        dismissRejected(id) {
+            this.rejected = this.rejected.filter((r) => r.id !== id);
         },
 
         removeFile(id) {

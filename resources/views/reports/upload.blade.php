@@ -48,6 +48,21 @@
             <p class="mt-3 text-xs text-nivayalife-muted">PDF, Word, or image (JPG/PNG/WEBP/TIFF/BMP/GIF) &middot; up to 10MB each &middot; multiple files supported</p>
         </div>
 
+        {{-- Files refused before upload, e.g. a photo too small for OCR to read --}}
+        <div class="mt-6 space-y-3" x-show="rejected.length > 0" x-cloak>
+            <template x-for="r in rejected" :key="r.id">
+                <div class="flex items-start justify-between gap-3 rounded-nivayalife bg-nivayalife-yellow/15 p-4">
+                    <div class="min-w-0">
+                        <p class="truncate text-sm font-bold text-nivayalife-ink dark:text-white" x-text="r.name"></p>
+                        <p class="mt-1 text-sm text-nivayalife-muted" x-text="r.reason"></p>
+                    </div>
+                    <button type="button" @click="dismissRejected(r.id)" class="flex-shrink-0 text-nivayalife-muted hover:text-nivayalife-ink" aria-label="Dismiss">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                </div>
+            </template>
+        </div>
+
         {{-- File cards --}}
         <div class="mt-6 space-y-4" x-show="files.length > 0" x-cloak>
             <template x-for="f in files" :key="f.id">

@@ -7,6 +7,7 @@ use App\Jobs\ProcessReportOcrJob;
 use App\Models\Doctor;
 use App\Models\FamilyMember;
 use App\Models\Report;
+use App\Rules\ReadableDocumentImage;
 use App\Services\Ocr\OcrExtractor;
 use App\Services\Ocr\OcrResolver;
 use App\Services\Reports\ReportFieldDetector;
@@ -41,7 +42,7 @@ class ReportUploadController extends Controller
     {
         $validated = $request->validate([
             'family_member_id' => ['required', 'integer', 'exists:family_members,id'],
-            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,tiff,tif,bmp,gif,docx', 'max:10240'],
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,tiff,tif,bmp,gif,docx', 'max:10240', new ReadableDocumentImage],
             'type' => ['required', 'in:blood_test,prescription,xray,sonography,mri_ct,insurance,bill,ecg,dental,discharge_summary,pathology,eye_care,other'],
             'report_date' => ['required', 'date', 'before_or_equal:today'],
             'hospital_or_clinic_name' => ['nullable', 'string', 'max:255'],
@@ -115,7 +116,7 @@ class ReportUploadController extends Controller
     {
         $validated = $request->validate([
             'family_member_id' => ['required', 'integer', 'exists:family_members,id'],
-            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,tiff,tif,bmp,gif,docx', 'max:10240'],
+            'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,tiff,tif,bmp,gif,docx', 'max:10240', new ReadableDocumentImage],
         ]);
 
         $familyMember = FamilyMember::findOrFail($validated['family_member_id']);

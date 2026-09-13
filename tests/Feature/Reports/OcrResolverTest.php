@@ -37,9 +37,11 @@ class OcrResolverTest extends TestCase
 
     private function textImage(string $text = 'Hemoglobin 12.5 g/dL'): UploadedFile
     {
-        $img = imagecreatetruecolor(600, 200);
+        // Tall enough to clear ReadableDocumentImage's 600px floor on the
+        // shorter side — the upload paths now refuse anything smaller.
+        $img = imagecreatetruecolor(900, 700);
         imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
-        imagestring($img, 5, 10, 80, $text, imagecolorallocate($img, 0, 0, 0));
+        imagestring($img, 5, 10, 340, $text, imagecolorallocate($img, 0, 0, 0));
         ob_start();
         imagepng($img);
         $bytes = ob_get_clean();
