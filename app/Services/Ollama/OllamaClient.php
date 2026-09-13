@@ -36,9 +36,16 @@ class OllamaClient
      *                                   the same document should yield the same
      *                                   structure every time. Null leaves the
      *                                   model's own default in place.
+     * @param  int  $timeout  Seconds. The 60s default suits the assistant,
+     *                        which runs inside a user's HTTP request. Queued
+     *                        work should pass more: a shared CPU generating a
+     *                        few hundred structured tokens is far slower than
+     *                        a dev machine, and this timeout was silently
+     *                        forcing production extraction onto the paid
+     *                        fallback.
      * @return array{text: string, input_tokens: ?int, output_tokens: ?int}
      */
-    public function generate(string $prompt, ?float $temperature = null): array
+    public function generate(string $prompt, ?float $temperature = null, int $timeout = 60): array
     {
         if (! $this->isConfigured()) {
             throw new RuntimeException('OLLAMA_URL is not configured.');
@@ -55,7 +62,7 @@ class OllamaClient
             $payload['temperature'] = $temperature;
         }
 
-        $response = Http::timeout(60)->post("{$this->url}/v1/chat/completions", $payload);
+        $response = Http::timeout($timeout)->post("{$this->url}/v1/chat/completions", $payload);
 
         if ($response->failed()) {
             throw new RuntimeException('Ollama request failed: '.$response->body());

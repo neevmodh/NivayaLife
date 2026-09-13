@@ -26,6 +26,9 @@ class StructuredExtractor
 {
     private const MAX_OCR_CHARS = 8000;
 
+    /** Comfortably inside ExtractStructuredDataJob's 240s job timeout, and well above what a shared-CPU container needs for a few hundred structured tokens. */
+    private const OLLAMA_TIMEOUT = 180;
+
     public function __construct(
         private readonly OllamaClient $ollama,
         private readonly AiClient $ai,
@@ -51,7 +54,7 @@ class StructuredExtractor
         // chain — the whole point of extraction is that it is reliable.
         if ($this->ollama->isConfigured()) {
             try {
-                $local = $this->ollama->generate($prompt, temperature: 0);
+                $local = $this->ollama->generate($prompt, temperature: 0, timeout: self::OLLAMA_TIMEOUT);
                 $data = $this->normalize($type, $this->decode($local['text']));
 
                 if (! self::isEmpty($data)) {
