@@ -72,6 +72,13 @@
     transform: none;
 }
 
+/* Marks the nav link for whichever landing-page section is currently in
+   view (see initNavHighlight in resources/js/scroll-reveal.js). */
+.nivayalife-nav-active {
+    color: #14503F;
+    font-weight: 600;
+}
+
 /* Gold as a structural accent, not just a highlight colour.
    A hairline that fades in from nothing at both ends — used to separate
    major sections without the hard line of a border. */
