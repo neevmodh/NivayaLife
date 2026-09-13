@@ -43,7 +43,7 @@
                 @foreach($tabs as $key => $label)
                     <button type="button" @click="tab = '{{ $key }}'"
                         :class="tab === '{{ $key }}' ? 'bg-nivayalife-green text-white shadow-nivayalife-sm' : 'text-nivayalife-green/70 hover:text-nivayalife-green dark:text-white/60'"
-                        class="whitespace-nowrap rounded-full px-4 py-2 transition">
+                        class="whitespace-nowrap rounded-full px-4 py-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nivayalife-green">
                         {{ $label }}
                     </button>
                 @endforeach
