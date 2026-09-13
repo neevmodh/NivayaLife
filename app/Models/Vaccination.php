@@ -44,4 +44,16 @@ class Vaccination extends Model
     {
         return $this->belongsTo(FamilyMember::class);
     }
+
+    public function isOverdue(): bool
+    {
+        return $this->next_due_date !== null && $this->next_due_date->toDateString() < now()->toDateString();
+    }
+
+    public function isDueSoon(): bool
+    {
+        return $this->next_due_date !== null
+            && ! $this->isOverdue()
+            && $this->next_due_date->toDateString() <= now()->addDays(7)->toDateString();
+    }
 }
