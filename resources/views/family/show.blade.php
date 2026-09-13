@@ -55,18 +55,18 @@
             <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div class="rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
                     <h3 class="text-xs font-bold uppercase tracking-wide text-nivayalife-muted">Basic info</h3>
-                    <dl class="mt-3 space-y-2 text-sm">
-                        <div class="flex justify-between"><dt class="text-nivayalife-muted">Date of birth</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->date_of_birth?->format('M j, Y') ?? '—' }}</dd></div>
-                        <div class="flex justify-between"><dt class="text-nivayalife-muted">Gender</dt><dd class="text-nivayalife-ink dark:text-white capitalize">{{ $member->gender ? str_replace('_', ' ', $member->gender) : '—' }}</dd></div>
-                        <div class="flex justify-between"><dt class="text-nivayalife-muted">Blood group</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->blood_group ?? '—' }}</dd></div>
+                    <dl class="mt-3 divide-y divide-gray-100 text-sm dark:divide-white/10">
+                        <div class="flex justify-between py-2 first:pt-0 last:pb-0"><dt class="text-nivayalife-muted">Date of birth</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->date_of_birth?->format('M j, Y') ?? '—' }}</dd></div>
+                        <div class="flex justify-between py-2 first:pt-0 last:pb-0"><dt class="text-nivayalife-muted">Gender</dt><dd class="text-nivayalife-ink dark:text-white capitalize">{{ $member->gender ? str_replace('_', ' ', $member->gender) : '—' }}</dd></div>
+                        <div class="flex justify-between py-2 first:pt-0 last:pb-0"><dt class="text-nivayalife-muted">Blood group</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->blood_group ?? '—' }}</dd></div>
                     </dl>
                 </div>
                 <div class="rounded-nivayalife bg-white p-5 shadow-nivayalife-sm dark:bg-white/5">
                     <h3 class="text-xs font-bold uppercase tracking-wide text-nivayalife-muted">Emergency contact</h3>
-                    <dl class="mt-3 space-y-2 text-sm">
-                        <div class="flex justify-between"><dt class="text-nivayalife-muted">Name</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->emergency_contact_name ?? '—' }}</dd></div>
-                        <div class="flex justify-between"><dt class="text-nivayalife-muted">Phone</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->emergency_contact_phone ?? '—' }}</dd></div>
-                        <div class="flex justify-between"><dt class="text-nivayalife-muted">Relation</dt><dd class="text-nivayalife-ink dark:text-white capitalize">{{ $member->emergency_contact_relation ?? '—' }}</dd></div>
+                    <dl class="mt-3 divide-y divide-gray-100 text-sm dark:divide-white/10">
+                        <div class="flex justify-between py-2 first:pt-0 last:pb-0"><dt class="text-nivayalife-muted">Name</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->emergency_contact_name ?? '—' }}</dd></div>
+                        <div class="flex justify-between py-2 first:pt-0 last:pb-0"><dt class="text-nivayalife-muted">Phone</dt><dd class="text-nivayalife-ink dark:text-white">{{ $member->emergency_contact_phone ?? '—' }}</dd></div>
+                        <div class="flex justify-between py-2 first:pt-0 last:pb-0"><dt class="text-nivayalife-muted">Relation</dt><dd class="text-nivayalife-ink dark:text-white capitalize">{{ $member->emergency_contact_relation ?? '—' }}</dd></div>
                     </dl>
                 </div>
             </div>
